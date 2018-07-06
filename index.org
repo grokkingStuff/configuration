@@ -672,11 +672,24 @@ bash
 #+END_SRC
 
 *** zsh                                                         :application:
-**** Installation                                                   :install:
 #+NAME: install
 #+BEGIN_SRC sh :padline no :tangle no :noweb yes
 zsh
 #+END_SRC
+
+
+*** libntify                                               :application:
+ #+NAME: install 
+ #+BEGIN_SRC sh
+ libnotify-tools
+ #+END_SRC
+
+ Use notify-send to create notifications from terminal. Use C-c C-c to execute this code block for an example
+ #+BEGIN_SRC sh
+ notify-send 'Hello world' 'Hello world'
+ #+END_SRC
+
+ #+RESULTS:
 
 ** Browsers
 *** Chromium                                                    :application:
