@@ -1,0 +1,204 @@
+
+
+
+
+
+
+
+* Start up
+
+#+BEGIN_SRC lisp
+(require 'ox-latex)
+(unless (boundp 'org-latex-classes)
+  (setq org-latex-classes nil))
+(add-to-list 'org-latex-classes
+             '("article"
+               "\\documentclass{article}"
+               ("\\section{%s}" . "\\section*{%s}")))
+#+END_SRC
+
+#+BEGIN_EXAMPLE
+* section
+** itemize
+*** itemize, etc.
+,    - itemize
+#+END_EXAMPLE
+
+ 
+#+BEGIN_SRC lisp
+(add-to-list 'org-latex-classes
+             '("article"
+               "\\documentclass{article}"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+#+END_SRC
+
+#+BEGIN_EXAMPLE
+
+ * section
+ ** subsection
+ *** subsubsection
+ **** paragraph
+ ***** subparagraph
+ ****** itemize, etc.
+ ,       - itemize
+#+END_EXAMPLE
+
+
+
+* Exporting Other LaTeX Document Classes
+
+The LaTeX exporter can be configured to produce LaTeX output for books, reports, letters or any other document class, including custom classes. These can be useful if notes need to be formatted to a certain specification, such as a company technical manual, or if the notes are quite long, as might be the case when Org-mode is used as a laboratory or project notebook.
+
+** Book
+Here is a standard setup for export to a LaTeX book class:
+
+#+BEGIN_SRC lisp
+(add-to-list 'org-latex-classes
+             '("book"
+               "\\documentclass{book}"
+               ("\\part{%s}" . "\\part*{%s}")
+               ("\\chapter{%s}" . "\\chapter*{%s}")
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+             )
+#+END_SRC
+
+
+Then, in the Org file with a book-full of notes, add this line:
+
+#+BEGIN_EXAMPLE
+ #+LaTeX_CLASS: book
+#+END_EXAMPLE
+
+** Koma Script
+
+#+BEGIN_SRC lisp
+(add-to-list 'org-latex-classes
+          '("koma-article"
+             "\\documentclass{scrartcl}"
+             ("\\section{%s}" . "\\section*{%s}")
+             ("\\subsection{%s}" . "\\subsection*{%s}")
+             ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+             ("\\paragraph{%s}" . "\\paragraph*{%s}")
+             ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+#+END_SRC
+
+ Then, this class can be used by including the following line in the Org-mode file.
+
+#+BEGIN_EXAMPLE
+ #+LaTeX_CLASS: koma-article
+#+END_EXAMPLE
+
+
+* Passing Options to Document Classes
+
+The standard LaTeX document classes, article, report, book, slides, and letter take options that, where applicable, select the type size, paper size, orientation, whether to print one- or two-sided, and a variety of formatting specifications. Custom LaTeX document classes can define their own options, as needed.
+
+You can pass options to the LaTeX \documentclass macro by putting a line like this in your Org-mode file:
+
+#+BEGIN_EXAMPLE
+ #+LaTeX_CLASS_OPTIONS: [a4paper,twoside,twocolumn]
+#+END_EXAMPLE
+
+A useful option with the KOMA script classes typesets table captions properly. The standard LaTeX classes will incorrectly typeset table captions exported by Org-mode above the table. The following option to the KOMA script classes accomplishes this.
+
+#+BEGIN_EXAMPLE
+ #+LaTeX_CLASS_OPTIONS: [captions=tableheading]
+#+END_EXAMPLE
+
+
+
+Using Custom Classes
+
+If the user has custom LaTeX document classes that conflict with the default packages or that only require a few of the default packages to support all features of the LaTeX exporter, then this can be handled in .emacs using [DEFAULT-PACKAGES], [NO-DEFAULT-PACKAGES], [PACKAGES], [NO-PACKAGES], [EXTRA], [NO-EXTRA].
+
+Here is a simple example that uses an experimental LaTeX class1 that supports the Org-mode requirements and leaves open the possibility of adding file specific packages:
+
+#+BEGIN_SRC lisp
+(add-to-list 'org-latex-classes
+      '("org-article"
+         "\\documentclass{org-article}
+         [NO-DEFAULT-PACKAGES]
+         [PACKAGES]
+         [EXTRA]"
+         ("\\section{%s}" . "\\section*{%s}")
+         ("\\subsection{%s}" . "\\subsection*{%s}")
+         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+         ("\\paragraph{%s}" . "\\paragraph*{%s}")
+         ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+#+END_SRC lisp
+
+
+
+* Specifying LaTeX Packages
+
+According to its author, the LaTeX macro package "represents a balance between functionality and ease of use." The LaTeX user who adds functionality through the addition of packages necessarily makes the software more difficult to use. Like LaTeX itself, the Org-mode LaTeX exporter has struck its own balance between functionality and ease of use with the addition of several LaTeX packages. These are written out in the LaTeX header as LaTeX \usepackage commands. 
+
+
+
+
+
+One reason for specifying LaTeX packages in the Org-mode buffer is that highly configurable packages can be tailored for a particular use. Perhaps the best example among the packages in org-latex-default-packages-alist is hyperref, which has an elaborate list of keyval options. PDF output destined for interactive use might load hyperref with options to distinguish links with attractive colors, for instance. This might be achieved with following lines, which load the xcolor package2 and then use named colors to distinguish external blue links from internal red links:
+
+,  #+LATEX_HEADER: \usepackage[hyperref,x11names]{xcolor}
+,  #+LATEX_HEADER: \usepackage[colorlinks=true,urlcolor=SteelBlue4,linkcolor=Firebrick4]{hyperref}
+
+
+
+
+
+
+
+
+
+* Adding color to hyperlinks
+
+
+
+** Alright, which colors do I use
+Following the advice of Robin Williams, author of The Non-Designer's Design Book,
+
+#+BEGIN_QUOTE
+    A set of three colors equidistant from each other always creates a triad of pleasing colors.
+#+END_QUOTE
+
+Shift the link color to blue a bit because people are more likely to think it's a link if it's blue.
+
+
+| Type of Link | Hyperref link option | General Color | Hex Code |
+| External     | linkcolor            | Blue          | #2200CC  |
+| Internal     |                      | Orange        | #FF6D00  |
+| Citation     | citecolor            | Green         | #1EFF19  |
+
+
+
+
+\usepackage[hyperref,x11names]{xcolor}
+\usepackage[colorlinks=true,urlcolor=SteelBlue4,linkcolor=Firebrick4]{hyperref}
+
+\definecolor{external_link_color}{RGB}{#2200CC}
+\definecolor{citation_link_color}{RGB}{#FFGD00}
+\definecolor{internal_link_color}{RGB}{#1EFF19}
+
+
+
+
+* Modifying table of contents
+
+tocloft package is useful here
+
+
+
+
+
+
+
+
+
+
+

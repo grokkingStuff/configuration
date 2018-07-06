@@ -1,0 +1,225 @@
+
+
+
+
+* Requirements Gathering
+
+** Stakeholder Interviews
+
+** Anti-patterns to watch for
+    The entire project is already spec'd out in great detail before any engineering work begins
+    Thorough review and iron-clad sign-off from all teams are required before work even starts
+    Requirements are never updated in the first place (because everyone signed off on them, remember?)
+    The product owner writes requirements without the participation of the team 
+
+
+
+
+
+* Generation of RACI Matrix
+
+
+
+
+* Requirements Management Plan (RMP)
+
+** Stakeholder roles and responsibilities
+
+Who participates in the RM process?
+
+    | Business subject matter expert | source of project/product requirements                   |
+    | Business analyst               | gathers, analyzes, documents, and maintains requirements |
+    | Designer                       | uses requirements to design solutions                    |
+    | Developer                      | develops solutions to requirements                       |
+    | Tester                         | verifies the solution and satisfies the requirements     |
+    | Project manager                | reports project status based on requirement metrics      |
+    | Change management analyst      | determines organizational change due to requirements     |
+
+Who is involved in a requirements management plan? As a BA, you must work fairly closely with the project manager in creating a requirements management plan. The project manager will have project planning requirements that he/she needs to satisfy, so the BA needs to be aware of that and needs to help ensure the requirements management plan works well for the project.
+
+In some cases, the project management plan may actually encompass the main components of the RMP, so it may not be necessary to have a separate document. Who endorses the RMP? Typically each of the team leaders in the application lifecycle. Who participates in the process? Subject matter experts are people who are going to help define and specify requirements. TBAs will gather, analyze, document the requirements. The designers and developers will design and develop the solution components from the requirements that BAs have elicited. The testers then take those requirements and test them to help ensure they still fit the purpose and satisfy the original requirements. Finally, the change management analyst reviews and implements changes to the organization based on the requirements.
+
+The project manager can use requirements to provide meaningful reporting on the status of the project using the metrics that we keep talking about - things like how many requirements are still yet to be approved or outstanding to be approved by stakeholders; how many requirements are deferred which are going to potentially change the scope; and critically, what the impacts are on the project.
+
+So there are a lot of people interested in requirements and they all have a slightly different view so we need to make sure upfront that we consult with each of those people. The RMP is the mechanism to engage so we understand what they need and keep them engaged throughout the entire project.
+
+Use a RACI matrix, if possible, to show the stakeholder their role in requirements, their interest, and when in the process they are typically involved. Identifying the stakeholders helps define and verify the requirements management process.
+** Requirements management process (elicited, analyzed, documented, and managed)
+** Requirements Hierarchy
+Requirements are initially organized at a high level with a business focus. The hierarchy of requirements gets more and more granular and it is written with a technical focus.  By identifying higher level requirement types, we create linkages to strategy.-What are the business goals and objectives? What are they trying to achieve? What is the need? We need to make sure that, as we move through the requirement types, we distill them down into lower level requirements. It is important that we understand where those requirements came from and what their main purpose was.
+
+** Requirements type/artifact mapping
+
+** Naming and numbering convention
+** Requirements prioritization
+** Requirements traceability
+** Requirements versioning
+** Requirements baseline (requirements change control)
+** Communication strategy for requirement changes
+** Requirements management tools
+
+
+* Requirements
+* Budget
+
+Each child item/node needs to have a cost estimate and a time estimate in order to estimate the total time and cost estimate of the project. Also, PERT analysis is wonderful and should be implemented more often.
+
+- Difference between calendar time and working hours
+
+We'll use min and max for both:
+#+BEGIN_TEXT
+MINTIME
+MAXTIME
+MINCOST
+MAXCOST
+#+END_TEXT
+
+Or in the case where we have performance based data, you can optionally have
+#+BEGIN_TEXT
+TIME
+COST
+#+END_TEXT
+
+
+* New Project Template
+** index.org
+Objectives and general information. First file that's looked at when you open a repo for the first time, just for added context.
+*** Stakeholders List
+This is to keep track of people related to the project. Mainly, think the people you work with, the people you report to, the people affected by your project. Keep their contact information in Contact/contact.org and keep information about them here - this will allow you to keep project specific information in the project and general information in the contacts file.
+**** Stakeholder 1
+***** Expectations
+ Whatever expectations they might have of the project
+***** Influence & Interest
+****** Influence
+  What influence they might have on the project's success
+****** Interest
+  What interest they have in the project
+***** Communication
+****** Preferred Method
+****** Communication Schedule
+****** Information requested
+**** Stakeholder 2
+**** Stakeholder 3
+*** Requirements
+Whatever the project must meet in order to ensure project success and project close. Do not confuse with project scope.
+**** Overview & Background 
+Background of what the requirements are meant to accomplish (basic business objective)
+**** Requirement 1 Title
+***** Detailed Description
+- Sub-requirement 1
+- Sub requirement 2
+- Sub requirement 3
+***** Stakeholders
+****** Owner
+  The person responsible for this requirement.
+****** Team Members
+  The people working on this requirement.
+****** Other Teams
+  The other teams that you have to work with to fulfill this requirement
+***** Out of scope (optional)
+**** Requirement 2 Title
+***** Detailed Description
+***** Stakeholders
+****** Owner
+  The person responsible for this requirement.
+****** Team Members
+  The people working on this requirement.
+****** Other Teams
+  The other teams that you have to work with to fulfill this requirement
+***** Out of scope (optional)
+**** Stakeholder Interviews
+
+***** PROJECT VISION
+
+- What is your vision for this offering?
+- What defines success for this project?
+- What are the potential pitfalls (i.e. what keeps you up at night about this project)?
+
+***** USERS
+
+- Different types of users (salesperson vs supervisor vs analyst)
+- Who is primary?
+- Role(s)?
+- Typical Background?
+- Defining Attribute?
+
+***** VALUE PROPOSITION
+
+- What problems do users have that this offering solves?
+- What is the core value prop of the offering?
+- What are the main marketing messages?
+
+***** COMPETITION
+
+- What similar tools are in use today?
+- Target Market? Value Proposition?
+- What are their relative strengths/weaknesses?
+- How is this offering different?
+
+***** YOUR CUSTOMERS
+
+- Target market(s)?
+- What role is your team selling to?
+- What problem do they have that your offering solves?
+- Who is their competition?
+- How are they differentiated?
+
+***** PROCESS & WORKFLOW (example questions here for a Salesperson role)
+
+- What is the nature between the salesperson and their customer?
+- How does the salesperson know when it is time to engage with a customer? Are there multiple types of engagements? Are there other key patterns (e.g. ical patterns, size of company, level of customer savvy-ness, industry, etc).
+- How do they prepare? Who do they work with? What tools do they use?
+- How do they engage? What is the first step? And the next (and so on)? How does the engagement end?
+- What frustrations/ pain points do they experience with their current process?
+
+***** CONTEXT OF USE
+
+- What tools do they use today? Where do those tools fit? (collect screenshots, printouts, any relevant articles if possible)
+- What data points do they collect today? What insight are they able to share with customers today? How do they share it? What does it look like?
+- What's missing in the current process that this tool will provide?
+- Where do you imagine your new (or redesigned) offering will fit?
+
+***** USER GOALS
+
+- What defines success? (if an experience goes well, what happens, commission? bonus?)
+- What are bad results? (If an experience doesn't go well, what happens?)
+- If users had a 'magic wand' and could wish for anything to make the process better, what would they wish for?
+
+*** Budget
+Because finances are always a pain in the ass.
+*** Documents
+For all the pesky documents that you need to keep around.
+Create links for all of them in this section to keep track. Keep all organized in the actual folder.
+
+** taskManagement.org
+To keep track of all deliverables.
+Store contact information of resources in the contacts file - we'll use it to send them an org-agenda email everyday for the week.
+
+Steal from https://orgmode.org/worg/org-tutorials/org-taskjuggler.html
+
+#+CAPTION: Place at top of file
+#+BEGIN_SRC emacs_lisp
+#+COLUMNS: %70ITEM(Task) %Effort
+#+PROPERTY: allocate_ALL dev doc test
+#+PROPERTY: Effort_ALL 2d 5d 10d 20d 30d 35d 50d
+#+END_SRC
+*** Project timeframe                                   :taskjuggler_project:
+**** Tasks
+***** Task 1
+***** Task 2
+***** Task 3
+*** Resources                                          :taskjuggler_resource:
+**** Developers
+***** Developer 1
+      :PROPERTIES:
+      :resource_id: dev1
+      :limits:   { dailymax 6.4h }
+      :END:
+***** Developer 2
+      :PROPERTIES:
+      :resource_id: dev2
+      :limits:   { dailymax 8.4h }
+      :END:
+**** Designers
+***** Designer 1
+***** Designer 2

@@ -1,0 +1,318 @@
+* gpg.conf
+
+This is an implementation of the Riseup OpenPGP Best Practices
+https://help.riseup.net/en/security/message-security/openpgp/best-practices
+
+
+** default key
+The default key to sign with. If this option is not used, the default key is the first key found in the secret keyring
+#+BEGIN_SRC sh
+default-key 0x18F3685C0022BFF3
+#+END_SRC
+** behavior
+*** Disable inclusion of the version string in ASCII armored output
+#+BEGIN_SRC sh
+no-emit-version
+#+END_SRC
+*** Disable comment string in clear text signatures and ASCII armored messages
+#+BEGIN_SRC sh
+no-comments
+#+END_SRC
+*** Display long key IDs
+#+BEGIN_SRC sh
+keyid-format 0xlong
+#+END_SRC
+*** List all keys (or the specified ones) along with their fingerprints
+#+BEGIN_SRC sh
+with-fingerprint
+#+END_SRC
+*** Display the calculated validity of user IDs during key listings
+#+BEGIN_SRC sh
+list-options show-uid-validity
+verify-options show-uid-validity
+#+END_SRC
+*** Try to use the GnuPG-Agent. With this option, GnuPG first tries to connect to the agent before it asks for a passphrase.
+#+BEGIN_SRC sh
+use-agent
+charset utf-8
+fixed-list-mode
+#+END_SRC
+** keyserver
+This is the server that --recv-keys, --send-keys, and --search-keys will communicate with to receive keys from, send keys to, and search for keys on
+#+BEGIN_SRC sh
+#keyserver hkps://hkps.pool.sks-keyservers.net
+keyserver pgp.mit.edu
+#+END_SRC
+
+Provide a certificate store to override the system default
+Get this from https://sks-keyservers.net/sks-keyservers.netCA.pem
+#+BEGIN_SRC sh
+#keyserver-options ca-cert-file=/usr/local/etc/ssl/certs/hkps.pool.sks-keyservers.net.pem
+#+END_SRC
+
+
+Set the proxy to use for HTTP and HKP keyservers - default to the standard local Tor socks proxy
+It is encouraged to use Tor for improved anonymity. Preferrably use either a dedicated SOCKSPort for GnuPG and/or enable IsolateDestPort and IsolateDestAddr
+I run my tor socks proxy in a container, see .dockerfunc and github.com/jfrazelle/dockerfiles
+#+BEGIN_SRC sh
+#keyserver-options http-proxy=socks5-hostname://torproxy:9050
+#+END_SRC
+
+Don't leak DNS, see https://trac.torproject.org/projects/tor/ticket/2846
+#+BEGIN_SRC sh
+#keyserver-options no-try-dns-srv
+#+END_SRC
+
+
+When using --refresh-keys, if the key in question has a preferred keyserver URL, then disable use of that preferred keyserver to refresh the key from
+#+BEGIN_SRC sh
+keyserver-options no-honor-keyserver-url
+#+END_SRC
+
+When searching for a key with --search-keys, include keys that are marked on the keyserver as revoked
+#+BEGIN_SRC sh
+keyserver-options include-revoked
+#+END_SRC
+
+
+** algorithm and ciphers
+list of personal digest preferences. When multiple digests are supported by all recipients, choose the strongest one
+#+BEGIN_SRC sh
+personal-cipher-preferences AES256 AES192 AES CAST5
+#+END_SRC
+
+list of personal digest preferences. When multiple ciphers are supported by all recipients, choose the strongest one
+#+BEGIN_SRC sh
+personal-digest-preferences SHA512 SHA384 SHA256 SHA224
+#+END_SRC
+
+message digest algorithm used when signing a key
+#+BEGIN_SRC sh
+cert-digest-algo SHA512
+s2k-cipher-algo AES256
+s2k-digest-algo SHA512
+#+END_SRC
+
+This preference list is used for new keys and becomes the default for "setpref" in the edit menu
+#+BEGIN_SRC sh
+default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 ZLIB BZIP2 ZIP Uncompressed
+#+END_SRC
+
+
+
+* alias
+  Home is where +the heart is+ your aliases are.
+
+** stopwatch
+#+BEGIN_SRC sh
+# Stopwatch
+alias stopwatch='echo "Stopwatch started. Stop with Ctrl-D." && date && time cat && date'
+#+END_SRC
+
+** grep
+#+BEGIN_SRC sh
+# Always enable colored `grep` output
+alias grep='grep --color=auto '
+#+END_SRC
+
+** paste public key to clipboard
+#+BEGIN_SRC sh
+# Pipe my public key to my clipboard.
+alias pubkey="more ~/.ssh/id_ed25519.pub | xclip -selection clipboard | echo '=> Public key copied to pasteboard.'"
+#+END_SRC
+
+** paste private key to clipboard
+#+BEGIN_SRC sh 
+# Pipe my private key to my clipboard.
+alias prikey="more ~/.ssh/id_ed25519 | xclip -selection clipboard | echo '=> Private key copied to pasteboard.'"
+#+END_SRC
+
+** public ip address
+#+BEGIN_SRC sh
+alias ip="curl ipinfo.io/ip"
+#+END_SRC
+
+** starwars
+Don't remember who showed me this in the fifth grade but it's awesome and it stuck. Thanks!
+
+#+BEGIN_SRC sh
+alias starwars="telnet towel.blinkenlights.nl"
+#+END_SRC
+
+
+** bash exports
+
+*** Make `vim` the default editor.
+vim is pretty awesome at starting up quickly. 
+
+#+BEGIN_SRC 
+export EDITOR="vim"
+#+END_SRC
+
+*** Increase the maximum number of lines of history persisted in the history file (default value is 500).
+#+BEGIN_SRC sh 
+export HISTFILESIZE=10000
+#+END_SRC
+
+*** Make Python use UTF-8 encoding for output to stdin/stdout/stderr.
+#+BEGIN_SRC sh
+export PYTHONIOENCODING="UTF-8"
+#+END_SRC
+
+
+** cURL configurations options
+
+https://curl.haxx.se/docs/manpage.html
+
+
+*** Limit the time (in seconds) the connection is allowed to take.
+#+BEGIN_SRC sh
+connect-timeout = 60
+#+END_SRC
+*** Follow HTTP redirects.
+#+BEGIN_SRC sh
+location
+#+END_SRC
+*** Display progress as a simple progress bar.
+#+BEGIN_SRC sh
+progress-bar
+#+END_SRC
+*** Show error messages.
+#+BEGIN_SRC sh
+show-error
+#+END_SRC
+*** Send a fake UA string for the HTTP servers that sniff it.
+#+BEGIN_SRC sh
+user-agent = "Mozilla/5.0 Gecko"
+#+END_SRC
+
+
+
+
+
+* git configuration
+
+
+** user
+#+BEGIN_SRC sh :tangle git/.gitconfig
+[user]
+  name = Vishakh Kumar
+  email = grokkingStuff@gmail.com
+	signingkey = 00000000000000
+#+END_SRC
+
+** github
+#+BEGIN_SRC sh :tangle git/.gitconfig
+[github]
+    user = grokkingStuff
+#+END_SRC
+
+** alias
+#+BEGIN_SRC sh :tangle git/.gitconfig
+[alias]
+	# View abbreviated SHA, description, and history graph of the latest 20 commits
+	log=log --pretty=oneline -n 20 --graph --abbrev-commit
+
+	# View the current working tree status using the short format
+	status=status -s
+
+	# Show the diff between the latest commit and the current state
+	d=!"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
+
+	# `git di $number` shows the diff between the state `$number` revisions ago and the current state
+	di=!"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
+
+	# Pull in remote changes for the current repository and all its submodules
+	pull=!"git pull; git submodule foreach git pull origin master"
+
+	# Clone a repository including all submodules
+	clone=clone --recursive
+
+	# Switch to a branch, creating it if necessary
+	go="!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
+
+	# Color graph log view
+	graph=log --graph --color --pretty=format:"%C(yellow)%H%C(green)%d%C(reset)%n%x20%cd%n%x20%cn%x20(%ce)%n%x20%s%n"
+
+	# Show verbose output about tags, branches or remotes
+	tags=tag -l
+	branches=branch -a
+	remotes=remote -v
+
+	# Amend the currently staged files to the latest commit
+	amend=commit --amend --reuse-message=HEAD
+
+	# Remove branches that have already been merged with master
+	delete-merged-branches="!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d; git remote -v update -p"
+
+	# List contributors with number of commits
+	contributors=shortlog --summary --numbered
+
+  # show all deleted files in the repo
+  deleted="!git log --diff-filter=D --summary | grep delete"
+
+
+  # fancy log that looks good
+	fancy-log=log --color --decorate --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit
+
+	mdiff="!f() { git stash | head -1 | grep -q 'No local changes to save'; x=$?; git merge --no-commit $1 &>/dev/null; git add -u &>/dev/null; git diff --staged; git reset --hard &>/dev/null; test $x -ne 0 && git stash pop &>/dev/null; }; f"
+
+	# because we all need a Ctrl-Z
+  undo = !git reset HEAD~1 --mixed
+
+	# from trevor bramble https://twitter.com/TrevorBramble/status/774292970681937920
+	alias=!git config -l | grep ^alias | cut -c 7- | sort
+
+
+  # publish the current branch
+  publish="!git push -u origin $(git branch-name)"
+
+  # unpublish the current branch by deleting the remote branch
+  unpublish="!git push origin :$(git branch-name)"
+
+
+#+END_SRC
+
+** color
+#+BEGIN_SRC sh :tangle git/.gitconfig
+[color]
+	# Use colors in Git commands that are capable of colored output when
+	# outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
+	ui = auto
+#+END_SRC
+
+*** branch
+#+BEGIN_SRC sh :tangle git/.gitconfig
+[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+#+END_SRC
+
+*** diff
+#+BEGIN_SRC sh :tangle git/.gitconfig
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold # line info
+	old = red # deletions
+	new = green # additions
+#+END_SRC 
+
+*** status
+#+BEGIN_SRC sh :tangle git/.gitconfig
+[color "status"]
+	added = yellow
+	changed = green
+	untracked = cyan
+#+END_SRC
+** commit
+#+BEGIN_SRC sh :tangle git/.gitconfig
+[commit]
+	gpgsign = true
+#+END_SRC
+
+** gpg
+#+BEGIN_SRC sh :tangle git/.gitconfig
+[gpg]
+  program = gpg
+#+END_SRC
