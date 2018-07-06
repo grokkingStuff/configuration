@@ -8,13 +8,6 @@
 #+COLUMNS: %25ITEM %TODO %3PRIORITY %TAGS
 
 
-
-
-* Bash Library
-Bash is a pain in the ass to work with if you need to be safe. This library allows you to write bash that's well-organized, somewhat tested, and hopefully cross platform.
-
-** Main function
-
  #+NAME: connect.sh
  #+CAPTION: The overall structure of connect.sh
  #+BEGIN_SRC sh :tangle connectRemote.sh
@@ -72,6 +65,11 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
  # your OWN RISK                                                                     #
  #####################################################################################
  #+END_SRC
+
+
+* Bash Library
+Bash is a pain in the ass to work with if you need to be safe. This library allows you to write bash that's well-organized, somewhat tested, and hopefully cross platform.
+
 
 ** Preamble
   For all the stuff that doesn't really matter to the structure of the program but is quite important for everything else.
@@ -1238,6 +1236,23 @@ ln ~/Dropbox/Photos ~/Photos
 ** File Management
 
 *** organizer.org
+
+Items that should be in organizer.org
+
+- Tasks
+- Important dates
+  + Anniversary
+  + Expiry Date of Credit Cards
+    Inform one week in advance
+  + Bills to be paid
+  + Membership days
+  + Religious Holiday
+  + Government Holiday
+  + Conference Periods
+  + College Events
+
+
+
 #+NAME: organization_file
 #+BEGIN_SRC sh
 touch ~/Dropbox/organizer.org
@@ -1248,6 +1263,8 @@ ln ~/Dropbox/organizer.org ~/Dropbox/Agenda/organizer.org
 #+END_SRC
 
 *** refile.org
+
+Main org file for org-capture and todo tasks.
 #+NAME: organization_file
 #+BEGIN_SRC sh
 touch ~/Dropbox/refile.org
@@ -1258,6 +1275,8 @@ ln ~/Dropbox/refile.org ~/Dropbox/Agenda/refile.org
 #+END_SRC
 
 *** meeting.org
+
+For meetings that would have been in organizer.org
 #+NAME: organization_file
 #+BEGIN_SRC sh
 touch ~/Dropbox/meeting.org
@@ -1265,16 +1284,6 @@ ln ~/Dropbox/meeting.org ~/meeting.org
 # Place in Agenda for org-agenda
 mkdir -p ~/Dropbox/Agenda
 ln ~/Dropbox/meeting.org ~/Dropbox/Agenda/meeting.org
-#+END_SRC
-
-*** calendar.org
-#+NAME: organization_file
-#+BEGIN_SRC sh
-touch ~/Dropbox/calendar.org
-ln ~/Dropbox/calendar.org ~/calendar.org
-# Place in Agenda for org-agenda
-mkdir -p ~/Dropbox/Agenda
-ln ~/Dropbox/calendar.org ~/Dropbox/Agenda/calendar.org
 #+END_SRC
 
 * Python Environment Configuration

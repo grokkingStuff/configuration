@@ -269,39 +269,3 @@ Don't delete them anymore. Sort by year
 *** Vish - Digital Files + Photos
 *** Vishakh's Essays
 
-* To use
-
-add to new project template http://blog.modelworks.ch/using-org-mode-to-keep-track-of-your-project-files/
-
-special task category WAIT where you wait for input from someone
-
-http://blog.modelworks.ch/removing-extra-blank-lines-in-emacs/ add hook after saving
-
-org-sparse-tree to find all headlines with a certain tag.
-
-There was a guy out there who described in painstaking detail each step he had to take to remake his configuration. Do that - especially for chrome and firefox extensions.
-
-* Programming Languages
-** Python configuration
-
- (Slightly edited from [[https://medium.com/@henriquebastos/the-definitive-guide-to-setup-my-python-workspace-628d68552e14][Medium Link]]. Credit to Henrique Bastos)
-
- Requirements: 
- + I need to be able to use multiple versions of CPython 2 and 3, as well as other interpreters like PyPy and Anaconda;
- + Python3 must be the default for everything. However, I should be able to use Python 2 when I wish to.
- + Jupyter Notebook should work with Python2 and Python3, and is able to detect the active virtualenv at jupyter notebook execution time.
- + A single iPython Console for Python3 and one iPython Console for Python2, so no need to install iPython on my projects' virtualenvs.
- + I want useful programs written in Python (ex: youtube-dl) globally available on my system without contaminating the global interpreters and avoiding any library version issues.
- + I want to use virtualenvwrapper to develop my projects allowing me to change context/project quickly with one command.
- + I want this setup to be maintainable without adding too many thing to PATH.
-
-*** Why I use pyenv
- For me pyenv is the best way to install Python on a Mac or Linux. Everything gets installed under your home directoy, without tampering with the rest of the system. Besides that, it supports many different Python implementation such as PyPy, Anaconda, CPython, etc. All with one command.
-
- #+NAME: command_line_tools
- #+BEGIN_SRC txt
- pyenv
- pyenv-virtualenv
- pyenv-virtualenvwrapper
- #+END_SRC
-
