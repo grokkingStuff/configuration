@@ -1,3 +1,12 @@
+#+TITLE: Configs & Dotfiles
+#+AUTHOR: Vishakh Kumar
+#+EMAIL: vishakhpradeepkumar@gmail.com
+#+LICENSE: GPLv3
+#+LANGUAGE: en
+#+OPTIONS: num:5 whn:2 toc:4 H:6
+
+#+COLUMNS: %25ITEM %TODO %3PRIORITY %TAGS
+
 
 
 
@@ -191,13 +200,16 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
 
 
  - I can't run this in CMD.EXE! What do I do?
+
    CMD.EXE does not have an inbuilt utility to run sh files. You can install a Linux shell for Windows which should be more than adequate for your purposes. Alternatively, you can install Powershell & Cygwin, although the Linux shell is definitely recommended. Just to be clear, CMD.EXE can run scripts! It's just that no sane man would bother building a good script in a .cmd file.
 
  - This doesn't run on my OS.
+
    Huh. That's pretty interesting. This script should run on any system that supports bash (although it may have a few eccentricities.)
    If you're sure it's not your fault, you should totally send me an email about that.
 
  - This particular function seems too useful for a simple script like this. It's not bad.
+
    I'm glad you think so! It's really there because I fell down a rabbit hole and I overestimated the importance of being ultra-portable. 
    Use it if you can in your own scripts!
 
