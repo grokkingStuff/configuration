@@ -1,0 +1,85 @@
+Configuring system-fileio-0.3.16.3...
+Preprocessing library for system-fileio-0.3.16.3..
+Building library for system-fileio-0.3.16.3..
+[1 of 1] Compiling Filesystem       ( lib/Filesystem.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/Filesystem.o )
+
+[;1mlib/Filesystem.hs:19:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wtabs[0m[0m[;1m][0m[0m[;1m
+    Tab character found here, and in 350 further locations.
+    Please use spaces instead.[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m19 |[0m[0m [;1m[35m        [0m[0m(
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mlib/Filesystem.hs:79:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of ‘when’ from module ‘Control.Monad’ is redundant[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m79 |[0m[0m [;1m[35mimport           Control.Monad (forM_, unless, when)[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mlib/Filesystem.hs:924:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-top-binds[0m[0m[;1m][0m[0m[;1m
+    Defined but not used: ‘throwErrnoPathIfMinus1’[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m924 |[0m[0m [;1m[35mthrowErrnoPathIfMinus1[0m[0m loc path = CError.throwErrnoPathIfMinus1 loc (encodeString path)
+[;1m[34m    |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0mIn file included from /usr/include/dirent.h:25,
+
+[;1m                 from lib/hssystemfileio-unix.c:9:0: [;1m[31merror:[0m[0m[;1m[0m[0m[;1m [0m[0m
+[0m[0m[0m
+[;1m/usr/include/features.h:184:3: [;1m[31merror:[0m[0m[;1m[0m[0m[;1m
+     warning: #warning "_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE" [-Wcpp]
+     # warning "_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE"
+       ^~~~~~~[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m184 |[0m[0m # [;1m[31mw[0m[0marning "_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE"
+[;1m[34m    |[0m[0m[;1m[31m   ^[0m[0m
+[0m[0m[0mlib/hssystemfileio-unix.c: In function ‘hssystemfileio_readdir’:
+
+[;1mlib/hssystemfileio-unix.c:57:3: [;1m[31merror:[0m[0m[;1m[0m[0m[;1m
+     warning: ‘readdir_r’ is deprecated [-Wdeprecated-declarations]
+       int rc = readdir_r(dir, dirent, &dirent_result);
+       ^~~[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m57 |[0m[0m   [;1m[31m [0m[0m             int rc = readdir_r(dir, dirent, &dirent_result);
+[;1m[34m   |[0m[0m[;1m[31m   ^[0m[0m
+[0m[0m[0m
+[;1mIn file included from lib/hssystemfileio-unix.c:9:0: [;1m[31merror:[0m[0m[;1m[0m[0m[;1m [0m[0m
+[0m[0m[0m
+[;1m/usr/include/dirent.h:183:12: [;1m[31merror:[0m[0m[;1m[0m[0m[;1m
+     note: declared here
+     extern int readdir_r (DIR *__restrict __dirp,
+                ^~~~~~~~~[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m183 |[0m[0m extern int [;1m[31mr[0m[0meaddir_r (DIR *__restrict __dirp,
+[;1m[34m    |[0m[0m[;1m[31m            ^[0m[0m
+[0m[0m[0mIn file included from /usr/include/dirent.h:25,
+
+[;1m                 from lib/hssystemfileio-unix.c:9:0: [;1m[31merror:[0m[0m[;1m[0m[0m[;1m [0m[0m
+[0m[0m[0m
+[;1m/usr/include/features.h:184:3: [;1m[31merror:[0m[0m[;1m[0m[0m[;1m
+     warning: #warning "_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE" [-Wcpp]
+     # warning "_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE"
+       ^~~~~~~[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m184 |[0m[0m # [;1m[31mw[0m[0marning "_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE"
+[;1m[34m    |[0m[0m[;1m[31m   ^[0m[0m
+[0m[0m[0mlib/hssystemfileio-unix.c: In function ‘hssystemfileio_readdir’:
+
+[;1mlib/hssystemfileio-unix.c:57:3: [;1m[31merror:[0m[0m[;1m[0m[0m[;1m
+     warning: ‘readdir_r’ is deprecated [-Wdeprecated-declarations]
+       int rc = readdir_r(dir, dirent, &dirent_result);
+       ^~~[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m57 |[0m[0m   [;1m[31m [0m[0m             int rc = readdir_r(dir, dirent, &dirent_result);
+[;1m[34m   |[0m[0m[;1m[31m   ^[0m[0m
+[0m[0m[0m
+[;1mIn file included from lib/hssystemfileio-unix.c:9:0: [;1m[31merror:[0m[0m[;1m[0m[0m[;1m [0m[0m
+[0m[0m[0m
+[;1m/usr/include/dirent.h:183:12: [;1m[31merror:[0m[0m[;1m[0m[0m[;1m
+     note: declared here
+     extern int readdir_r (DIR *__restrict __dirp,
+                ^~~~~~~~~[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m183 |[0m[0m extern int [;1m[31mr[0m[0meaddir_r (DIR *__restrict __dirp,
+[;1m[34m    |[0m[0m[;1m[31m            ^[0m[0m
+[0m[0m[0mInstalling library in /home/grokkingstuff/.stack/snapshots/x86_64-linux-tinfo6/lts-11.15/8.2.2/lib/x86_64-linux-ghc-8.2.2/system-fileio-0.3.16.3-Fl5GZs2hcdw6p6mSNqw81G
+Registering library for system-fileio-0.3.16.3..

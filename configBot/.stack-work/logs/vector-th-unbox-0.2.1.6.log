@@ -1,0 +1,6 @@
+Configuring vector-th-unbox-0.2.1.6...
+Preprocessing library for vector-th-unbox-0.2.1.6..
+Building library for vector-th-unbox-0.2.1.6..
+[1 of 1] Compiling Data.Vector.Unboxed.Deriving ( Data/Vector/Unboxed/Deriving.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/Data/Vector/Unboxed/Deriving.o )
+Installing library in /home/grokkingstuff/.stack/snapshots/x86_64-linux-tinfo6/lts-11.15/8.2.2/lib/x86_64-linux-ghc-8.2.2/vector-th-unbox-0.2.1.6-4ndqbh15MYUKKSmIzv2Odr
+Registering library for vector-th-unbox-0.2.1.6..

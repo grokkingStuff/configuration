@@ -1,0 +1,12 @@
+Configuring vector-builder-0.3.4.1...
+Preprocessing library for vector-builder-0.3.4.1..
+Building library for vector-builder-0.3.4.1..
+[1 of 7] Compiling VectorBuilder.Prelude ( library/VectorBuilder/Prelude.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/VectorBuilder/Prelude.o )
+[2 of 7] Compiling VectorBuilder.Core.Update ( library/VectorBuilder/Core/Update.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/VectorBuilder/Core/Update.o )
+[3 of 7] Compiling VectorBuilder.Core.Builder ( library/VectorBuilder/Core/Builder.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/VectorBuilder/Core/Builder.o )
+[4 of 7] Compiling VectorBuilder.MVector ( library/VectorBuilder/MVector.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/VectorBuilder/MVector.o )
+[5 of 7] Compiling VectorBuilder.Builder ( library/VectorBuilder/Builder.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/VectorBuilder/Builder.o )
+[6 of 7] Compiling VectorBuilder.Vector ( library/VectorBuilder/Vector.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/VectorBuilder/Vector.o )
+[7 of 7] Compiling VectorBuilder.MonadPlus ( library/VectorBuilder/MonadPlus.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/VectorBuilder/MonadPlus.o )
+Installing library in /home/grokkingstuff/.stack/snapshots/x86_64-linux-tinfo6/lts-11.15/8.2.2/lib/x86_64-linux-ghc-8.2.2/vector-builder-0.3.4.1-Ap0qaflAdkC6x2dt0rOea3
+Registering library for vector-builder-0.3.4.1..

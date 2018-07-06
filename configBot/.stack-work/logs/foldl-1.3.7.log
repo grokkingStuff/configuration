@@ -1,0 +1,9 @@
+Configuring foldl-1.3.7...
+Preprocessing library for foldl-1.3.7..
+Building library for foldl-1.3.7..
+[1 of 4] Compiling Control.Foldl.Internal ( src/Control/Foldl/Internal.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/Control/Foldl/Internal.o )
+[2 of 4] Compiling Control.Foldl    ( src/Control/Foldl.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/Control/Foldl.o )
+[3 of 4] Compiling Control.Foldl.ByteString ( src/Control/Foldl/ByteString.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/Control/Foldl/ByteString.o )
+[4 of 4] Compiling Control.Foldl.Text ( src/Control/Foldl/Text.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/Control/Foldl/Text.o )
+Installing library in /home/grokkingstuff/.stack/snapshots/x86_64-linux-tinfo6/lts-11.15/8.2.2/lib/x86_64-linux-ghc-8.2.2/foldl-1.3.7-GSRsGQccAJ17vsr6xCnd4E
+Registering library for foldl-1.3.7..

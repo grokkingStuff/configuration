@@ -1,0 +1,681 @@
+
+
+
+* Applications to install
+
+In this section, we'll be listing the application name and general info, it's package name for our package manager to install it, and any configuration files related to said software.
+
+This allows us to create a list of all applications that we'll need in a single file while keeping them all nice and organized in seperate categories. Keep in mind that programming languages are not included in this section (they have special requirements for a proper development environment) but applications that are installed using a language's package manager belong here.
+
++ *Conventions*
+  + Any headline that's an application must have the application tag. 
+    + If the application name is not immediately indicative of its purpose, a brief description of its type can be included after a hypen.
+  + Any installation code block in this section should have the tag :install:, headline Installation and name 'install'
+  + All configuration files must have a parent headline called 'Configuration' with tag :configuration:
+    + If the configuration file is worthy of it's own org file, a link shall be provided for the same.
+  + If an application is installed with a programming language's package manager, use an appropriate tag and src block name.
+    - | Language | tag     | src block name  | 
+      | Python 2 | python2 | python2_install |
+      | Python 3 | python3 | python3_install |
+
+#+BEGIN_EXAMPLE 
+  ** General application category
+  *** Application name - type of application (if required)        :application:
+  **** Installation
+  #+NAME: install
+  #+BEGIN_SRC sh :padline no :tangle no :noweb yes
+  
+  #+END_SRC
+#+END_EXAMPLE
+
+
+** Terminal Emulators
+Plenty of shells for a hermit crab to choose. I'm going with fish for my interactive shell and bash for my scripts. Will try zsh for specific types of repositories.
+*** fish                                                        :application:
+**** Installation                                                   :install:
+#+NAME: install
+#+BEGIN_SRC sh :padline no :tangle no :noweb yes
+fish
+#+END_SRC
+
+*** bash                                                        :application:
+**** Installation                                                   :install:
+#+NAME: install
+#+BEGIN_SRC sh :padline no :tangle no :noweb yes
+bash
+#+END_SRC
+
+*** zsh                                                         :application:
+**** Installation                                                   :install:
+#+NAME: install
+#+BEGIN_SRC sh :padline no :tangle no :noweb yes
+zsh
+#+END_SRC
+
+** Browsers
+*** Chromium                                                    :application:
+**** Installation                                                   :install:
+#+NAME: install
+#+BEGIN_SRC sh :padline no :tangle no :noweb yes
+chromium
+#+END_SRC
+
+*** Firefox                                                     :application:
+**** Installation                                                   :install:
+#+NAME: install
+#+BEGIN_SRC sh :padline no :tangle no :noweb yes
+firefox
+#+END_SRC
+
+*** Tor                                                         :application:
+**** Installation                                                   :install:
+#+NAME: install
+#+BEGIN_SRC sh :padline no :tangle no :noweb yes
+tor
+#+END_SRC
+
+** Text editors
+*** Emacs                                                       :application:
+**** Installation                                                   :install:
+#+NAME: install
+#+BEGIN_SRC sh :padline no :tangle no :noweb yes
+emacs
+#+END_SRC
+
+** Version Control
+*** Git                                                         :application:
+**** Installation                                                   :install:
+#+NAME: install
+#+BEGIN_SRC sh :padline no :tangle no :noweb yes
+git
+#+END_SRC
+
+**** Configuration                                            :configuration:
+***** TODO COMMENT git config
+   What would you do without our favourite git config?
+   Or rather, what can you do to avoid forgetting that the damn thing doesn't exist anytime you use a new machine.
+   This should make life much better (and less frustrating.)
+
+   As for why we've doing this via commands instead of just dumping all our settings in a .gitconfig file?
+   Well, this script can be run on any system and I'd rather git know where to install stuff than have to know it myself.
+   Sure it's ugly but it works. And more importantly, I have a reference for when I have to do this for the thousandth time on someone else's computer and I don't necessarily want to overwrite their script and a command just works.
+
+   Also, it allows me to refer to this document anytime I want and copy paste code without thinking.
+****** User name and email
+   #+BEGIN_SRC sh :tangle git/git_config.sh :padline no
+   git config --global user.name 'Vi Kumar'
+   git config --global user.email 'grokkingStuff@gmail.com'
+   #+END_SRC
+
+****** Default Editor
+   Changing the editor to emacs because I prefer using an actual editor instead of the vim prompt.
+   #+BEGIN_SRC sh :tangle git/git_config.sh :padline no
+   git config --global core.editor $EDITOR
+   #+END_SRC
+
+****** git compression
+   Changing the git compression to be best. I tend to use VCS where I shouldn't.
+   + 0 - no compression/highest speed
+   + 9 - best compression/slowest speed
+   #+BEGIN_SRC sh :tangle git/git_config.sh :padline no
+   git config --global core.compression 9
+   #+END_SRC
+
+****** autocorrect common mistakes
+   My fingers are never really under my control.
+   #+BEGIN_SRC sh :tangle git/git_config.sh :padline no
+   git config --global help.autocorrect 1
+   #+END_SRC
+
+****** Colored Output
+   Allowing all git commands to use colored output.
+   Because a little bit of color ain't never gonna hurt nobody.
+   #+BEGIN_SRC sh :tangle git/git_config.sh :padline no
+   git config --global color.ui auto
+   #+END_SRC
+
+****** Git Aliases
+   Because aliases are pretty handy when you find yourself repeating the same commands over and over again.
+   Honestly, everything in this list is more important then everything above.
+******* Tweak defaults
+   #+BEGIN_SRC sh :tangle git/git_config.sh :padline no
+   git config --global alias.diff diff --word-diff
+   git config --global alias.branch branch -ra
+   git config --global alias.grep grep -Ii
+   git config --global alias.bra branch -ra
+   git config --global alias.ai add --interactive
+   #+END_SRC
+
+******* Common git aliases
+   #+BEGIN_SRC sh :tangle git/git_config.sh :padline no
+   # Common git aliases
+   git config --global alias.st status
+   git config --global alias.ci commit
+   git config --global alias.co checkout
+   git config --global alias.br branch
+   #+END_SRC
+
+******* Pretty History
+   #+BEGIN_SRC sh :tangle git/git_config.sh
+   # Gives you a pretty history
+   git config --global alias.lg log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+   git config --global alias.lga log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative --branches
+   #+END_SRC
+
+   Should probably work on this someday. Would be nice to see multiple options for a git history instead of memorising each one.
+   #+BEGIN_SRC sh
+   hist = !echo ''/
+       read -p "What kind of history do you want?" ans
+       case $ans in
+           [1a]* ) make install; break;;
+           [2b]* ) exit;;
+           [3c]* ) exit;;
+           [4d]* ) exit;;
+           * ) echo "Select a valid option.";;
+   #+END_SRC
+
+******* Show configured aliases
+   #+BEGIN_SRC sh :tangle git/git_config.sh :padline no
+   git config --global alias.aliases !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
+   #+END_SRC
+
+******* Rename branch to done-branch
+   #+BEGIN_SRC sh :tangle git/git_config.sh :padline no
+   git config --global alias.done "!f() { git branch | grep "$1" | cut -c 3- | grep -v done | xargs -I{} git branch -m {} done-{}; }; f"
+   #+END_SRC
+
+******* Reset Aliases
+   Please try to avoid them. Please! I hate having to deal with this.......
+   #+BEGIN_SRC sh :tangle git/git_config.sh :padline no
+   git config --global alias.r reset
+   git config --global alias.r1 reset HEAD^
+   git config --global alias.r2 reset HEAD^^
+   git config --global alias.rh reset --hard
+   git config --global alias.rh1 reset HEAD^ --hard
+   git config --global alias.rh2 reset HEAD^^ --hard
+   #+END_SRC
+
+***** TODO COMMENT git ignore
+   Because no one should never have to deal with adding specific gitignores for every single project.
+   Especially when it comes to temporary files created by IDEs and OS-specific files.
+   Also it's super annoying to manually remove files each and every time you commit.
+
+   That would be a humans rights violation. Even genocidal dictators don't go that far in order to torture you.
+   Right?
+
+   #+BEGIN_SRC sh :tangle git/git_ignore.sh
+   # move your globalgitignore from the appropiate folder to the home directory.
+   mv ./gitignore_global.txt $HOME/.gitignore_global
+
+   # actually make the file the global ignore
+   git config --global core.excludesfile $HOME/.gitignore_global
+   #+END_SRC
+
+****** .gitignore_global
+   As you can see, the .gitignore_global is an actual file. The file will be called gitignore_global.txt
+   We'll be writing our settings into the gitignore_global.txt file for our git_configuration script to use.
+******* Compiled Source
+   #+BEGIN_SRC sh :tangle git/gitignore_global.txt :padline no
+   *.com
+   *.class
+   *.dll
+   *.exe
+   *.o
+   *.so
+   #+END_SRC
+
+******* Packages
+   It's better to unpack these files and commit the raw source.
+   git has its own built in compression methods.
+   #+BEGIN_SRC sh :tangle git/gitignore_global.txt :padline no
+   *.7z
+   *.dmg
+   *.gz
+   *.iso
+   *.jar
+   *.rar
+   *.tar
+   *.zip
+   #+END_SRC
+
+******* Logs and databases
+   It's for the best that you don't reveal secret logs and databases. Data is private - keep it that way.
+   #+BEGIN_SRC sh :tangle git/gitignore_global.txt :padline no
+   *.log
+   *.sql
+   *.sqlite
+   #+END_SRC
+
+******* OS generated files
+   #+BEGIN_SRC sh :tangle git/gitignore_global.txt :padline no
+   .DS_Store
+   .DS_Store?
+   ._*
+   .Spotlight-V100
+   .Trashes
+   ehthumbs.db
+   Thumbs.db
+    #+END_SRC
+
+******* Codekits
+   #+BEGIN_SRC sh :tangle git/gitignore_global.txt :padline no
+   .sass-cache/
+   .codekit-config.json
+   config.codekit
+   #+END_SRC
+
+***** TODO COMMENT git attribute
+   Kinda need to add to this section. I feel that a list of git attributes for each language would be helpful.
+***** TODO COMMENT git-lfs
+   Git Large File Storage (LFS) replaces large files such as audio samples, videos, datasets, and graphics with text pointers inside Git,
+   while storing the file contents on a remote server like GitHub.com or GitHub Enterprise.
+
+****** Installation
+   #+BEGIN_SRC sh :tangle git/git_config.sh
+   $PACKAGEMANAGER install git-lfs
+   git lfs install
+   #+END_SRC
+
+****** Use in a repo
+   If you want to use git-lfs in a repository, simply apply the lfs install command inside the repo.
+   #+BEGIN_SRC sh :tangle no
+   # inside your repo
+   git lfs install
+   #+END_SRC
+
+   This will update the pre-push hook for that git repo.
+
+****** Speeding up clones containing a lot of lfs files
+   If you're cloning a repository with a large number of LFS files, the explicit git lfs clone command offers far better performance.
+   It does this by waiting untill all non-lfs files are downloaded and then using a parallel download of all lfs files as a batch.
+
+   Honestly, I think git clone should just be git lfs clone by default. I'm not making that an alias but you could in the future.
+
+***** TODO COMMENT bash aliases for git
+      Git aliases are always pretty useful so we're gonna add them too
+   #+BEGIN_SRC sh :tangle terminalEmulator/bash/bash_aliases.txt :padline no
+   alias gs='git status '
+   alias ga='git add '
+   alias gb='git branch '
+   alias gam='git commit --amend '
+   alias gc='git commit'
+   alias gd='git diff'
+   alias gt='git checkout '
+   alias gk='gitk --all&'
+   alias gx='gitx --all'
+   alias pull='git pull'
+   alias pullo='git pull origin'
+   alias push='git push'
+   alias pusho='git push origin'
+   alias pushf='git push -f origin'
+   alias pushu='git push -u origin'
+   alias merge='git merge'
+   alias got='git '
+   alias get='git '
+   alias clone='git clone'
+   alias add='git add'
+   #+END_SRC
+
+** Media
+*** VLC - Video Player                                          :application:
+**** Installation                                                   :install:
+#+NAME: install
+#+BEGIN_SRC sh :padline no :tangle no :noweb yes
+vlc
+#+END_SRC
+
+*** Vocal - Podcast Client                                      :application:
+**** Installation                                                   :install:
+#+NAME: install
+#+BEGIN_SRC sh :padline no :tangle no :noweb yes
+vocal
+#+END_SRC
+
+*** youtube-dl - Downloader for youtube videos                  :application:
+**** Installation                                           :python2:install:
+#+NAME: python2_install
+#+BEGIN_SRC txt :padline no :tangle no :noweb yes
+youtube-dl
+#+END_SRC
+
+** Activity Monitor
+*** htop                                                        :application:
+**** Installation                                                   :install:
+#+NAME: install
+#+BEGIN_SRC sh :padline no :tangle no :noweb yes
+htop
+#+END_SRC
+
+**** Configuration                                            :configuration:
+ All configuration options are located in the .htoprc file.
+ Stolen from god knows where - seems like everyone uses it.
+
+ #+BEGIN_SRC sh
+ # Beware! This file is rewritten every time htop exits.
+ # The parser is also very primitive, and not human-friendly.
+ # (I know, it's in the todo list).
+ fields=0 48 17 18 38 39 40 2 46 47 49 1
+ sort_key=46
+ sort_direction=1
+ hide_threads=0
+ hide_kernel_threads=1
+ hide_userland_threads=0
+ shadow_other_users=0
+ highlight_base_name=0
+ highlight_megabytes=1
+ highlight_threads=0
+ tree_view=0
+ header_margin=1
+ detailed_cpu_time=1
+ color_scheme=0
+ delay=15
+ left_meters=Hostname Tasks LoadAverage Uptime Memory Memory Swap CPU CPU
+ left_meter_modes=2 2 2 2 1 2 1 1 2
+ right_meters=AllCPUs
+ right_meter_modes=1
+ #+END_SRC
+
+* Organization
+** Dropbox
+
+#+NAME: install
+#+BEGIN_SRC sh 
+dropbox 
+#+END_SRC
+
+** Folder Organization
+#+NAME: organization
+#+BEGIN_SRC sh :noweb yes 
+dropbox start
+if [ -d "~/Dropbox" ]; then
+    dropbox start
+    dropbox status
+
+    <<organization_folder>>
+
+    <<organization_file>>
+fi
+#+END_SRC
+
+*** Projects
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/Projects
+ln ~/Dropbox/Projects ~/Projects
+#+END_SRC
+
+*** Agenda
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/Agenda
+ln ~/Dropbox/Agenda ~/Agenda
+#+END_SRC
+
+*** Documents
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/Documents
+ln ~/Dropbox/Documents ~/Documents
+#+END_SRC
+
+*** Configuration
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/Configuration
+ln ~/Dropbox/Configuration ~/Configuration
+#+END_SRC
+
+*** Archive
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/Archive
+ln ~/Dropbox/Archive ~/Archive
+#+END_SRC
+
+*** Website
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/Website
+ln ~/Dropbox/Website ~/Website
+#+END_SRC
+
+*** Learning
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/Learning
+ln ~/Dropbox/Learning ~/Learning
+#+END_SRC
+
+*** Medical
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/Medical
+ln ~/Dropbox/Medical ~/Medical
+#+END_SRC
+
+*** Asset Management
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/AssetManagement
+ln ~/Dropbox/AssetManagement ~/AssetManagement
+#+END_SRC
+
+*** Business
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/Business
+ln ~/Dropbox/Business ~/Business
+#+END_SRC
+
+*** Photos
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/Photos
+ln ~/Dropbox/Photos ~/Photos
+#+END_SRC
+
+** File Management
+
+*** organizer.org
+#+NAME: organization_file
+#+BEGIN_SRC sh
+touch ~/Dropbox/organizer.org
+ln ~/Dropbox/organizer.org ~/organizer.org
+# Place in Agenda for org-agenda
+mkdir -p ~/Dropbox/Agenda
+ln ~/Dropbox/organizer.org ~/Dropbox/Agenda/organizer.org
+#+END_SRC
+
+*** refile.org
+#+NAME: organization_file
+#+BEGIN_SRC sh
+touch ~/Dropbox/refile.org
+ln ~/Dropbox/refile.org ~/refile.org
+# Place in Agenda for org-agenda
+mkdir -p ~/Dropbox/Agenda
+ln ~/Dropbox/refile.org ~/Dropbox/Agenda/refile.org
+#+END_SRC
+
+*** meeting.org
+#+NAME: organization_file
+#+BEGIN_SRC sh
+touch ~/Dropbox/meeting.org
+ln ~/Dropbox/meeting.org ~/meeting.org
+# Place in Agenda for org-agenda
+mkdir -p ~/Dropbox/Agenda
+ln ~/Dropbox/meeting.org ~/Dropbox/Agenda/meeting.org
+#+END_SRC
+
+*** calendar.org
+#+NAME: organization_file
+#+BEGIN_SRC sh
+touch ~/Dropbox/calendar.org
+ln ~/Dropbox/calendar.org ~/calendar.org
+mkdir -p ~/Dropbox/Agenda
+ln ~/Dropbox/calendar.org ~/Dropbox/Agenda/calendar.org
+#+END_SRC
+
+* Python Environment Configuration
+#+NAME: python
+#+BEGIN_SRC sh :noweb yes
+curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash && \
+    source ~/.bashrc && \
+    pyenv update
+
+
+if command pyenv 2>/dev/null; then
+    <<python_pyenv>>
+fi
+#+END_SRC
+** Pyenv
+pyenv is used to isolate Python versions. For example, you may want to test your code against Python 2.6, 2.7, 3.3, 3.4 and 3.5, so you'll need a way to switch between them. Once activated, it prefixes the PATH environment variable with ~/.pyenv/shims, where there are special files matching the Python commands (python, pip). These are not copies of the Python-shipped commands; they are special scripts that decide on the fly which version of Python to run based on the PYENV_VERSION environment variable, or the .python-version file, or the ~/.pyenv/version file. pyenv also makes the process of downloading and installing multiple Python versions easier, using the command pyenv install.
+
+*** Installation of pyenv and extensions                            :install:
+Since pyenv is a bunch of shell scripts, we'll include it with the install src blocks.
+
+#+NAME: python_pyenv
+#+BEGIN_SRC sh 
+curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
+# pyenv-virtualenv
+#+END_SRC
+
+ With virtualenvwrapper all your virtualenvs are kept on a same directory and your projects' code on another. My setup is:
+
+#+NAME: python_pyenv
+#+BEGIN_SRC sh :padline no
+# All virtualenvs will be on...
+# export WORKON_HOME=~/.ve
+mkdir -p ~/.ve 
+
+# All projects will be on...
+# export PROJECT_HOME=~/Projects
+mkdir -p ~/Projects 
+#+END_SRC
+
+ The -p flag is in case these folders have been created earlier - without it, mkdir returns an error.
+
+ It's necessary to configure the shell to initialize pyenv when you start a terminal session. Put the lines bellow on your ~/.bashrc file:
+
+#+NAME: bashrc
+#+BEGIN_SRC sh :padline no
+export PATH="/usr/local/var/pyenv/bin/:$PATH"
+
+export WORKON_HOME=~/.ve
+export PROJECT_HOME=~/Projects
+if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+#+END_SRC
+
+ pyenv uses ~/.pyenv as its root directory by default. 
+ This is the directory where pyenv installs its shims, the different Python versions and its plugins. 
+ The default location is absolutely fine, but if you want to use the directory suggested by Homebrew then add the following to your profile.
+
+#+NAME: bashrc
+#+BEGIN_SRC sh :padline no :tangle no
+export PYENV_ROOT=/usr/local/var/pyenv
+#+END_SRC
+
+*** Installing different versions of python
+ Installing new Python versions is very straightforward. All Python versions are installed in the versions directory under the pyenv root.
+
+ #+NAME: python_pyenv
+ #+CAPTION: Install CPython 3.6.0 and CPython 2.7.13.
+ #+BEGIN_SRC sh
+ pyenv install 3.6.0
+ pyenv install 2.7.13
+ #+END_SRC
+
+*** Resist the temptation to contaminate your global Python install
+
+ I frequently use programs written in Python. I like them to be available in all sessions without activate any virtualenv.
+
+ However I don\u2019t like to mess with the global Python installation to avoid library conflict issues.
+
+ Another thing that I don't like is installing Jupyter/iPython on each of my projects' virtualenvs.
+
+ I like to have only one install of Jupyter Notebook , one of iPython Console for Python3, one of iPython Console for Python2, and other tools like youtube-dl, rename, gnucash-to-beancount, rows, s3cmd, fabric, mercurial, etc.
+
+#+NAME: python_pyenv
+ #+BEGIN_SRC sh
+ pyenv virtualenv 3.6.0 jupyter3
+ pyenv virtualenv 3.6.0 tools3
+ pyenv virtualenv 2.7.13 ipython2
+ pyenv virtualenv 2.7.13 tools2
+ #+END_SRC
+
+ Jupyter supports many kernels. This allows a single Jupyter install to create notebooks for Python2, Python3, R, Bash and many other languages. At this time I only want to support Python2 and Python3.
+
+**** Installing jupyter under jupyter3
+
+#+NAME: python_pyenv
+ #+BEGIN_SRC sh
+ pyenv activate jupyter3
+ pip install jupyter
+ python -m ipykernel install --user
+ pyenv deactivate
+ #+END_SRC
+
+**** Installing ipython under ipython2
+
+#+NAME: python_pyenv
+ #+BEGIN_SRC sh
+ pyenv activate ipython2
+ pip install ipykernel
+ python -m ipykernel install --user
+ pyenv deactivate
+ #+END_SRC
+
+ Note that when I install Jupyter on Python3 it will by default install iPython and the Kernel too. For Python2 I only need to install iPython and the Kernel. I'll explain this better bellow.
+
+**** Tools which run on Python 3
+
+#+NAME: python_pyenv
+ #+BEGIN_SRC sh
+ pyenv activate tools3
+ pip install youtube-dl gnucash-to-beancount rows 
+ pyenv deactivate
+ #+END_SRC
+
+**** Tools that only run on Python 2
+
+#+NAME: python_pyenv
+ #+BEGIN_SRC sh 
+ pyenv activate tools2
+ pip install rename s3cmd fabric mercurial
+ pyenv deactivate
+ #+END_SRC
+
+**** Final Step
+ Finally, it's time to make all Python versions and special virtualenvs work with each other.
+
+#+NAME: python_pyenv
+ #+BEGIN_SRC sh
+ pyenv global 3.6.0 2.7.13 jupyter3 ipython2 tools3 tools2
+ #+END_SRC
+
+ The above command establishes the PATH priority so scripts can be accessed in the right order without activating any virtualenv.
+
+*** How to use Jupyter and iPython with my projects?
+
+ This was the main motivation to write this guide.
+
+ Both Notebook and Console were part of the iPython project, which, as the name suggests, were only about Python. But the Notebook evolution enabled it to become language agnostic, so developers decided to split the project in 2: Jupyter and iPython
+
+ Now Jupyter contains Notebook, while iPython contains Console and the Python Kernel which Jupyter uses to execute Python code.
+
+ I used to use an old iPython version and during a clumsy upgrade Jupyter stopped detecting the active virtualenv, so I couldn't import its installed libraries.
+
+ Actually, Jupyter does not detect the active virtualenv: it's the iPython instance which Jupyter initializes. The problem then is that iPython's virtualenv detection code only runs in the interactive shell mode, but not in the kernel mode. Besides that the detection code only works properly if the active virtualenv's Python version and the Python version running iPython are the same.
+
+ The solution is to customize iPython's startup process. For that we need to create an iPython profile and install a magic script I wrote to do the trick:
+
+#+NAME: python_pyenv
+ #+BEGIN_SRC sh
+ ipython profile create
+ curl -L http://hbn.link/hb-ipython-startup-script > ~/.ipython/profile_default/startup/00-venv-sitepackages.py
+ #+END_SRC
+ With this, no matter the mode iPython starts, the virtualenv's site-packages will be available in the PYTHONPATH.
+
+ Back to our proj3, after activating its virtualenv running workon proj3, you can simply execute ipython to run the interactive mode, or jupyter notebook to get all the fun.
+
+
+** Pylint

@@ -1,0 +1,15 @@
+Configuring turtle-1.5.9...
+Preprocessing library for turtle-1.5.9..
+Building library for turtle-1.5.9..
+[ 1 of 10] Compiling Turtle.Internal  ( src/Turtle/Internal.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/Turtle/Internal.o )
+[ 2 of 10] Compiling Turtle.Line      ( src/Turtle/Line.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/Turtle/Line.o )
+[ 3 of 10] Compiling Turtle.Format    ( src/Turtle/Format.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/Turtle/Format.o )
+[ 4 of 10] Compiling Turtle.Options   ( src/Turtle/Options.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/Turtle/Options.o )
+[ 5 of 10] Compiling Turtle.Pattern   ( src/Turtle/Pattern.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/Turtle/Pattern.o )
+[ 6 of 10] Compiling Turtle.Shell     ( src/Turtle/Shell.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/Turtle/Shell.o )
+[ 7 of 10] Compiling Turtle.Prelude   ( src/Turtle/Prelude.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/Turtle/Prelude.o )
+[ 8 of 10] Compiling Turtle.Bytes     ( src/Turtle/Bytes.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/Turtle/Bytes.o )
+[ 9 of 10] Compiling Turtle           ( src/Turtle.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/Turtle.o )
+[10 of 10] Compiling Turtle.Tutorial  ( src/Turtle/Tutorial.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/Turtle/Tutorial.o )
+Installing library in /home/grokkingstuff/.stack/snapshots/x86_64-linux-tinfo6/lts-11.15/8.2.2/lib/x86_64-linux-ghc-8.2.2/turtle-1.5.9-9oGfyVDzCSPAc9MZ14eIKz
+Registering library for turtle-1.5.9..

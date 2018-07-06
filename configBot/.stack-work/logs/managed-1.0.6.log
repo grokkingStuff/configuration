@@ -1,0 +1,7 @@
+Configuring managed-1.0.6...
+Preprocessing library for managed-1.0.6..
+Building library for managed-1.0.6..
+[1 of 2] Compiling Control.Monad.Managed ( src/Control/Monad/Managed.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/Control/Monad/Managed.o )
+[2 of 2] Compiling Control.Monad.Managed.Safe ( src/Control/Monad/Managed/Safe.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.0.1.0/build/Control/Monad/Managed/Safe.o )
+Installing library in /home/grokkingstuff/.stack/snapshots/x86_64-linux-tinfo6/lts-11.15/8.2.2/lib/x86_64-linux-ghc-8.2.2/managed-1.0.6-Gbt3igiK5MQ1kU7dtfBy79
+Registering library for managed-1.0.6..
