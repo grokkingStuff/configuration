@@ -511,6 +511,7 @@ ln ~/Dropbox/meeting.org ~/Dropbox/Agenda/meeting.org
 #+BEGIN_SRC sh
 touch ~/Dropbox/calendar.org
 ln ~/Dropbox/calendar.org ~/calendar.org
+# Place in Agenda for org-agenda
 mkdir -p ~/Dropbox/Agenda
 ln ~/Dropbox/calendar.org ~/Dropbox/Agenda/calendar.org
 #+END_SRC
@@ -518,60 +519,35 @@ ln ~/Dropbox/calendar.org ~/Dropbox/Agenda/calendar.org
 * Python Environment Configuration
 #+NAME: python
 #+BEGIN_SRC sh :noweb yes
-curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash && \
-    source ~/.bashrc && \
-    pyenv update
+#########
+# Pyenv #
+#########
 
+<<python_pyenv>>
 
-if command pyenv 2>/dev/null; then
-    <<python_pyenv>>
-fi
 #+END_SRC
 ** Pyenv
 pyenv is used to isolate Python versions. For example, you may want to test your code against Python 2.6, 2.7, 3.3, 3.4 and 3.5, so you'll need a way to switch between them. Once activated, it prefixes the PATH environment variable with ~/.pyenv/shims, where there are special files matching the Python commands (python, pip). These are not copies of the Python-shipped commands; they are special scripts that decide on the fly which version of Python to run based on the PYENV_VERSION environment variable, or the .python-version file, or the ~/.pyenv/version file. pyenv also makes the process of downloading and installing multiple Python versions easier, using the command pyenv install.
 
 *** Installation of pyenv and extensions                            :install:
-Since pyenv is a bunch of shell scripts, we'll include it with the install src blocks.
+
+We won't be installing pyenv through zypper since zypper doesn't have it unless you add someone's personal repo (which I am unwilling to do).
+Instead, we'll be installing it through cloning a git repo. Since pyenv is just a bunch of shell scripts, we'll be alright.
 
 #+NAME: python_pyenv
 #+BEGIN_SRC sh 
-curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
-# pyenv-virtualenv
-#+END_SRC
+# Taken from https://www.reddit.com/r/openSUSE/comments/70ozge/using_multiple_python_versions_on_leap/dos6798
 
- With virtualenvwrapper all your virtualenvs are kept on a same directory and your projects' code on another. My setup is:
+git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.bashrc
 
-#+NAME: python_pyenv
-#+BEGIN_SRC sh :padline no
-# All virtualenvs will be on...
-# export WORKON_HOME=~/.ve
-mkdir -p ~/.ve 
+# Install the missing headers needed by Python modules
+sudo zypper install readline-devel sqlite3-devel libbz2-devel zlib-devel libopenssl-devel
 
-# All projects will be on...
-# export PROJECT_HOME=~/Projects
-mkdir -p ~/Projects 
-#+END_SRC
-
- The -p flag is in case these folders have been created earlier - without it, mkdir returns an error.
-
- It's necessary to configure the shell to initialize pyenv when you start a terminal session. Put the lines bellow on your ~/.bashrc file:
-
-#+NAME: bashrc
-#+BEGIN_SRC sh :padline no
-export PATH="/usr/local/var/pyenv/bin/:$PATH"
-
-export WORKON_HOME=~/.ve
-export PROJECT_HOME=~/Projects
-if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
-#+END_SRC
-
- pyenv uses ~/.pyenv as its root directory by default. 
- This is the directory where pyenv installs its shims, the different Python versions and its plugins. 
- The default location is absolutely fine, but if you want to use the directory suggested by Homebrew then add the following to your profile.
-
-#+NAME: bashrc
-#+BEGIN_SRC sh :padline no :tangle no
-export PYENV_ROOT=/usr/local/var/pyenv
+# Install virtualvenv
+sudo zypper install python3-virtualenv
 #+END_SRC
 
 *** Installing different versions of python
@@ -584,11 +560,36 @@ export PYENV_ROOT=/usr/local/var/pyenv
  pyenv install 2.7.13
  #+END_SRC
 
+*** virtualvenv setup
+ With virtualenv all your virtualenvs are kept on a same directory and your projects' code on another. My setup is:
+ #+NAME: python_pyenv
+ #+BEGIN_SRC sh :padline no
+ # All virtualenvs will be on...
+ # export WORKON_HOME=~/.ve
+ mkdir -p ~/.ve 
+
+ # All projects will be on...
+ # export PROJECT_HOME=~/Projects
+ mkdir -p ~/Projects 
+
+ # The -p flag is in case these folders have been created earlier - without it, mkdir returns an error.
+ #+END_SRC
+
+ It's necessary to configure the shell to initialize pyenv when you start a terminal session. Put the lines bellow on your ~/.bashrc file:
+ #+NAME: bashrc
+ #+BEGIN_SRC sh :padline no
+ export PATH="~/.pyenv/bin/:$PATH"
+
+ export WORKON_HOME=~/.ve
+ export PROJECT_HOME=~/Projects
+ if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+ #+END_SRC
+
 *** Resist the temptation to contaminate your global Python install
 
  I frequently use programs written in Python. I like them to be available in all sessions without activate any virtualenv.
 
- However I don\u2019t like to mess with the global Python installation to avoid library conflict issues.
+ However I don't like to mess with the global Python installation to avoid library conflict issues.
 
  Another thing that I don't like is installing Jupyter/iPython on each of my projects' virtualenvs.
 
