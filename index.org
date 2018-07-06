@@ -666,28 +666,138 @@ fish
 
 *** bash                                                        :application:
 **** Installation                                                   :install:
+While you shouldn't really have to install bash on a system (since it should just be there), I'm adding this for the sake of completionists everywhere.
 #+NAME: install
 #+BEGIN_SRC sh :padline no :tangle no :noweb yes
 bash
 #+END_SRC
 
+**** Configuration                                            :configuration:
+***** Navigation
+****** Easier navigation: .., ..., ...., and .....
+  #+BEGIN_SRC sh :tangle bashrc.txt :padline no
+  alias ..="cd .."
+  alias ...="cd ../.."
+  alias ....="cd ../../.."
+  alias .....="cd ../../../.."
+  #+END_SRC
+****** Shortcuts to commonly used folders
+  #+BEGIN_SRC sh :tangle bashrc.txt :padline no
+  alias downloads="cd ~/Downloads"
+  alias desktop="cd ~/Desktop"
+  alias projects="cd ~/Projects"
+  #+END_SRC
+****** Shortcuts to commonly used commands
+  #+BEGIN_SRC sh :tangle bashrc.txt :padline no
+  alias g="git"
+  alias h="history"
+  #+END_SRC
+
+***** grep
+****** Always enable colored `grep` output
+  # Note: `GREP_OPTIONS="--color=auto"` is deprecated, hence the alias usage.
+  #+BEGIN_SRC sh :tangle bashrc.txt
+  alias grep='grep --color=auto'
+  alias fgrep='fgrep --color=auto'
+  alias egrep='egrep --color=auto'
+  #+END_SRC
+
+***** Enable aliases to be sudo’ed
+ #+BEGIN_SRC sh :tangle bashrc.txt
+ alias sudo='sudo '
+ #+END_SRC
+
+***** Get week number
+ #+BEGIN_SRC sh :tangle bashrc.txt
+ alias week='date +%V'
+ #+END_SRC
+
+***** Stopwatch
+  #+BEGIN_SRC sh :tangle bashrc.txt
+ alias timer='echo "Timer started. Stop with Ctrl-D." && date && time cat && date'
+ #+END_SRC
+
+ #+RESULTS:
+***** COMMENT Updates and Cleanups
+****** COMMENT Get OS X Software Updates, and update installed Ruby gems, Homebrew, npm, and their installed packages
+  #+BEGIN_SRC sh :tangle bashrc.txt
+  alias update='sudo softwareupdate -i -a; brew update; brew upgrade --all; brew cleanup; npm install npm -g; npm update -g; sudo gem update --system; sudo gem update'
+  #+END_SRC
+****** COMMENT Flush Directory Service cache
+  #+BEGIN_SRC sh :tangle bashrc.txt
+  alias flush="dscacheutil -flushcache && killall -HUP mDNSResponder"
+  #+END_SRC
+****** COMMENT Clean up LaunchServices to remove duplicates in the “Open With” menu
+   #+BEGIN_SRC sh :tangle/basrcs.txt
+   alias lscleanup="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
+   #+END_SRC
+****** COMMENT Recursively delete `.DS_Store` files
+  #+BEGIN_SRC sh :tangle terminalEmulator/bash/bash_aliases.txt
+  alias DSStorecleanup="find . -type f -name '*.DS_Store' -ls -delete"
+  #+END_SRC
+****** COMMENT Empty trash
+  # Empty the Trash on all mounted volumes and the main HDD.
+  # Also, clear Apple’s System Logs to improve shell startup speed.
+  # Finally, clear download history from quarantine. https://mths.be/bum
+  #+BEGIN_SRC sh :tangle terminalEmulator/bash/bash_aliases.txt
+  alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl; sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent'"
+  #+END_SRC
+
+***** Encryption
+****** OS X has no `md5sum`, so use `md5` as a fallback
+  #+BEGIN_SRC sh :tangle terminalEmulator/bash/bash_aliases.txt
+  command -v md5sum > /dev/null || alias md5sum="md5"
+  #+END_SRC
+****** OS X has no `sha1sum`, so use `shasum` as a fallback
+  #+BEGIN_SRC sh :tangle terminalEmulator/bash/bash_aliases.txt
+  command -v sha1sum > /dev/null || alias sha1sum="shasum"
+  #+END_SRC
+****** Canonical hex dump; some systems have this symlinked
+  #+BEGIN_SRC sh :tangle terminalEmulator/bash/bash_aliases.txt
+  command -v hd > /dev/null || alias hd="hexdump -C"
+  #+END_SRC
+
+***** Intuitive map function
+ # For example, to list all directories that contain a certain file:
+ # find . -name .gitattributes | map dirname
+ #+BEGIN_SRC sh :tangle terminalEmulator/bash/bash_aliases.txt
+ alias map="xargs -n1"
+ #+END_SRC
+
+***** One of @janmoesen’s ProTip™s
+ #+BEGIN_SRC sh :tangle terminalEmulator/bash/bash_aliases.txt
+ for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
+	 alias "$method"="lwp-request -m '$method'"
+ done
+ #+END_SRC
+
+***** Stuff I never really use but cannot delete either because of http://xkcd.com/530/
+ #+BEGIN_SRC sh :tangle terminalEmulator/bash/bash_aliases.txt
+ alias stfu="osascript -e 'set volume output muted true'"
+ alias pumpitup="osascript -e 'set volume 7'"
+ #+END_SRC
+
 *** zsh                                                         :application:
+**** Installation                                                   :install:
 #+NAME: install
 #+BEGIN_SRC sh :padline no :tangle no :noweb yes
 zsh
 #+END_SRC
 
-
 *** libntify                                               :application:
+
+ Use notify-send to create notifications from terminal. Use C-c C-c to execute this code block for an example
+
+ #+BEGIN_SRC sh
+ notify-send 'Hello world' 'Hello world'
+ #+END_SRC
+**** Installation                                                   :install:
  #+NAME: install 
  #+BEGIN_SRC sh
  libnotify-tools
  #+END_SRC
 
- Use notify-send to create notifications from terminal. Use C-c C-c to execute this code block for an example
- #+BEGIN_SRC sh
- notify-send 'Hello world' 'Hello world'
- #+END_SRC
+
 
  #+RESULTS:
 
