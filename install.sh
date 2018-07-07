@@ -294,7 +294,7 @@ function system::check_required_programs() {
 # Returns:
 #   None
 ######################################################
-function echo () (
+function system::echo () (
 fmt=%s end=\\n IFS=" "
 
 while [ $# -gt 1 ] ; do
@@ -311,11 +311,11 @@ printf "%s%s%s" "$fmt" "$end" "$*"
 )
 
 function ok() {
-   echo -e "\\n [ok] " "$1"
+    echo -e "[ok] " "$1"
 }
 
 function bot() {
-    echo -e "\\n \\[._.]/ - " "$1"
+    echo -e "\\[._.]/ - " "$1"
 }
 
 function running() {
@@ -323,7 +323,7 @@ function running() {
 }
 
 function action() {
-    echo -e "\\n [action]: \\n \\u21d2 $1..."
+    echo -e "[action]: \\n \\u21d2 $1..."
 }
 
 function warn() {
@@ -341,19 +341,42 @@ function main() {
 #
 
 bot "Installing applications"
-#zypper in -y fish
-#zypper in -y bash
-#zypper in -y zsh
-#zypper in -y libnotify-tools
-#zypper in -y chromium
-#zypper in -y firefox
-#zypper in -y tor
-#zypper in -y emacs
-#zypper in -y git
-#zypper in -y vlc
-#zypper in -y vocal
-#zypper in -y htop
-#zypper in -y dropbox
+action "Installing general applications"
+
+echo "
+fish
+bash
+zsh
+libnotify-tools
+chromium
+firefox
+tor
+emacs
+git
+vlc
+vocal
+htop
+dropbox
+" > install.txt
+
+cat install.txt | while read line; do action "Installing $line"; sudo zypper -iq --gpg-auto-import-keys --no-refresh in -y $line; done
+
+
+action "Summary of installed applications"
+warn "Some applications may not have been installed"
+which fish
+which bash
+which zsh
+which libnotify-tools
+which chromium
+which firefox
+which tor
+which emacs
+which git
+which vlc
+which vocal
+which htop
+which dropbox
 ok "Installed applications!"
 
 }

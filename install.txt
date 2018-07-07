@@ -1,0 +1,15 @@
+
+fish
+bash
+zsh
+libnotify-tools
+chromium
+firefox
+tor
+emacs
+git
+vlc
+vocal
+htop
+dropbox
+

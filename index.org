@@ -30,7 +30,7 @@
    #<<preamble_library>>
 
    bot "Installing applications"
-   #<<applications_to_install>>
+   <<applications_to_install>>
    ok "Installed applications!"
 
    }
@@ -597,7 +597,7 @@ Text attributes can be changed by writing "ta_" followed by the particular text 
  # Returns:
  #   None
  ######################################################
- function echo () (
+ function system::echo () (
  fmt=%s end=\\n IFS=" "
 
  while [ $# -gt 1 ] ; do
@@ -614,11 +614,11 @@ Text attributes can be changed by writing "ta_" followed by the particular text 
  )
 
  function ok() {
-    echo -e "\\n [ok] " "$1"
+     echo -e "[ok] " "$1"
  }
 
  function bot() {
-     echo -e "\\n \\[._.]/ - " "$1"
+     echo -e "\\[._.]/ - " "$1"
  }
 
  function running() {
@@ -626,7 +626,7 @@ Text attributes can be changed by writing "ta_" followed by the particular text 
  }
 
  function action() {
-     echo -e "\\n [action]: \\n \\u21d2 $1..."
+     echo -e "[action]: \\n \\u21d2 $1..."
  }
 
  function warn() {
@@ -638,6 +638,14 @@ Text attributes can be changed by writing "ta_" followed by the particular text 
  }
   #+End_SRC
 
+* Tests
+We'll be interweaving tests with code in this org file and seperating them in files. 
+
+#+BEGIN_SRC sh
+#!/usr/bin/env bats
+
+
+#+END_SRC
 * Applications to install
 
 In this section, we'll be listing the application name and general info, it's package name for our package manager to install it, and any configuration files related to said software.
@@ -668,7 +676,20 @@ This allows us to create a list of all applications that we'll need in a single 
 
 #+NAME: applications_to_install
 #+BEGIN_SRC sh :noweb yes
-  zypper in -y <<install>>
+action "Installing general applications"
+
+echo "
+<<install>>
+" > install.txt
+
+cat install.txt | while read line; do action "Installing $line"; sudo zypper -iq --gpg-auto-import-keys --no-refresh in -y $line; done
+
+rm install.txt
+
+echo "\n\n"
+action "Summary of installed applications"
+warn "Some applications may not have been installed"
+which <<install>>
 #+END_SRC
 
 ** Terminal Emulators
