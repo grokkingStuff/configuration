@@ -29,6 +29,7 @@
 
    #<<preamble_library>>
 
+#####################################################################################################
    bot "Installing Applications!"
    <<applications_to_install>>
    bot "Installed applications!"
@@ -36,6 +37,7 @@
    bot "Creating Organization!"
    <<organization>>
    bot "Created organization!"
+#####################################################################################################
    }
 
    main "$@"
@@ -167,6 +169,21 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
 
  Functions that are used to query or support the system fall under this library.
 
+ - I can't run this in CMD.EXE! What do I do?
+
+   CMD.EXE does not have an inbuilt utility to run sh files. You can install a Linux shell for Windows which should be more than adequate for your purposes. Alternatively, you can install Powershell & Cygwin, although the Linux shell is definitely recommended. Just to be clear, CMD.EXE can run scripts! It's just that no sane man would build a good script in a .cmd file out of his own volition.
+
+ - This doesn't run on my OS.
+
+   Huh. That's pretty interesting. This script should run on any system that supports bash (although it may have a few eccentricities.)
+   If you're sure it's not your fault, you should totally send me an email about that.
+
+ - This particular function seems too useful for a simple script like this. It's not bad.
+
+   I'm glad you think so! It's really there because I fell down a rabbit hole and I overestimated the importance of being ultra-portable. 
+   Use it if you can in your own scripts!
+
+
  #+NAME: system_library
  #+BEGIN_SRC sh :noweb yes 
  
@@ -204,22 +221,7 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
  }
   #+END_SRC
 *** Detect operating system                                   :function:bash:
- Since this command will be executed by different people of multiple operating systems, I've decided to use as many bash built-ins as possible for portability. However, there are still things that need to be set for each operating system. This code block detects the operating system and makes it available in the variable $MACHINE. I was gonna hack together a way to do this using the uname command but I think using  pre-defined $OSTYPE variable is cleaner.
-
-
- - I can't run this in CMD.EXE! What do I do?
-
-   CMD.EXE does not have an inbuilt utility to run sh files. You can install a Linux shell for Windows which should be more than adequate for your purposes. Alternatively, you can install Powershell & Cygwin, although the Linux shell is definitely recommended. Just to be clear, CMD.EXE can run scripts! It's just that no sane man would bother building a good script in a .cmd file.
-
- - This doesn't run on my OS.
-
-   Huh. That's pretty interesting. This script should run on any system that supports bash (although it may have a few eccentricities.)
-   If you're sure it's not your fault, you should totally send me an email about that.
-
- - This particular function seems too useful for a simple script like this. It's not bad.
-
-   I'm glad you think so! It's really there because I fell down a rabbit hole and I overestimated the importance of being ultra-portable. 
-   Use it if you can in your own scripts!
+ Since this command will be executed by different people of multiple operating systems, I've decided to use as many bash built-ins as possible for portability. However, there are still things that need to be set for each operating system. This code block detects the operating system and makes it available in the variable $MACHINE. I was gonna hack together a way to do this using the uname command but I think using pre-defined $OSTYPE variable is cleaner.
 
  #+NAME: system::detect_operating_system
  #+CAPTION: bash function to detect the operating system the shell is running on.
@@ -644,10 +646,10 @@ Text attributes can be changed by writing "ta_" followed by the particular text 
 * Tests
 We'll be interweaving tests with code in this org file and seperating them in files. 
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle test.bats :noweb yes
 #!/usr/bin/env bats
 
-
+<<test>>
 #+END_SRC
 * Applications to install
 
@@ -658,7 +660,7 @@ This allows us to create a list of all applications that we'll need in a single 
 + *Conventions*
   + Any headline that's an application must have the application tag. 
     + If the application name is not immediately indicative of its purpose, a brief description of its type can be included after a hypen.
-  + Any installation code block in this section should have the tag :install:, headline Installation and name 'install'
+  + Any installation code block in this section should have the tag :install:, headline Installation and name 'install' (install_ if you don't want it to be tested.)
   + All configuration files must have a parent headline called 'Configuration' with tag :configuration:
     + If the configuration file is worthy of it's own org file, a link shall be provided for the same.
   + If an application is installed with a programming language's package manager, use an appropriate tag and src block name.
@@ -671,7 +673,7 @@ This allows us to create a list of all applications that we'll need in a single 
   ** General application category
   *** Application name - type of application (if required)        :application:
   **** Installation
-  #+NAME: install
+  #+NAME: install               # install_ if you don't want it to be tested
   #+BEGIN_SRC sh :padline no :tangle no :noweb yes
   
   #+END_SRC
@@ -680,6 +682,7 @@ This allows us to create a list of all applications that we'll need in a single 
 #+NAME: applications_to_install
 #+BEGIN_SRC sh :noweb yes
 echo "\
+<<install_>>
 <<install>>" > install.txt
 
 cat install.txt | while read line; do action "Installing $line"; sudo zypper -iq --gpg-auto-import-keys --no-refresh in -y $line; done
@@ -688,6 +691,14 @@ rm install.txt
 
 echo "\n\n"
 #+END_SRC
+
+#+NAME: test
+#+BEGIN_SRC sh :padline no :tangle no :noweb yes
+@test "Test if applications are installed" {
+    command -v <<install>>
+}
+#+END_SRC
+
 
 ** Terminal Emulators
 Plenty of shells for a hermit crab to choose. I'm going with fish for my interactive shell and bash for my scripts. Will try zsh for specific types of repositories.
@@ -818,7 +829,7 @@ bash
 zsh
 #+END_SRC
 
-*** libntify                                               :application:
+*** COMMENT libnotify                                          :application:
 
  Use notify-send to create notifications from terminal. Use C-c C-c to execute this code block for an example
 
@@ -826,7 +837,7 @@ zsh
  notify-send 'Hello world' 'Hello world'
  #+END_SRC
 **** Installation                                                   :install:
- #+NAME: install 
+ #+NAME: install_ 
  #+BEGIN_SRC sh
  libnotify-tools
  #+END_SRC
@@ -1109,7 +1120,7 @@ vlc
 
 *** Vocal - Podcast Client                                      :application:
 **** Installation                                                   :install:
-#+NAME: install
+#+NAME: install_
 #+BEGIN_SRC sh :padline no :tangle no :noweb yes
 vocal
 #+END_SRC
