@@ -27,13 +27,11 @@
    # MAIN CONTROL FLOW
    function main() {
 
-   colour_init
-   fg_green
    #<<preamble_library>>
 
-   #bot "Installing applications"
+   bot "Installing applications"
    #<<applications_to_install>>
-   #ok "Installed applications!"
+   ok "Installed applications!"
 
    }
 
@@ -175,8 +173,8 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
  <<system::detect_operating_system>>
  <<system::err>>
  <<system::check_required_programs>>
- <<system::vcs_repo_root>>
- <<system::color_initialization>>
+ #<<system::vcs_repo_root>>
+ #<<system::color_initialization>>
  <<system::echo>>
  #+END_SRC
 
@@ -328,7 +326,7 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
  #   None
  ###########################################################
  function system::err() {
-   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@" >&2
+   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*" >&2
  }
  #+END_SRC
 
@@ -347,7 +345,7 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
  #   None
  #####################################################################################
  function system::check_required_programs() {
-   for p in ${@}; do
+   for p in "${@}"; do
      hash "${p}" 2>&- || \
          { system::err "Required program \"${p}\" not installed or in search PATH.";
            exit 1;
@@ -394,8 +392,7 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
    if [[ -z VCS_REPO_ROOT ]]; then
      echo $VCS_REPO_ROOT;
    else
-     system:err "Current directory is not within a vcs repository. Terminating program.";
-     exit 1;
+     system:err "Current directory is not within a vcs repository.";
    fi 
  }
  #+END_SRC
@@ -613,31 +610,31 @@ Text attributes can be changed by writing "ta_" followed by the particular text 
  shift
  done
 
- printf "$fmt$end" "$*"
+ printf "%s%s%s" "$fmt" "$end" "$*"
  )
 
  function ok() {
-    echo -e "\n $fg_green [ok] $fg_black " $1
+    echo -e "\\n [ok] " "$1"
  }
 
  function bot() {
-     echo -e "\n $fg_green \[._.]/$fg_black - "$1
+     echo -e "\\n \\[._.]/ - " "$1"
  }
 
  function running() {
-     echo -en "$fg_yellow \u21d2 $fg_black"$1": "
+     echo -en "\\u21d2" "$1" ": "
  }
 
  function action() {
-     echo -e "\n $fg_yellow [action]: $fg_black \n \u21d2 $1..."
+     echo -e "\\n [action]: \\n \\u21d2 $1..."
  }
 
  function warn() {
-     echo -e "$COL_YELLOW[warning]$COL_RESET "$1
+     echo -e "[warning]" "$1"
  }
 
  function error() {
-     echo -e "$COL_RED[error]$COL_RESET "$1
+     echo -e "[error] " "$1"
  }
   #+End_SRC
 

@@ -49,7 +49,7 @@ function system::usage() {
 }
 #################################################################
 # Detects the operating system that this script is being run on
-# Globals::q
+# Globals:
 #   OSTYPE
 # Arguments:
 #   None
@@ -130,7 +130,7 @@ function system::detect_operating_system() {
     esac
 
     # Time to return the answer
-    return $MACHINE
+    return "$MACHINE"
 }
 ###########################################################
 # Allows for user to send time-tagged strings into STDERR
@@ -142,7 +142,7 @@ function system::detect_operating_system() {
 #   None
 ###########################################################
 function system::err() {
-  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@" >&2
+  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*" >&2
 }
 #####################################################################################
 # Checks if the list of commands given to it is executable and available on a system
@@ -154,138 +154,137 @@ function system::err() {
 #   None
 #####################################################################################
 function system::check_required_programs() {
-  for p in ${@}; do
+  for p in "${@}"; do
     hash "${p}" 2>&- || \
         { system::err "Required program \"${p}\" not installed or in search PATH.";
           exit 1;
         }
   done
 }
-##########################################################################################
-# Checks if current folder is a VCS and if so, finds the location of the root repository.
-# Globals:
-#   None
-# Arguments:
-#   None
-# Returns
-#   VCS_REPO_ROOT as String
-##########################################################################################
-function system::vcs_repo_root() {
-
-  local VCS_REPO_ROOT;
-  VCS_REPO_ROOT="";
-
-  # Check if repository is a git repo
-  if git rev-parse --is-inside-work-tree 2> /dev/null; then
-    # This is a valid git repository.
-    VCS_REPO_ROOT="$(git rev-parse --show-toplevel)";
-
-  elif hg --cwd ./ root 2> /dev/null; then
-    # This is a valid mercurial repository.
-    VCS_REPO_ROOT="$(hg root)";
-
-  elif svn ls ./ > /dev/null; then
-    # This is a valid svn repository.
-    VCS_REPO_ROOT="$(svn info --show-item wc-root)";
-  fi
-
-  if [[ -z VCS_REPO_ROOT ]]; then
-    echo $VCS_REPO_ROOT;
-  else
-    system:err "Current directory is not within a vcs repository. Terminating program.";
-    exit 1;
-  fi 
-}
-################################################
-# Initialise colour variables and text options
-# Global: 
-#   None
-# Arguments:
-#   None:
-# Returns:
-#   None
-################################################
-function colour_init() {
-    if [[ -z ${no_colour-} ]]; then
-
-        readonly reset_color="$(tput sgr0 2> /dev/null || true)"
-        # Text attributes
-        readonly ta_bold="$(tput bold 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly ta_uscore="$(tput smul 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly ta_blink="$(tput blink 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly ta_reverse="$(tput rev 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly ta_conceal="$(tput invis 2> /dev/null || true)"
-        printf '%b' "$ta_none"
-
-        # Foreground codes
-        readonly fg_black="$(tput setaf 0     2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly fg_blue="$(tput setaf 4      2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly fg_cyan="$(tput setaf 6      2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly fg_green="$(tput setaf 2     2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly fg_magenta="$(tput setaf 5   2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly fg_red="$(tput setaf 1       2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly fg_white="$(tput setaf 7     2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly fg_yellow="$(tput setaf 3    2> /dev/null || true)"
-        printf '%b' "$ta_none"
-
-        # Background codes
-        readonly bg_black="$(tput setab 0     2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly bg_blue="$(tput setab 4      2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly bg_cyan="$(tput setab 6      2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly bg_green="$(tput setab 2     2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly bg_magenta="$(tput setab 5   2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly bg_red="$(tput setab 1       2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly bg_white="$(tput setab 7     2> /dev/null || true)"
-        printf '%b' "$ta_none"
-        readonly bg_yellow="$(tput setab 3    2> /dev/null || true)"
-        printf '%b' "$ta_none"
-    else
-        readonly reset_color=''
-        # Text attributes
-        readonly ta_bold=''
-        readonly ta_uscore=''
-        readonly ta_blink=''
-        readonly ta_reverse=''
-        readonly ta_conceal=''
-        
-        # Foreground codes
-        readonly fg_black=''
-        readonly fg_blue=''
-        readonly fg_cyan=''
-        readonly fg_green=''
-        readonly fg_magenta=''
-        readonly fg_red=''
-        readonly fg_white=''
-        readonly fg_yellow=''
-        
-        # Background codes
-        readonly bg_black=''
-        readonly bg_blue=''
-        readonly bg_cyan=''
-        readonly bg_green=''
-        readonly bg_magenta=''
-        readonly bg_red=''
-        readonly bg_white=''
-        readonly bg_yellow=''
-    fi
-}
+###########################################################################################
+## Checks if current folder is a VCS and if so, finds the location of the root repository.
+## Globals:
+##   None
+## Arguments:
+##   None
+## Returns
+##   VCS_REPO_ROOT as String
+###########################################################################################
+#function system::vcs_repo_root() {
+#
+#  local VCS_REPO_ROOT;
+#  VCS_REPO_ROOT="";
+#
+#  # Check if repository is a git repo
+#  if git rev-parse --is-inside-work-tree 2> /dev/null; then
+#    # This is a valid git repository.
+#    VCS_REPO_ROOT="$(git rev-parse --show-toplevel)";
+#
+#  elif hg --cwd ./ root 2> /dev/null; then
+#    # This is a valid mercurial repository.
+#    VCS_REPO_ROOT="$(hg root)";
+#
+#  elif svn ls ./ > /dev/null; then
+#    # This is a valid svn repository.
+#    VCS_REPO_ROOT="$(svn info --show-item wc-root)";
+#  fi
+#
+#  if [[ -z VCS_REPO_ROOT ]]; then
+#    echo $VCS_REPO_ROOT;
+#  else
+#    system:err "Current directory is not within a vcs repository.";
+#  fi 
+#}
+#################################################
+## Initialise colour variables and text options
+## Global: 
+##   None
+## Arguments:
+##   None:
+## Returns:
+##   None
+#################################################
+#function colour_init() {
+#    if [[ -z ${no_colour-} ]]; then
+#
+#        readonly reset_color="$(tput sgr0 2> /dev/null || true)"
+#        # Text attributes
+#        readonly ta_bold="$(tput bold 2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#        readonly ta_uscore="$(tput smul 2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#        readonly ta_blink="$(tput blink 2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#        readonly ta_reverse="$(tput rev 2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#        readonly ta_conceal="$(tput invis 2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#
+#        # Foreground codes
+#        readonly fg_black="$(tput setaf 0     2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#        readonly fg_blue="$(tput setaf 4      2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#        readonly fg_cyan="$(tput setaf 6      2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#        readonly fg_green="$(tput setaf 2     2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#        readonly fg_magenta="$(tput setaf 5   2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#        readonly fg_red="$(tput setaf 1       2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#        readonly fg_white="$(tput setaf 7     2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#        readonly fg_yellow="$(tput setaf 3    2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#
+#        # Background codes
+#        readonly bg_black="$(tput setab 0     2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#        readonly bg_blue="$(tput setab 4      2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#        readonly bg_cyan="$(tput setab 6      2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#        readonly bg_green="$(tput setab 2     2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#        readonly bg_magenta="$(tput setab 5   2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#        readonly bg_red="$(tput setab 1       2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#        readonly bg_white="$(tput setab 7     2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#        readonly bg_yellow="$(tput setab 3    2> /dev/null || true)"
+#        printf '%b' "$ta_none"
+#    else
+#        readonly reset_color=''
+#        # Text attributes
+#        readonly ta_bold=''
+#        readonly ta_uscore=''
+#        readonly ta_blink=''
+#        readonly ta_reverse=''
+#        readonly ta_conceal=''
+#        
+#        # Foreground codes
+#        readonly fg_black=''
+#        readonly fg_blue=''
+#        readonly fg_cyan=''
+#        readonly fg_green=''
+#        readonly fg_magenta=''
+#        readonly fg_red=''
+#        readonly fg_white=''
+#        readonly fg_yellow=''
+#        
+#        # Background codes
+#        readonly bg_black=''
+#        readonly bg_blue=''
+#        readonly bg_cyan=''
+#        readonly bg_green=''
+#        readonly bg_magenta=''
+#        readonly bg_red=''
+#        readonly bg_white=''
+#        readonly bg_yellow=''
+#    fi
+#}
 ######################################################
 # Makes echo POSIX-compliant while retaining options
 # Globals:
@@ -308,42 +307,40 @@ esac
 shift
 done
 
-printf "$fmt$end" "$*"
+printf "%s%s%s" "$fmt" "$end" "$*"
 )
 
 function ok() {
-   echo -e "\n $fg_green [ok] $fg_black " $1
+   echo -e "\\n [ok] " "$1"
 }
 
 function bot() {
-    echo -e "\n $fg_green \[._.]/$fg_black - "$1
+    echo -e "\\n \\[._.]/ - " "$1"
 }
 
 function running() {
-    echo -en "$fg_yellow \u21d2 $fg_black"$1": "
+    echo -en "\\u21d2" "$1" ": "
 }
 
 function action() {
-    echo -e "\n $fg_yellow [action]: $fg_black \n \u21d2 $1..."
+    echo -e "\\n [action]: \\n \\u21d2 $1..."
 }
 
 function warn() {
-    echo -e "$COL_YELLOW[warning]$COL_RESET "$1
+    echo -e "[warning]" "$1"
 }
 
 function error() {
-    echo -e "$COL_RED[error]$COL_RESET "$1
+    echo -e "[error] " "$1"
 }
 
 
 # MAIN CONTROL FLOW
 function main() {
 
-colour_init
-fg_green
 #
 
-#bot "Installing applications"
+bot "Installing applications"
 #zypper in -y fish
 #zypper in -y bash
 #zypper in -y zsh
@@ -357,7 +354,7 @@ fg_green
 #zypper in -y vocal
 #zypper in -y htop
 #zypper in -y dropbox
-#ok "Installed applications!"
+ok "Installed applications!"
 
 }
 
