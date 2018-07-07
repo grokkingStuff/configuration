@@ -29,10 +29,13 @@
 
    #<<preamble_library>>
 
-   bot "Installing applications"
+   bot "Installing Applications!"
    <<applications_to_install>>
-   ok "Installed applications!"
+   bot "Installed applications!"
 
+   bot "Creating Organization!"
+   <<organization>>
+   bot "Created organization!"
    }
 
    main "$@"
@@ -626,7 +629,7 @@ Text attributes can be changed by writing "ta_" followed by the particular text 
  }
 
  function action() {
-     echo -e "[action]: \\n \\u21d2 $1..."
+     echo -en "\\u21d2 $1..."
  }
 
  function warn() {
@@ -676,20 +679,14 @@ This allows us to create a list of all applications that we'll need in a single 
 
 #+NAME: applications_to_install
 #+BEGIN_SRC sh :noweb yes
-action "Installing general applications"
-
-echo "
-<<install>>
-" > install.txt
+echo "\
+<<install>>" > install.txt
 
 cat install.txt | while read line; do action "Installing $line"; sudo zypper -iq --gpg-auto-import-keys --no-refresh in -y $line; done
 
 rm install.txt
 
 echo "\n\n"
-action "Summary of installed applications"
-warn "Some applications may not have been installed"
-which <<install>>
 #+END_SRC
 
 ** Terminal Emulators
@@ -1162,6 +1159,18 @@ htop
  #+END_SRC
 
 * Organization
+#+NAME: organization
+#+BEGIN_SRC sh :noweb yes 
+if [ -d "~/Dropbox" ]; then
+    dropbox start
+    dropbox status
+
+    #<<organization_folder>>
+
+    #<<organization_file>>
+fi
+#+END_SRC
+
 ** Dropbox
 
 #+NAME: install
@@ -1170,19 +1179,6 @@ dropbox
 #+END_SRC
 
 ** Folder Organization
-#+NAME: organization
-#+BEGIN_SRC sh :noweb yes 
-dropbox start
-if [ -d "~/Dropbox" ]; then
-    dropbox start
-    dropbox status
-
-    <<organization_folder>>
-
-    <<organization_file>>
-fi
-#+END_SRC
-
 *** Projects
 #+NAME: organization_folder
 #+BEGIN_SRC sh
