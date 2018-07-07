@@ -323,7 +323,7 @@ function running() {
 }
 
 function action() {
-    echo -e "[action]: \\n \\u21d2 $1..."
+    echo -en "\\u21d2 $1..."
 }
 
 function warn() {
@@ -340,10 +340,8 @@ function main() {
 
 #
 
-bot "Installing applications"
-action "Installing general applications"
-
-echo "
+bot "Installing Applications!"
+echo "\
 fish
 bash
 zsh
@@ -356,29 +354,60 @@ git
 vlc
 vocal
 htop
-dropbox
-" > install.txt
+dropbox" > install.txt
 
 cat install.txt | while read line; do action "Installing $line"; sudo zypper -iq --gpg-auto-import-keys --no-refresh in -y $line; done
 
+rm install.txt
 
-action "Summary of installed applications"
-warn "Some applications may not have been installed"
-which fish
-which bash
-which zsh
-which libnotify-tools
-which chromium
-which firefox
-which tor
-which emacs
-which git
-which vlc
-which vocal
-which htop
-which dropbox
-ok "Installed applications!"
+echo "\n\n"
+bot "Installed applications!"
 
+bot "Creating Organization!"
+if [ -d "~/Dropbox" ]; then
+    dropbox start
+    dropbox status
+
+    #touch ~/Dropbox/Projects
+    #ln ~/Dropbox/Projects ~/Projects
+    #touch ~/Dropbox/Agenda
+    #ln ~/Dropbox/Agenda ~/Agenda
+    #touch ~/Dropbox/Documents
+    #ln ~/Dropbox/Documents ~/Documents
+    #touch ~/Dropbox/Configuration
+    #ln ~/Dropbox/Configuration ~/Configuration
+    #touch ~/Dropbox/Archive
+    #ln ~/Dropbox/Archive ~/Archive
+    #touch ~/Dropbox/Website
+    #ln ~/Dropbox/Website ~/Website
+    #touch ~/Dropbox/Learning
+    #ln ~/Dropbox/Learning ~/Learning
+    #touch ~/Dropbox/Medical
+    #ln ~/Dropbox/Medical ~/Medical
+    #touch ~/Dropbox/AssetManagement
+    #ln ~/Dropbox/AssetManagement ~/AssetManagement
+    #touch ~/Dropbox/Business
+    #ln ~/Dropbox/Business ~/Business
+    #touch ~/Dropbox/Photos
+    #ln ~/Dropbox/Photos ~/Photos
+
+    #touch ~/Dropbox/organizer.org
+    #ln ~/Dropbox/organizer.org ~/organizer.org
+    ## Place in Agenda for org-agenda
+    #mkdir -p ~/Dropbox/Agenda
+    #ln ~/Dropbox/organizer.org ~/Dropbox/Agenda/organizer.org
+    #touch ~/Dropbox/refile.org
+    #ln ~/Dropbox/refile.org ~/refile.org
+    ## Place in Agenda for org-agenda
+    #mkdir -p ~/Dropbox/Agenda
+    #ln ~/Dropbox/refile.org ~/Dropbox/Agenda/refile.org
+    #touch ~/Dropbox/meeting.org
+    #ln ~/Dropbox/meeting.org ~/meeting.org
+    ## Place in Agenda for org-agenda
+    #mkdir -p ~/Dropbox/Agenda
+    #ln ~/Dropbox/meeting.org ~/Dropbox/Agenda/meeting.org
+fi
+bot "Created organization!"
 }
 
 main "$@"
