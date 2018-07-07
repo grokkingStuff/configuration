@@ -10,78 +10,87 @@
 
  #+NAME: connect.sh
  #+CAPTION: The overall structure of connect.sh
- #+BEGIN_SRC sh :tangle connectRemote.sh
+ #+BEGIN_SRC sh :tangle install.sh :noweb yes
    #!/usr/bin/env bash
    ## Description: Connects to remote server and relays local changes made in git repo and opens a shell in remote server.
-   <<author_information>>
+
+
+                     <<author_information>>
+
+
    <<license_information>>
 
+   
    <<system_library>>
+   
 
-   # Main control flow
-   #function main() {
-   #  <<preamble_library>>
-   #}
+   # MAIN CONTROL FLOW
+   function main() {
 
-   #main "$@"
+   colour_init
+   fg_green
+   #<<preamble_library>>
+
+   #bot "Installing applications"
+   #<<applications_to_install>>
+   #ok "Installed applications!"
+
+   }
+
+   main "$@"
  #+END_SRC
 
-*** DONE Author Information
-    CLOSED: [2018-06-15 Fri 21:59]
- Because someone needs to take the blame for when this script goes insane. Seriously, someone take this piece of shit code from me and make it better. Free brownies for whoever does that.
+** DONE Author Information
+   CLOSED: [2018-06-15 Fri 21:59]
+Because someone needs to take the blame for when this script goes insane. Seriously, someone take this piece of shit code from me and make it better. Free brownies for whoever does that.
 
-  #+NAME: author_information
-  #+BEGIN_SRC sh :noweb yes
- ################################################
- #                                              #
- #              Author Information              #     
- #                                              #
- # Author: Vishakh Pradeep Kumar                #
- # Email: grokkingStuff@gmail.com on 04-2018    #
- # Current maintainer: Vishakh Pradeep Kumar    #
- ################################################
-  #+END_SRC
-
-
-*** DONE License information
-    CLOSED: [2018-06-15 Fri 21:59]
- Even if it seems pretentious, it's good to have a license so that other people can use it. Since this code isn't exactly going to be used in a production environment, I'm going to stick a GPL license on it.
-
- #+NAME: license_information
+ #+NAME: author_information
  #+BEGIN_SRC sh :noweb yes
- #####################################################################################
- #                                                                                   #
- #                                License Information                                #
- #                                                                                   #
- # License: GPLv2, see http://www.fsf.org/licensing/licenses/info/GPLv2.html         #
- # and accompanying license "LICENSE.txt". Redistribution + modification under this  #
- # license permitted.                                                                #
- # If you enclose this script or parts of it in your software, it has to             #
- # be accompanied by the same license (see link) and the place where to get          #
- # the recent version of this program: https://testssl.sh                            #
- # Don't violate the license.                                                        #
- #                                                                                   #
- # USAGE WITHOUT ANY WARRANTY, THE SOFTWARE IS PROVIDED "AS IS". USE IT AT           #
- # your OWN RISK                                                                     #
- #####################################################################################
+################################################
+#                                              #
+#              Author Information              #
+#                                              #
+# Author: Vishakh Pradeep Kumar                #
+# Email: grokkingStuff@gmail.com on 04-2018    #
+# Current maintainer: Vishakh Pradeep Kumar    #
+################################################
  #+END_SRC
 
+** DONE License information
+   CLOSED: [2018-06-15 Fri 21:59]
+Even if it seems pretentious, it's good to have a license so that other people can use it. Since this code isn't exactly going to be used in a production environment, I'm going to stick a Gsyntax-checkingPL license on it.
+
+#+NAME: license_information
+#+BEGIN_SRC sh :noweb yes
+#####################################################################################
+#                                                                                   #
+#                                License Information                                #
+#                                                                                   #
+# License: GPLv2, see http://www.fsf.org/licensing/licenses/info/GPLv2.html         #
+# and accompanying license "LICENSE.txt". Redistribution + modification under this  #
+# license permitted.                                                                #
+# If you enclose this script or parts of it in your software, it has to             #
+# be accompanied by the same license (see link) and the place where to get          #
+# the recent version of this program: https://testssl.sh                            #
+# Don't violate the license.                                                        #
+#                                                                                   #
+# USAGE WITHOUT ANY WARRANTY, THE SOFTWARE IS PROVIDED "AS IS". USE IT AT           #
+# your OWN RISK                                                                     #
+#####################################################################################
+#+END_SRC
 
 * Bash Library
 Bash is a pain in the ass to work with if you need to be safe. This library allows you to write bash that's well-organized, somewhat tested, and hopefully cross platform.
 
-
 ** Preamble
   For all the stuff that doesn't really matter to the structure of the program but is quite important for everything else.
-
+  Most of this should be taken care of by the configBot.
+ #+NAME: preamble_library
  #+CAPTION: Preamble src block
   #+BEGIN_SRC sh :noweb yes
- <<preamble::user_input>>
   #+END_SRC
-
 *** Example of an implementation of getopts and constants that's not bad
- #+NAME: preamble::user_input
- #+CAPTION: List of all available flags
+ #+CAPTION: Implementation of getopts
  #+BEGIN_SRC sh :noweb yes
  #########################
  # Constants Declaration #
@@ -153,29 +162,30 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
  readonly REMOTE_LOCATION
  #+END_SRC
 
-** DONE System library                                         :library:bash:
-   CLOSED: [2018-06-15 Fri 22:25]
+** System library                                              :library:bash:
 
  Functions that are used to query or support the system fall under this library.
 
  #+NAME: system_library
- #+BEGIN_SRC 
+ #+BEGIN_SRC sh :noweb yes 
+ 
+ # SYSTEEM LIBRARY
+ 
  <<system::help_dialog>>
  <<system::detect_operating_system>>
  <<system::err>>
- <<system::vcs_repo_root>>
  <<system::check_required_programs>>
+ <<system::vcs_repo_root>>
  <<system::color_initialization>>
  <<system::echo>>
  #+END_SRC
 
-*** DONE Help prompt
-    CLOSED: [2018-06-15 Fri 22:17]
+*** Help prompt
   A quick and effective help function that uses the comments in the flag case block. Scans this file for a "##" in front of a ")" and displays those lines exclusively.
   Restrict comments to single # to avoid unnecessary mixup.
 
   #+NAME: system::help_dialog
-  #+BEGIN_SRC sh :noweb yes
+  #+BEGIN_SRC sh
  ########################################################
  # Displays a list of all flags with their descriptions
  # Globals:
@@ -186,14 +196,13 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
  #   None
  ########################################################
  function system::usage() {
-     echo "$0 usage:" &&              \           
-       grep "[[:space:]].)\ ##" $0 |  \         # Find all line in script that have '##' after a ')' 
+     echo "$0 usage:" &&              \
+       grep "[[:space:]].)\\ ##" "$0" |  \         # Find all line in script that have '##' after a ')'
        sed 's/##//' |                 \         # Replace all '##' with nothing
        sed -r 's/([a-z])\)/-\1/';              # TODO Can't remember
  }
   #+END_SRC
-*** DONE Detect operating system                              :function:bash:
-    CLOSED: [2018-06-15 Fri 22:17]
+*** Detect operating system                                   :function:bash:
  Since this command will be executed by different people of multiple operating systems, I've decided to use as many bash built-ins as possible for portability. However, there are still things that need to be set for each operating system. This code block detects the operating system and makes it available in the variable $MACHINE. I was gonna hack together a way to do this using the uname command but I think using  pre-defined $OSTYPE variable is cleaner.
 
 
@@ -213,7 +222,7 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
 
  #+NAME: system::detect_operating_system
  #+CAPTION: bash function to detect the operating system the shell is running on.
- #+BEGIN_SRC sh :noweb yes
+ #+BEGIN_SRC sh
  #################################################################
  # Detects the operating system that this script is being run on
  # Globals:
@@ -226,17 +235,17 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
  function system::detect_operating_system() {
 
      local MACHINE
-     MACHINE=""      
+     MACHINE=""
     
      case "$OSTYPE" in
 
      #########################################################################
      # *nix systems                                                          #
      #########################################################################
-         solaris*) 
+         solaris*)
              MACHINE="SOLARIS"                                                     # Do people even use Solaris anymore? Gosh, haven't heard this name in a while.
              ;;
-         darwin*) 
+         darwin*)
              MACHINE="OSX"
              ;;
          linux*)
@@ -244,10 +253,10 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
              ;;
          bsd*)
              MACHINE="BSD"
-             ;;    
+             ;;
      #    aix*)
      #        MACHINE="AIX"
-     #        ;;    
+     #        ;;
      #    #Was gonna add AIX but I dunno if it has the $OSTYPE variable and I don't really care.
     
 
@@ -261,11 +270,11 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
              MACHINE="WINDOWS"
 
                                                                                    # We're using uname -s to figure out which shell in Windows we're using.
-             unameOut = "$(uname -s)"
+             unameOut="$(uname -s)"
              case "${unameOut}" in
                  CYGWIN*)
                      MACHINE="WINDOWS-CYGWIN"
-                     # This should work for git shell as well. 
+                     # This should work for git shell as well.
                      # I'm not sure why you're using git-shell to do anything except run git commands but cool. You do you, mate.
                      ;;
                  MINGW32_NT*)
@@ -297,19 +306,18 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
      esac
 
      # Time to return the answer
-     return $MACHINE
+     return "$MACHINE"
  }
  #+END_SRC
 
-*** DONE Sending time-tagged strings into STDERR              :function:bash:
-    CLOSED: [2018-06-15 Fri 22:17]
+*** Sending time-tagged strings into STDERR                   :function:bash:
 
  All error messages should go to STDERR (standard error), including user defined errors. This function attaches a date and time to a string and passes it to STDERR
  Reference: [[https://google.github.io/styleguide/shell.xml?showone=STDOUT_vs_STDERR#STDOUT_vs_STDERR][Google Style Sheet: STDOUT vs STDERR]]
 
  #+NAME: system::err
  #+CAPTION: Function to generate errors and logs with attached date and time.
- #+BEGIN_SRC sh :noweb yes
+ #+BEGIN_SRC sh
  ###########################################################
  # Allows for user to send time-tagged strings into STDERR
  # Globals:
@@ -324,8 +332,7 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
  }
  #+END_SRC
 
-*** DONE Check if required programs are installed             :function:bash:
-    CLOSED: [2018-06-15 Fri 22:17]
+*** Check if required programs are installed                  :function:bash:
  While this should ideally be taken care of by testing on different systems and by using portable bash builtins, there really isn't a substitute to checking if the command/program you're looking for is installed on the computer.
 
  #+NAME: system::check_required_programs
@@ -335,7 +342,7 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
  # Globals:
  #   None
  # Arguments:
- #   
+ #
  # Returns:
  #   None
  #####################################################################################
@@ -349,8 +356,7 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
  }
  #+END_SRC
 
-*** DONE Detect VCS system and find root directory            :function:bash:
-    CLOSED: [2018-06-15 Fri 22:17]
+*** Detect VCS system and find root directory                 :function:bash:
 
  So it turns out that different VCS have different ways of querying for the location of the root folder. Since I've only used git and I've dabbled in Mercurial, this code might be outdated and downright wrong. However, gonna stick this in here since it might be handy.
 
@@ -364,7 +370,7 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
  # Arguments:
  #   None
  # Returns
- #   VCS_REPO_ROOT as String 
+ #   VCS_REPO_ROOT as String
  ##########################################################################################
  function system::vcs_repo_root() {
 
@@ -383,17 +389,18 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
    elif svn ls ./ > /dev/null; then
      # This is a valid svn repository.
      VCS_REPO_ROOT="$(svn info --show-item wc-root)";
-    
+   fi
+ 
    if [[ -z VCS_REPO_ROOT ]]; then
      echo $VCS_REPO_ROOT;
    else
      system:err "Current directory is not within a vcs repository. Terminating program.";
      exit 1;
+   fi 
  }
  #+END_SRC
 
-*** DONE Colors & Text attributes                    :function:constant:bash:
-    CLOSED: [2018-06-15 Fri 22:17]
+*** Colors & Text attributes                         :function:constant:bash:
 
  Because all the colors and fancy effects! Shamelessly stolen from https://github.com/ralish/bash-script-template/blob/stable/template.sh 
 
@@ -413,7 +420,7 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
 
 
  #+NAME: system::color_initialization
- #+BEGIN_SRC sh
+ #+BEGIN_SRC sh :noweb yes
  ################################################
  # Initialise colour variables and text options
  # Global: 
@@ -428,13 +435,15 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
 
          readonly reset_color="$(tput sgr0 2> /dev/null || true)"
          <<colors_text_attributes>>
+
          <<colors_foreground>>
+
          <<colors_background>>
      else
          readonly reset_color=''
          <<colors_null_values>>
      fi
- }        
+ }
  #+END_SRC
 
 **** colors_text_attributes                                   :constant:bash:
@@ -576,10 +585,7 @@ Text attributes can be changed by writing "ta_" followed by the particular text 
  readonly bg_yellow=''
  #+END_SRC
 
-
-
-*** DONE POSIX compliant echo                                 :function:bash:
-    CLOSED: [2018-06-15 Fri 22:17]
+*** POSIX compliant echo                                      :function:bash:
 
  While echo is a rather common tool, it's actually terribly designed. It's only portable if you don't any use flags and it's output isn't consistent. 
  We'll be using printf instead, which is POSIX-compliant and much better designed. As a special function, it will be listed as both system::echo and echo, for ease of use.
@@ -615,9 +621,7 @@ Text attributes can be changed by writing "ta_" followed by the particular text 
  }
 
  function bot() {
-     fg_green
      echo -e "\n $fg_green \[._.]/$fg_black - "$1
-     fg_black 
  }
 
  function running() {
@@ -650,7 +654,8 @@ This allows us to create a list of all applications that we'll need in a single 
   + All configuration files must have a parent headline called 'Configuration' with tag :configuration:
     + If the configuration file is worthy of it's own org file, a link shall be provided for the same.
   + If an application is installed with a programming language's package manager, use an appropriate tag and src block name.
-    - | Language | tag     | src block name  | 
+    - 
+      | Language | tag     | src block name  | 
       | Python 2 | python2 | python2_install |
       | Python 3 | python3 | python3_install |
 
@@ -664,6 +669,10 @@ This allows us to create a list of all applications that we'll need in a single 
   #+END_SRC
 #+END_EXAMPLE
 
+#+NAME: applications_to_install
+#+BEGIN_SRC sh :noweb yes
+  zypper in -y <<install>>
+#+END_SRC
 
 ** Terminal Emulators
 Plenty of shells for a hermit crab to choose. I'm going with fish for my interactive shell and bash for my scripts. Will try zsh for specific types of repositories.
@@ -1109,7 +1118,7 @@ htop
  All configuration options are located in the .htoprc file.
  Stolen from god knows where - seems like everyone uses it.
 
- #+BEGIN_SRC sh
+ #+BEGIN_SRC sh :tangle htoprc.txt
  # Beware! This file is rewritten every time htop exits.
  # The parser is also very primitive, and not human-friendly.
  # (I know, it's in the todo list).
@@ -1139,7 +1148,7 @@ htop
 
 #+NAME: install
 #+BEGIN_SRC sh 
-dropbox 
+dropbox
 #+END_SRC
 
 ** Folder Organization
@@ -1447,7 +1456,6 @@ sudo zypper install python3-virtualenv
  With this, no matter the mode iPython starts, the virtualenv's site-packages will be available in the PYTHONPATH.
 
  Back to our proj3, after activating its virtualenv running workon proj3, you can simply execute ipython to run the interactive mode, or jupyter notebook to get all the fun.
-
 
 ** Pylint
 
