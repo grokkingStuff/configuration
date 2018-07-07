@@ -1197,11 +1197,24 @@ touch ~/Dropbox/Projects
 ln ~/Dropbox/Projects ~/Projects
 #+END_SRC
 
+#+NAME: test
+#+BEGIN_SRC sh 
+@test "Test if the Projects folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Projects ]
+ [ -d ~/Projects ]
+}
+#+END_SRC
 *** Agenda
 #+NAME: organization_folder
 #+BEGIN_SRC sh
 touch ~/Dropbox/Agenda
-ln ~/Dropbox/Agenda ~/Agenda
+#+END_SRC
+
+#+NAME: test
+#+BEGIN_SRC sh 
+@test "Test if the Agenda folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Agenda ]
+}
 #+END_SRC
 
 *** Documents
@@ -1211,11 +1224,27 @@ touch ~/Dropbox/Documents
 ln ~/Dropbox/Documents ~/Documents
 #+END_SRC
 
+#+NAME: test
+#+BEGIN_SRC sh 
+@test "Test if the Documents folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Documents ]
+ [ -d ~/Documents ]
+}
+#+END_SRC
+
 *** Configuration
 #+NAME: organization_folder
 #+BEGIN_SRC sh
 touch ~/Dropbox/Configuration
 ln ~/Dropbox/Configuration ~/Configuration
+#+END_SRC
+
+#+NAME: test
+#+BEGIN_SRC sh 
+@test "Test if the Configuration folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Configuration ]
+ [ -d ~/Configuration ]
+}
 #+END_SRC
 
 *** Archive
@@ -1225,11 +1254,27 @@ touch ~/Dropbox/Archive
 ln ~/Dropbox/Archive ~/Archive
 #+END_SRC
 
+#+NAME: test
+#+BEGIN_SRC sh 
+@test "Test if the Archive folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Archive ]
+ [ -d ~/Archive ]
+}
+#+END_SRC
+
 *** Website
 #+NAME: organization_folder
 #+BEGIN_SRC sh
 touch ~/Dropbox/Website
 ln ~/Dropbox/Website ~/Website
+#+END_SRC
+
+#+NAME: test
+#+BEGIN_SRC sh 
+@test "Test if the Website folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Website ]
+ [ -d ~/Website ]
+}
 #+END_SRC
 
 *** Learning
@@ -1239,11 +1284,27 @@ touch ~/Dropbox/Learning
 ln ~/Dropbox/Learning ~/Learning
 #+END_SRC
 
+#+NAME: test
+#+BEGIN_SRC sh 
+@test "Test if the Learning folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Learning ]
+ [ -d ~/Learning ]
+}
+#+END_SRC
+
 *** Medical
 #+NAME: organization_folder
 #+BEGIN_SRC sh
 touch ~/Dropbox/Medical
 ln ~/Dropbox/Medical ~/Medical
+#+END_SRC
+
+#+NAME: test
+#+BEGIN_SRC sh 
+@test "Test if the Medical folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Medical ]
+ [ -d ~/Medical ]
+}
 #+END_SRC
 
 *** Asset Management
@@ -1253,6 +1314,14 @@ touch ~/Dropbox/AssetManagement
 ln ~/Dropbox/AssetManagement ~/AssetManagement
 #+END_SRC
 
+#+NAME: test
+#+BEGIN_SRC sh 
+@test "Test if the AssetsManagement folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/AssetManagment ]
+ [ -d ~/AssetManagement ]
+}
+#+END_SRC
+
 *** Business
 #+NAME: organization_folder
 #+BEGIN_SRC sh
@@ -1260,11 +1329,27 @@ touch ~/Dropbox/Business
 ln ~/Dropbox/Business ~/Business
 #+END_SRC
 
+#+NAME: test
+#+BEGIN_SRC sh 
+@test "Test if the Business folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Business ]
+ [ -d ~/Business ]
+}
+#+END_SRC
+
 *** Photos
 #+NAME: organization_folder
 #+BEGIN_SRC sh
 touch ~/Dropbox/Photos
 ln ~/Dropbox/Photos ~/Photos
+#+END_SRC
+
+#+NAME: test
+#+BEGIN_SRC sh 
+@test "Test if the Photoes folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Photos ]
+ [ -d ~/Photos ]
+}
 #+END_SRC
 
 ** File Management
