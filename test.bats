@@ -1,4 +1,4 @@
-#!/usr/bin/env bats
+#!./test/libs/bats/bin/bats
 
 @test "Test if applications are installed" {
     command -v fish

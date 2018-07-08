@@ -7,6 +7,7 @@
 
 #+COLUMNS: %25ITEM %TODO %3PRIORITY %TAGS
 
+https://travis-ci.org/grokkingStuff/configuration.svg?branch=master
 
  #+NAME: connect.sh
  #+CAPTION: The overall structure of connect.sh
@@ -670,7 +671,7 @@ git submodule add https://github.com/bats-core/bats-core test/libs/bats-core
 ** Continuous Integration
 We'll be using Travis CI for continuous integration.
 
-#+BEGIN_SRC yaml :tangle .travis.yaml
+#+BEGIN_SRC yaml :tangle travis.yml
 language: bash
 
 script:
