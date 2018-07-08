@@ -655,7 +655,7 @@ Text attributes can be changed by writing "ta_" followed by the particular text 
 We'll be interweaving tests with code in this org file and seperating them in files. 
 
 #+BEGIN_SRC sh :tangle test.bats :noweb yes
-#!/usr/bin/env bats
+#!./test/libs/bats/bin/bats
 
 <<test>>
 #+END_SRC
