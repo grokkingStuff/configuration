@@ -671,7 +671,7 @@ git submodule add https://github.com/bats-core/bats-core test/libs/bats-core
 ** Continuous Integration
 We'll be using Travis CI for continuous integration.
 
-#+BEGIN_SRC yaml :tangle travis.yml
+#+BEGIN_SRC yaml :tangle .travis.yml
 language: bash
 
 script:
