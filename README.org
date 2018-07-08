@@ -68,7 +68,7 @@ Because someone needs to take the blame for when this script goes insane. Seriou
 
 ** DONE License information
    CLOSED: [2018-06-15 Fri 21:59]
-Even if it seems pretentious, it's good to have a license so that other people can use it. Since this code isn't exactly going to be used in a production environment, I'm going to stick a Gsyntax-checkingPL license on it.
+Even if it seems pretentious, it's good to have a license so that other people can use it. Since this code isn't exactly going to be used in a production environment, I'm going to stick a GPL license on it.
 
 #+NAME: license_information
 #+BEGIN_SRC sh :noweb yes
@@ -88,6 +88,7 @@ Even if it seems pretentious, it's good to have a license so that other people c
 # your OWN RISK                                                                     #
 #####################################################################################
 #+END_SRC
+
 
 * Bash Library
 Bash is a pain in the ass to work with if you need to be safe. This library allows you to write bash that's well-organized, somewhat tested, and hopefully cross platform.
@@ -658,6 +659,25 @@ We'll be interweaving tests with code in this org file and seperating them in fi
 
 <<test>>
 #+END_SRC
+
+To pull all these submodules into test/libs, run the below from the root of your git repo and commit the result:
+#+BEGIN_SRC ah
+mkdir -p test/libs
+
+git submodule add https://github.com/bats-core/bats-core test/libs/bats-core
+#+END_SRC
+
+** Continuous Integration
+We'll be using Travis CI for continuous integration.
+
+#+BEGIN_SRC yaml :tangle .travis.yaml
+language: bash
+
+script:
+    - ./test/libs/bats/bin/bats test.bats
+#+END_SRC
+
+
 * Applications to install
 
 In this section, we'll be listing the application name and general info, it's package name for our package manager to install it, and any configuration files related to said software.

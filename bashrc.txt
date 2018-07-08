@@ -32,3 +32,4 @@ done
 
 alias stfu="osascript -e 'set volume output muted true'"
 alias pumpitup="osascript -e 'set volume 7'"
+alias starwars="telnet towel.blinkenlights.nl"
