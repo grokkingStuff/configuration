@@ -7,7 +7,7 @@
 
 #+COLUMNS: %25ITEM %TODO %3PRIORITY %TAGS
 
-https://travis-ci.org/grokkingStuff/configuration.svg?branch=master
+[[https://travis-ci.org/grokkingStuff/configuration.svg?branch=master]]
 
  #+NAME: connect.sh
  #+CAPTION: The overall structure of connect.sh
@@ -88,6 +88,32 @@ Even if it seems pretentious, it's good to have a license so that other people c
 # USAGE WITHOUT ANY WARRANTY, THE SOFTWARE IS PROVIDED "AS IS". USE IT AT           #
 # your OWN RISK                                                                     #
 #####################################################################################
+#+END_SRC
+
+* Tests
+We'll be interweaving tests with code in this org file and seperating them in files. 
+
+#+BEGIN_SRC sh :tangle test.bats :noweb yes
+#!./test/libs/bats/bin/bats
+
+<<test>>
+#+END_SRC
+
+To pull all these submodules into test/libs, run the below from the root of your git repo and commit the result:
+#+BEGIN_SRC ah
+mkdir -p test/libs
+
+git submodule add https://github.com/bats-core/bats-core test/libs/bats-core
+#+END_SRC
+
+** Continuous Integration
+We'll be using Travis CI for continuous integration.
+
+#+BEGIN_SRC yaml :tangle .travis.yml
+language: bash
+
+script:
+    - ./test/libs/bats/bin/bats test.bats
 #+END_SRC
 
 
@@ -651,32 +677,6 @@ Text attributes can be changed by writing "ta_" followed by the particular text 
      echo -e "[error] " "$1"
  }
   #+End_SRC
-
-* Tests
-We'll be interweaving tests with code in this org file and seperating them in files. 
-
-#+BEGIN_SRC sh :tangle test.bats :noweb yes
-#!./test/libs/bats/bin/bats
-
-<<test>>
-#+END_SRC
-
-To pull all these submodules into test/libs, run the below from the root of your git repo and commit the result:
-#+BEGIN_SRC ah
-mkdir -p test/libs
-
-git submodule add https://github.com/bats-core/bats-core test/libs/bats-core
-#+END_SRC
-
-** Continuous Integration
-We'll be using Travis CI for continuous integration.
-
-#+BEGIN_SRC yaml :tangle .travis.yml
-language: bash
-
-script:
-    - ./test/libs/bats/bin/bats test.bats
-#+END_SRC
 
 
 * Applications to install
@@ -1714,7 +1714,6 @@ When searching for a key with --search-keys, include keys that are marked on the
 #+BEGIN_SRC sh
 keyserver-options include-revoked
 #+END_SRC
-
 
 ** algorithm and ciphers
 list of personal digest preferences. When multiple digests are supported by all recipients, choose the strongest one
