@@ -43,8 +43,9 @@
 # Hello there!
 echo "
 <<test>>
-" > test.bats
-bats test.bats
+<<test_>>
+" > test_install.bats
+bats test_install.bats
 
    }
 
@@ -110,7 +111,18 @@ git submodule add https://github.com/bats-core/bats-core test/libs/bats-core
 We'll be using Travis CI for continuous integration.
 
 #+BEGIN_SRC yaml :tangle .travis.yml
+before_install: 
+- docker pull opensuse/tumbleweed # Use opensuse Tumbleweed as test
+- docker run -d -p 127.0.0.1:80:4567 opensuse/tumbleweed /bin/sh -c "cd /root/sinatra; bundle exec foreman start;"
+- docker ps -a
+- docker run opensuse/tumbleweed /bin/sh -c "cd /root/sinatra; bundle exec rake test"
+
+
+
+sudo: required
 language: bash
+services:
+  - docker
 
 script:
     - ./test/libs/bats/bin/bats test.bats
@@ -861,7 +873,6 @@ Don't remember who showed me this in the fifth grade but it's awesome and it stu
 alias starwars="telnet towel.blinkenlights.nl"
 #+END_SRC
 
-
 *** zsh                                                         :application:
 **** Installation                                                   :install:
 #+NAME: install
@@ -915,6 +926,33 @@ tor
 #+BEGIN_SRC sh :padline no :tangle no :noweb yes
 emacs
 #+END_SRC
+
+
+** cURL configurations options
+
+ https://curl.haxx.se/docs/manpage.html
+
+
+*** Limit the time (in seconds) the connection is allowed to take.
+ #+BEGIN_SRC sh
+ connect-timeout = 60
+ #+END_SRC
+*** Follow HTTP redirects.
+ #+BEGIN_SRC sh
+ location
+ #+END_SRC
+*** Display progress as a simple progress bar.
+ #+BEGIN_SRC sh
+ progress-bar
+ #+END_SRC
+*** Show error messages.
+ #+BEGIN_SRC sh
+ show-error
+ #+END_SRC
+*** Send a fake UA string for the HTTP servers that sniff it.
+ #+BEGIN_SRC sh
+ user-agent = "Mozilla/5.0 Gecko"
+ #+END_SRC
 
 ** Version Control
 *** Git                                                         :application:
@@ -1223,12 +1261,11 @@ fi
 #+END_SRC
 
 ** Dropbox
-
+*** Installation                                                    :install:
 #+NAME: install
 #+BEGIN_SRC sh 
 dropbox
 #+END_SRC
-
 ** Folder Organization
 *** Projects
 #+NAME: organization_folder
@@ -1237,7 +1274,7 @@ touch ~/Dropbox/Projects
 ln ~/Dropbox/Projects ~/Projects
 #+END_SRC
 
-#+NAME: test
+#+NAME: test_
 #+BEGIN_SRC sh 
 @test "Test if the Projects folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Projects ]
@@ -1250,7 +1287,7 @@ ln ~/Dropbox/Projects ~/Projects
 touch ~/Dropbox/Agenda
 #+END_SRC
 
-#+NAME: test
+#+NAME: test_
 #+BEGIN_SRC sh 
 @test "Test if the Agenda folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Agenda ]
@@ -1264,7 +1301,7 @@ touch ~/Dropbox/Documents
 ln ~/Dropbox/Documents ~/Documents
 #+END_SRC
 
-#+NAME: test
+#+NAME: test_
 #+BEGIN_SRC sh 
 @test "Test if the Documents folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Documents ]
@@ -1273,13 +1310,29 @@ ln ~/Dropbox/Documents ~/Documents
 #+END_SRC
 
 *** Configuration
+
+
+- org-agenda integration
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-files
+    (file-expand-wildcards "~/Proposals/*.org")
+    (file-expand-wildcards "~/Projects/*.org")
+    (file-expand-wildcards "~/PersonalDevelopment/*.org")
+    (file-expand-wildcards "~/College/*.org")
+    (file-expand-wildcards "~/Business/*.org")
+    (file-expand-wildcards "~/Finances/*.org")
+)
+#+END_SRC emacs-lisp
+
+
+
 #+NAME: organization_folder
 #+BEGIN_SRC sh
 touch ~/Dropbox/Configuration
 ln ~/Dropbox/Configuration ~/Configuration
 #+END_SRC
 
-#+NAME: test
+#+NAME: test_
 #+BEGIN_SRC sh 
 @test "Test if the Configuration folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Configuration ]
@@ -1294,7 +1347,7 @@ touch ~/Dropbox/Archive
 ln ~/Dropbox/Archive ~/Archive
 #+END_SRC
 
-#+NAME: test
+#+NAME: test_
 #+BEGIN_SRC sh 
 @test "Test if the Archive folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Archive ]
@@ -1309,7 +1362,7 @@ touch ~/Dropbox/Website
 ln ~/Dropbox/Website ~/Website
 #+END_SRC
 
-#+NAME: test
+#+NAME: test_
 #+BEGIN_SRC sh 
 @test "Test if the Website folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Website ]
@@ -1324,7 +1377,7 @@ touch ~/Dropbox/Learning
 ln ~/Dropbox/Learning ~/Learning
 #+END_SRC
 
-#+NAME: test
+#+NAME: test_
 #+BEGIN_SRC sh 
 @test "Test if the Learning folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Learning ]
@@ -1339,7 +1392,7 @@ touch ~/Dropbox/Medical
 ln ~/Dropbox/Medical ~/Medical
 #+END_SRC
 
-#+NAME: test
+#+NAME: test_
 #+BEGIN_SRC sh 
 @test "Test if the Medical folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Medical ]
@@ -1354,7 +1407,7 @@ touch ~/Dropbox/AssetManagement
 ln ~/Dropbox/AssetManagement ~/AssetManagement
 #+END_SRC
 
-#+NAME: test
+#+NAME: test_
 #+BEGIN_SRC sh 
 @test "Test if the AssetManagement folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/AssetManagement ]
@@ -1363,59 +1416,6 @@ ln ~/Dropbox/AssetManagement ~/AssetManagement
 #+END_SRC
 
 *** Contacts
-** File Management
-
-*** organizer.org
-
-Items that should be in organizer.org
-
-- Tasks
-- Important dates
-  + Anniversary
-  + Expiry Date of Credit Cards
-    Inform one week in advance
-  + Bills to be paid
-  + Membership days
-  + Religious Holiday
-  + Government Holiday
-  + Conference Periods
-  + College Events
-
-
-
-#+NAME: organization_file
-#+BEGIN_SRC sh
-touch ~/Dropbox/organizer.org
-ln ~/Dropbox/organizer.org ~/organizer.org
-# Place in Agenda for org-agenda
-mkdir -p ~/Dropbox/Agenda
-ln ~/Dropbox/organizer.org ~/Dropbox/Agenda/organizer.org
-#+END_SRC
-
-*** refile.org
-
-Main org file for org-capture and todo tasks.
-#+NAME: organization_file
-#+BEGIN_SRC sh
-touch ~/Dropbox/refile.org
-ln ~/Dropbox/refile.org ~/refile.org
-# Place in Agenda for org-agenda
-mkdir -p ~/Dropbox/Agenda
-ln ~/Dropbox/refile.org ~/Dropbox/Agenda/refile.org
-#+END_SRC
-
-*** meeting.org
-
-For meetings that would have been in organizer.org
-#+NAME: organization_file
-#+BEGIN_SRC sh
-touch ~/Dropbox/meeting.org
-ln ~/Dropbox/meeting.org ~/meeting.org
-# Place in Agenda for org-agenda
-mkdir -p ~/Dropbox/Agenda
-ln ~/Dropbox/meeting.org ~/Dropbox/Agenda/meeting.org
-#+END_SRC
-
 * Python Environment Configuration
 #+NAME: python
 #+BEGIN_SRC sh :noweb yes
@@ -1610,33 +1610,6 @@ sudo ./install.sh /usr/local
 #+END_SRC
 
 
-* cURL configurations options
-
-https://curl.haxx.se/docs/manpage.html
-
-
-** Limit the time (in seconds) the connection is allowed to take.
-#+BEGIN_SRC sh
-connect-timeout = 60
-#+END_SRC
-** Follow HTTP redirects.
-#+BEGIN_SRC sh
-location
-#+END_SRC
-** Display progress as a simple progress bar.
-#+BEGIN_SRC sh
-progress-bar
-#+END_SRC
-** Show error messages.
-#+BEGIN_SRC sh
-show-error
-#+END_SRC
-** Send a fake UA string for the HTTP servers that sniff it.
-#+BEGIN_SRC sh
-user-agent = "Mozilla/5.0 Gecko"
-#+END_SRC
-
-
 
 
 * gpg.conf
@@ -1739,234 +1712,4 @@ default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 ZLIB
 #+END_SRC
 
 
-* File management
-
-- org-agenda integration
-#+BEGIN_SRC emacs-lisp
-(setq org-agenda-files
-    (file-expand-wildcards "~/Proposals/*.org")
-    (file-expand-wildcards "~/Projects/*.org")
-    (file-expand-wildcards "~/PersonalDevelopment/*.org")
-    (file-expand-wildcards "~/College/*.org")
-    (file-expand-wildcards "~/Business/*.org")
-    (file-expand-wildcards "~/Finances/*.org")
-)
-#+END_SRC emacs-lisp
-
-
-** organizer.org
-*** Tasks
-  :PROPERTIES:
-  :CATEGORY: Task
-  :END:
-*** Important dates
-  :PROPERTIES:
-  :CATEGORY: Date
-  :END:
-**** Anniversary
-**** Expiry Date of Credit Cards
-Inform one week in advance
-**** Bills to be paid
-**** Membership days
-**** Religious Holiday
-**** Government Holiday
-**** Conference Periods
-**** College Events
-
-** refile.org
-Main org file for org-capture and todo tasks
-** Proposals
-For all the evil plans you have for the future.
-*** commercial_ideas.org
-*** whimsical_ideas.org
-*** proposals.org
-*** Subfolder 1
-** Configuration
-All your config files are to be stored here
-*** config.org
-For all your configuration file definitions
-*** emacs_configuration.org
-*** projectManagement.org
-*** secrets.org
-For account information and ssh keys.
-** Archive
-For archived documents that don't quite have a home but can't be deleted
-*** archive.org
-Archived sub trees
-** Website :website:
-*** website.org
-For website source code
-*** blog.org
-Topic index for my blog
-
-** Personal Development
-*** online_learning.org
-For all your online learning todos and planning
-**** lynda
-**** mit ocw
-**** coursera
-*** improvements.org
-** College
-*** college.org
-All class information and deadlines. Treat as read-only during semester unless the professor gives test details during the semester.
-*** Current Semester
-**** Class 1
-***** notes.org
-***** textbook.pdf
-***** Office Lens Scans
-Not just Office Lens Scans but all scans in general. Just going to use Office Lens a lot.
-Treat this folder as read only - don't delete anything.
-***** Old Papers
-**** Class 2
-***** notes.org
-***** textbook.pdf
-***** Office Lens Scans
-***** Old Papers
-*** Previous semesters
-** Business
-*** business.org
-
-**** System Maintenance
-  :PROPERTIES:
-  :CATEGORY: Maintenance
-  :END:
-**** Payroll
-  :PROPERTIES:
-  :CATEGORY: Payroll
-  :END:
-**** Accounting
-  :PROPERTIES:
-  :CATEGORY: Accounting
-  :END:
-**** Finances
-  :PROPERTIES:
-  :CATEGORY: Finance
-  :END:
-**** Hardware Maintenance
-  :PROPERTIES:
-  :CATEGORY: Hardware
-  :END:
-**** Tasks
-  :PROPERTIES:
-  :CATEGORY: Task
-  :END:
-**** Research and Development
-  :PROPERTIES:
-  :CATEGORY: Idea
-  :END:
-**** Notes
-  :PROPERTIES:
-  :CATEGORY: Note
-  :END:
-**** Purchase Order Tracking
-  :PROPERTIES:
-  :CATEGORY: PurchaseOrder
-  :END:
-**** Passwords
-  :PROPERTIES:
-  :CATEGORY: Password
-  :END:
-**** Clients & Associates
-  :PROPERTIES:
-  :CATEGORY: Contact
-  :END:
-**** Procedures
-  :PROPERTIES:
-  :CATEGORY: Workflow
-  :END:
-**** Checklists
-  :PROPERTIES:
-  :CATEGORY: Checklist
-  :END:
-
-
-**** COMMENT Stolen from somewhere
-Business-related information and plans
-- Clients
-- Procedures
-- Associates
-- Media
-- Checklists
-- Work-in-progress
-
-**** COMMENT Stolen from http://doc.norang.ca/org-mode.html#OrgFileStructure 
-***** System Maintenance
-***** Payroll
-***** Accounting
-***** Finances
-***** Hardware Maintenance
-***** Tasks
-***** Research and Development
-***** Notes
-***** Purchase Order Tracking
-***** Passwords
-
-*** contacts.org
-** Finances
-*** Banks
-  :PROPERTIES:
-  :CATEGORY: Bank
-  :END:
-**** Account 1 - Bank 1
-***** Account Number
-***** Billing Address
-
-*** Money
-  :PROPERTIES:
-  :CATEGORY: Money
-  :END:
-**** Archive
-** Medical
-*** medical.org for context and information
-**** NMC Deira
-**** NIMHANS
-**** Medical Archive
-
-** Asset Management
-Need more advice here
-*** Real Estate
-Not exactly applicable now but should be in the future.
-*** Vehicles
-Not a concern now but will be in the future.
-*** Warranties
-Should keep scans of the warranty sticker
-*** Electronics
-*** Home Inventory
-Mainly the fancier ones that require upkeep.
-** Photos
-Organized by trip.
-** Documents
-*** Passport 
-*** ID
-**** Emirates ID
-**** Aadhar Card
-**** Buzzcard
-**** Driver's License
-***** Dubai
-***** United States
-
-*** CV
-Don't delete them anymore. Sort by year
-*** Georgia Tech
-*** US Admission
-*** Medical
-*** Digital Files
-*** Misc Files
-*** US Admission
-*** CBSE - JEE
-*** IIST
-*** MIT
-*** Music
-*** National Olympiads
-*** Organic Charts
-*** Physics Project
-*** Pictures
-*** Plancess Demo CD
-*** Ridge View
-*** Travel Doc - Reservations
-*** US
-*** Vijaygiri
-*** Vish
-*** Vish - Digital Files + Photos
-*** Vishakh's Essays
 

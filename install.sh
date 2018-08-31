@@ -377,8 +377,6 @@
        #touch ~/Dropbox/Agenda
        #touch ~/Dropbox/Documents
        #ln ~/Dropbox/Documents ~/Documents
-       #touch ~/Dropbox/Configuration
-       #ln ~/Dropbox/Configuration ~/Configuration
        #touch ~/Dropbox/Archive
        #ln ~/Dropbox/Archive ~/Archive
        #touch ~/Dropbox/Website
@@ -390,21 +388,7 @@
        #touch ~/Dropbox/AssetManagement
        #ln ~/Dropbox/AssetManagement ~/AssetManagement
    
-       #touch ~/Dropbox/organizer.org
-       #ln ~/Dropbox/organizer.org ~/organizer.org
-       ## Place in Agenda for org-agenda
-       #mkdir -p ~/Dropbox/Agenda
-       #ln ~/Dropbox/organizer.org ~/Dropbox/Agenda/organizer.org
-       #touch ~/Dropbox/refile.org
-       #ln ~/Dropbox/refile.org ~/refile.org
-       ## Place in Agenda for org-agenda
-       #mkdir -p ~/Dropbox/Agenda
-       #ln ~/Dropbox/refile.org ~/Dropbox/Agenda/refile.org
-       #touch ~/Dropbox/meeting.org
-       #ln ~/Dropbox/meeting.org ~/meeting.org
-       ## Place in Agenda for org-agenda
-       #mkdir -p ~/Dropbox/Agenda
-       #ln ~/Dropbox/meeting.org ~/Dropbox/Agenda/meeting.org
+       #
    fi
    bot "Created organization!"
 #####################################################################################################
@@ -424,6 +408,9 @@ echo "
     command -v htop
     command -v dropbox
     command -v bats
+}
+@test "Check if pyenv has installed successfully" {
+    command -v pyenv
 }
 @test "Test if the Projects folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Projects ]
@@ -460,11 +447,8 @@ echo "
  [ -d ~/Dropbox/AssetManagement ]
  [ -d ~/AssetManagement ]
 }
-@test "Check if pyenv has installed successfully" {
-    command -v pyenv
-}
-" > test.bats
-bats test.bats
+" > test_install.bats
+bats test_install.bats
 
    }
 
