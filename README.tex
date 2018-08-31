@@ -1,4 +1,4 @@
-% Created 2018-08-31 Fri 19:06
+% Created 2018-08-31 Fri 22:01
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -35,7 +35,7 @@
 
 \begin{verbatim}
 #!/usr/bin/env bash
-## Description: Connects to remote server and relays local changes made in git repo and opens a shell in remote server.
+## Description: Main install script
 
 
                   ################################################
@@ -379,6 +379,7 @@ function main() {
 #####################################################################################################
    bot "Installing Applications!"
    echo "\
+   libnotify-tools
    vocal
    readline-devel sqlite3-devel libbz2-devel zlib-devel libopenssl-devel
    python3-virtualenv
@@ -489,11 +490,11 @@ bats test_install.bats
 
 main "$@"
 \end{verbatim}
-\captionof{figure}{\label{org1b336c8}
-The overall structure of connect.sh}
+\captionof{figure}{\label{orgb86b2dd}
+The overall structure of install.sh}
 
 \subsection{Author Information}
-\label{sec:org1606ccd}
+\label{sec:org7ca383b}
 Because someone needs to take the blame for when this script goes insane.
 Seriously, someone take this piece of shit code from me and make it better.
 Free brownies for whoever does that.
@@ -510,7 +511,7 @@ Free brownies for whoever does that.
 \end{verbatim}
 
 \subsubsection{Spacemacs Configuration\hfill{}\textsc{spacemacs}}
-\label{sec:orgf6448d4}
+\label{sec:orge71ed62}
 \begin{verbatim}
 (setq user-full-name "Vishakh Kumar"
       user-mail-address "vishakhpradeepkumar@gmail.com")
@@ -520,7 +521,7 @@ Free brownies for whoever does that.
 \end{verbatim}
 
 \subsection{License information}
-\label{sec:org0e9c56c}
+\label{sec:orge930583}
 Even if it seems pretentious, it's good to have a license so that other people can use it. Since this code isn't exactly going to be used in a production environment, I'm going to stick a GPL license on it.
 
 \begin{verbatim}
@@ -542,7 +543,7 @@ Even if it seems pretentious, it's good to have a license so that other people c
 \end{verbatim}
 
 \section{Tests}
-\label{sec:org9dbd8df}
+\label{sec:org4ba750a}
 We'll be interweaving tests with code in this org file and seperating them in files. 
 
 \begin{verbatim}
@@ -575,7 +576,7 @@ git submodule add https://github.com/bats-core/bats-core test/libs/bats-core
 \end{verbatim}
 
 \subsection{Continuous Integration}
-\label{sec:orgae6c26e}
+\label{sec:org479e571}
 We'll be using Travis CI for continuous integration.
 
 \begin{verbatim}
@@ -598,15 +599,15 @@ script:
 
 
 \section{Bash Helper Functions}
-\label{sec:org66673a6}
+\label{sec:org8645d9c}
 Bash is a pain in the ass to work with if you need to be safe. This library allows you to write bash that's well-organized, somewhat tested, and hopefully cross platform.
 
 \subsection{Preamble}
-\label{sec:orgeb49d1c}
+\label{sec:org1114dc8}
 For all the stuff that doesn't really matter to the structure of the program but is quite important for everything else.
 Most of this should be taken care of by the configBot.
 \subsubsection{Example of an implementation of getopts and constants that's not bad}
-\label{sec:org40a89c0}
+\label{sec:org7c2cd0b}
 \begin{verbatim}
 #########################
 # Constants Declaration #
@@ -680,7 +681,7 @@ readonly REMOTE_LOCATION
 \captionof{figure}{Implementation of getopts}
 
 \subsection{System library\hfill{}\textsc{library:bash}}
-\label{sec:org86e62bc}
+\label{sec:orgada93e1}
 
 Functions that are used to query or support the system fall under this library.
 
@@ -1009,7 +1010,7 @@ function error() {
 \end{verbatim}
 
 \subsubsection{Help prompt}
-\label{sec:org76df6c4}
+\label{sec:org02d8846}
 A quick and effective help function that uses the comments in the flag case block. Scans this file for a "\#\#" in front of a ")" and displays those lines exclusively.
 Restrict comments to single \# to avoid unnecessary mixup.
 
@@ -1031,7 +1032,7 @@ function system::usage() {
 }
 \end{verbatim}
 \subsubsection{Detect operating system\hfill{}\textsc{function:bash}}
-\label{sec:org97803f6}
+\label{sec:org84c4553}
 Since this command will be executed by different people of multiple operating systems, I've decided to use as many bash built-ins as possible for portability. However, there are still things that need to be set for each operating system. This code block detects the operating system and makes it available in the variable \$MACHINE. I was gonna hack together a way to do this using the uname command but I think using pre-defined \$OSTYPE variable is cleaner.
 
 \begin{verbatim}
@@ -1121,11 +1122,11 @@ function system::detect_operating_system() {
     return "$MACHINE"
 }
 \end{verbatim}
-\captionof{figure}{\label{orgb482c83}
+\captionof{figure}{\label{orgc20ea46}
 bash function to detect the operating system the shell is running on.}
 
 \subsubsection{Sending time-tagged strings into STDERR\hfill{}\textsc{function:bash}}
-\label{sec:orgb4fae8d}
+\label{sec:org436e962}
 
 All error messages should go to STDERR (standard error), including user defined errors. This function attaches a date and time to a string and passes it to STDERR
 Reference: \href{https://google.github.io/styleguide/shell.xml?showone=STDOUT\_vs\_STDERR\#STDOUT\_vs\_STDERR}{Google Style Sheet: STDOUT vs STDERR}
@@ -1144,11 +1145,11 @@ function system::err() {
   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*" >&2
 }
 \end{verbatim}
-\captionof{figure}{\label{org1f264fa}
+\captionof{figure}{\label{orgc3e1c8b}
 Function to generate errors and logs with attached date and time.}
 
 \subsubsection{Check if required programs are installed\hfill{}\textsc{function:bash}}
-\label{sec:orgd03c6fc}
+\label{sec:org6ca7f37}
 While this should ideally be taken care of by testing on different systems and by using portable bash builtins, there really isn't a substitute to checking if the command/program you're looking for is installed on the computer.
 
 \begin{verbatim}
@@ -1172,7 +1173,7 @@ function system::check_required_programs() {
 \end{verbatim}
 
 \subsubsection{Detect VCS system and find root directory\hfill{}\textsc{function:bash}}
-\label{sec:org7a35f00}
+\label{sec:org2760ca8}
 
 So it turns out that different VCS have different ways of querying for the location of the root folder. Since I've only used git and I've dabbled in Mercurial, this code might be outdated and downright wrong. However, gonna stick this in here since it might be handy.
 
@@ -1212,11 +1213,11 @@ function system::vcs_repo_root() {
   fi 
 }
 \end{verbatim}
-\captionof{figure}{\label{org0975fea}
+\captionof{figure}{\label{org1ebe3f5}
 Function to return root of vcs repository when possible}
 
 \subsubsection{Colors \& Text attributes\hfill{}\textsc{function:constant:bash}}
-\label{sec:org0982ee0}
+\label{sec:orgd85065a}
 
 Because all the colors and fancy effects! Shamelessly stolen from \url{https://github.com/ralish/bash-script-template/blob/stable/template.sh} 
 
@@ -1334,7 +1335,7 @@ function colour_init() {
 \end{verbatim}
 
 \paragraph{colors\(_{\text{text}}\)\(_{\text{attributes}}\)\hfill{}\textsc{constant:bash}}
-\label{sec:org0edff00}
+\label{sec:org7417266}
 
 Text attributes can be changed by writing "ta\_" followed by the particular text attribute you want. The options are:
 
@@ -1371,7 +1372,7 @@ printf '%b' "$ta_none"
 \end{verbatim}
 
 \paragraph{colors\(_{\text{foreground}}\)\hfill{}\textsc{constant:bash}}
-\label{sec:org82b54e9}
+\label{sec:org6059b43}
 
 \begin{table}[htbp]
 \caption{Colors available for tput}
@@ -1413,7 +1414,7 @@ printf '%b' "$ta_none"
 \end{verbatim}
 
 \paragraph{colors\(_{\text{background}}\)\hfill{}\textsc{constant:bash}}
-\label{sec:org914d50d}
+\label{sec:org3bcc3a6}
 
 \begin{table}[htbp]
 \caption{Colors available for tput}
@@ -1455,7 +1456,7 @@ printf '%b' "$ta_none"
 \end{verbatim}
 
 \paragraph{colors\(_{\text{null}}\)\(_{\text{values}}\)\hfill{}\textsc{constant:bash}}
-\label{sec:org398b5e4}
+\label{sec:org7b43a7c}
 If we don't use colors in our code but still put references to it in our code, it might cause annoying issues.
 We'll be setting them to '' so that nothing happens and our code is safe.
 \begin{verbatim}
@@ -1488,7 +1489,7 @@ readonly bg_yellow=''
 \end{verbatim}
 
 \subsubsection{POSIX compliant echo\hfill{}\textsc{function:bash}}
-\label{sec:org0d0cf15}
+\label{sec:orgd6e49a8}
 
 While echo is a rather common tool, it's actually terribly designed. It's only portable if you don't any use flags and it's output isn't consistent. 
 We'll be using printf instead, which is POSIX-compliant and much better designed. As a special function, it will be listed as both system::echo and echo, for ease of use.
@@ -1543,7 +1544,7 @@ function error() {
 }
 \end{verbatim}
 \section{Organization}
-\label{sec:org861554b}
+\label{sec:org8ffae52}
 \begin{verbatim}
 if [ -d "~/Dropbox" ]; then
     dropbox start
@@ -1570,16 +1571,16 @@ fi
 \end{verbatim}
 
 \subsection{Dropbox}
-\label{sec:org0356fed}
+\label{sec:orga8ed5de}
 \subsubsection{Installation\hfill{}\textsc{install}}
-\label{sec:org364b5c2}
+\label{sec:org42974b9}
 \begin{verbatim}
 dropbox
 \end{verbatim}
 \subsection{Folder Organization}
-\label{sec:org845596e}
+\label{sec:org1ce7858}
 \subsubsection{Projects}
-\label{sec:org1fc13ff}
+\label{sec:org426a5d0}
 \begin{verbatim}
 touch ~/Dropbox/Projects
 ln ~/Dropbox/Projects ~/Projects
@@ -1592,7 +1593,7 @@ ln ~/Dropbox/Projects ~/Projects
 }
 \end{verbatim}
 \subsubsection{Agenda}
-\label{sec:orgfb8fcd1}
+\label{sec:orgfdc17e2}
 \begin{verbatim}
 touch ~/Dropbox/Agenda
 \end{verbatim}
@@ -1604,7 +1605,7 @@ touch ~/Dropbox/Agenda
 \end{verbatim}
 
 \subsubsection{Documents}
-\label{sec:orgf9e522c}
+\label{sec:org33bf646}
 \begin{verbatim}
 touch ~/Dropbox/Documents
 ln ~/Dropbox/Documents ~/Documents
@@ -1618,7 +1619,7 @@ ln ~/Dropbox/Documents ~/Documents
 \end{verbatim}
 
 \subsubsection{Configuration}
-\label{sec:org192b5e9}
+\label{sec:orgf989de3}
 
 
 \begin{itemize}
@@ -1651,7 +1652,7 @@ ln ~/Dropbox/Configuration ~/Configuration
 \end{verbatim}
 
 \subsubsection{Archive}
-\label{sec:org9597485}
+\label{sec:org6ab7665}
 \begin{verbatim}
 touch ~/Dropbox/Archive
 ln ~/Dropbox/Archive ~/Archive
@@ -1665,7 +1666,7 @@ ln ~/Dropbox/Archive ~/Archive
 \end{verbatim}
 
 \subsubsection{Website}
-\label{sec:org7ed4daf}
+\label{sec:org5ebd413}
 \begin{verbatim}
 touch ~/Dropbox/Website
 ln ~/Dropbox/Website ~/Website
@@ -1679,7 +1680,7 @@ ln ~/Dropbox/Website ~/Website
 \end{verbatim}
 
 \subsubsection{Learning}
-\label{sec:org3b06697}
+\label{sec:org2d91bb6}
 \begin{verbatim}
 touch ~/Dropbox/Learning
 ln ~/Dropbox/Learning ~/Learning
@@ -1693,7 +1694,7 @@ ln ~/Dropbox/Learning ~/Learning
 \end{verbatim}
 
 \subsubsection{Medical}
-\label{sec:org5d42a16}
+\label{sec:org7dea7c5}
 \begin{verbatim}
 touch ~/Dropbox/Medical
 ln ~/Dropbox/Medical ~/Medical
@@ -1707,7 +1708,7 @@ ln ~/Dropbox/Medical ~/Medical
 \end{verbatim}
 
 \subsubsection{Asset Management}
-\label{sec:org639e493}
+\label{sec:org3f5b26c}
 \begin{verbatim}
 touch ~/Dropbox/AssetManagement
 ln ~/Dropbox/AssetManagement ~/AssetManagement
@@ -1721,10 +1722,10 @@ ln ~/Dropbox/AssetManagement ~/AssetManagement
 \end{verbatim}
 
 \subsubsection{Contacts}
-\label{sec:org05b6a59}
+\label{sec:org975b4c0}
 
 \section{Applications}
-\label{sec:org010d6fe}
+\label{sec:org5b04dac}
 
 In this section, we'll be listing the application name and general info, its package name for our package manager to install it, and any configuration files related to said software.
 
@@ -1767,6 +1768,7 @@ Python 3 & python3 & python3\(_{\text{install}}\)\\
 
 \begin{verbatim}
 echo "\
+libnotify-tools
 vocal
 readline-devel sqlite3-devel libbz2-devel zlib-devel libopenssl-devel
 python3-virtualenv
@@ -1807,36 +1809,36 @@ echo "\n\n"
 }
 \end{verbatim}
 
-\subsection{Terminal Emulators}
-\label{sec:org4708ac2}
-Plenty of shells for a hermit crab to choose. I'm going with fish for my interactive shell and bash for my scripts. Will try zsh for specific types of repositories.
+\subsection{Shells}
+\label{sec:orgce4edff}
+Plenty of shells for a hermit crab to choose. I'm going with fish for my interactive shell and bash for my scripts. This lets me have portable scripts while having a decent shell to work with. Will try zsh for specific types of repositories.
 \subsubsection{fish\hfill{}\textsc{application}}
-\label{sec:orgba558dd}
+\label{sec:org301bb3a}
 \paragraph{Installation\hfill{}\textsc{install}}
-\label{sec:orgae8a345}
+\label{sec:org664c2a2}
 \begin{verbatim}
 fish
 \end{verbatim}
 
 \subsubsection{bash\hfill{}\textsc{application}}
-\label{sec:orgc4ac1ce}
+\label{sec:org66ab0f9}
 \paragraph{Installation\hfill{}\textsc{install}}
-\label{sec:org443e12c}
+\label{sec:org8e50fea}
 While you shouldn't really have to install bash on a system (since it should just be there), I'm adding this for the sake of completionists everywhere.
 \begin{verbatim}
 bash
 \end{verbatim}
 
 \paragraph{Configuration\hfill{}\textsc{configuration}}
-\label{sec:orga27a95a}
+\label{sec:orgc2d1ae8}
 
 Home is where \sout{the heart is} your aliases are
 
 \subparagraph{Navigation}
-\label{sec:org912745c}
+\label{sec:orgbd17e9e}
 \begin{itemize}
 \item Easier navigation: .., \ldots{}, \ldots{}., and \ldots{}..
-\label{sec:orgc551e20}
+\label{sec:orgcf2dcbf}
 \begin{verbatim}
 alias ..="cd .."
 alias ...="cd ../.."
@@ -1844,14 +1846,14 @@ alias ....="cd ../../.."
 alias .....="cd ../../../.."
 \end{verbatim}
 \item Shortcuts to commonly used folders
-\label{sec:org2dc83dc}
+\label{sec:org7251325}
 \begin{verbatim}
 alias downloads="cd ~/Downloads"
 alias desktop="cd ~/Desktop"
 alias projects="cd ~/Projects"
 \end{verbatim}
 \item Shortcuts to commonly used commands
-\label{sec:org15f4f6f}
+\label{sec:org39c20ca}
 \begin{verbatim}
 alias g="git"
 alias h="history"
@@ -1859,10 +1861,10 @@ alias h="history"
 \end{itemize}
 
 \subparagraph{grep}
-\label{sec:orgebc4cce}
+\label{sec:org67cf9c7}
 \begin{itemize}
 \item Always enable colored `grep` output
-\label{sec:org5d60556}
+\label{sec:orgd1d5223}
 \begin{verbatim}
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
@@ -1871,50 +1873,50 @@ alias egrep='egrep --color=auto'
 \end{itemize}
 
 \subparagraph{Enable aliases to be sudo’ed}
-\label{sec:orgf3b9d91}
+\label{sec:orgc71c5dc}
 \begin{verbatim}
 alias sudo='sudo '
 \end{verbatim}
 
 \subparagraph{Get week number}
-\label{sec:org6e3542f}
+\label{sec:orgd12ecc2}
 \begin{verbatim}
 alias week='date +%V'
 \end{verbatim}
 
 \subparagraph{Stopwatch}
-\label{sec:org1a34d00}
+\label{sec:orgd1ab774}
 \begin{verbatim}
 alias timer='echo "Timer started. Stop with Ctrl-D." && date && time cat && date'
 \end{verbatim}
 \subparagraph{Encryption}
-\label{sec:org8f5905b}
+\label{sec:orge1fa5b9}
 \begin{itemize}
 \item OS X has no `md5sum`, so use `md5` as a fallback
-\label{sec:org447a96a}
+\label{sec:org109901f}
 \begin{verbatim}
 command -v md5sum > /dev/null || alias md5sum="md5"
 \end{verbatim}
 \item OS X has no `sha1sum`, so use `shasum` as a fallback
-\label{sec:org9fc619b}
+\label{sec:org52b5686}
 \begin{verbatim}
 command -v sha1sum > /dev/null || alias sha1sum="shasum"
 \end{verbatim}
 \item Canonical hex dump; some systems have this symlinked
-\label{sec:org6148e75}
+\label{sec:org19be368}
 \begin{verbatim}
 command -v hd > /dev/null || alias hd="hexdump -C"
 \end{verbatim}
 \end{itemize}
 
 \subparagraph{Intuitive map function}
-\label{sec:orgb7fdf8b}
+\label{sec:orgde47aa2}
 \begin{verbatim}
 alias map="xargs -n1"
 \end{verbatim}
 
 \subparagraph{One of @janmoesen’s ProTip™s}
-\label{sec:orgb2a7905}
+\label{sec:org820c261}
 \begin{verbatim}
 for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
   alias "$method"="lwp-request -m '$method'"
@@ -1922,17 +1924,17 @@ done
 \end{verbatim}
 
 \subparagraph{Fun Stuff}
-\label{sec:org13a3f1b}
+\label{sec:org206ffce}
 \begin{itemize}
 \item Stuff I never really use but cannot delete either because of \url{http://xkcd.com/530/}
-\label{sec:orgb6a69ff}
+\label{sec:org170e730}
 \begin{verbatim}
 alias stfu="osascript -e 'set volume output muted true'"
 alias pumpitup="osascript -e 'set volume 7'"
 \end{verbatim}
 
 \item Starwars
-\label{sec:orgfbcbb6e}
+\label{sec:org6ca0181}
 Don't remember who showed me this in the fifth grade but it's awesome and it stuck. Thanks!
 
 \begin{verbatim}
@@ -1941,93 +1943,111 @@ alias starwars="telnet towel.blinkenlights.nl"
 \end{itemize}
 
 \subsubsection{zsh\hfill{}\textsc{application}}
-\label{sec:orge0adee9}
+\label{sec:org39d1564}
 \paragraph{Installation\hfill{}\textsc{install}}
-\label{sec:org894da66}
+\label{sec:org14d0cbf}
 \begin{verbatim}
 zsh
 \end{verbatim}
 
-\subsection{Browsers}
-\label{sec:org243a10f}
-\subsubsection{Chromium\hfill{}\textsc{application}}
-\label{sec:org208e0bb}
+\subsection{Notifications}
+\label{sec:org8df7687}
+\subsubsection{libnotify\hfill{}\textsc{application}}
+\label{sec:orgac17d5e}
+
+Use notify-send to create notifications from terminal. Use C-c C-c to execute this code block for an example
+
+\begin{verbatim}
+notify-send 'Hello world' 'Hello world'
+\end{verbatim}
 \paragraph{Installation\hfill{}\textsc{install}}
-\label{sec:org5fcc923}
+\label{sec:orgb71d725}
+\begin{verbatim}
+libnotify-tools
+\end{verbatim}
+
+\subsection{Browsers}
+\label{sec:org00a45b6}
+\subsubsection{Chromium\hfill{}\textsc{application}}
+\label{sec:org39a331c}
+\paragraph{Installation\hfill{}\textsc{install}}
+\label{sec:org6e80e37}
 \begin{verbatim}
 chromium
 \end{verbatim}
 
 \subsubsection{Firefox\hfill{}\textsc{application}}
-\label{sec:org9b1180a}
+\label{sec:orgcc4820e}
 \paragraph{Installation\hfill{}\textsc{install}}
-\label{sec:orgb99ec0c}
+\label{sec:orga9d439e}
 \begin{verbatim}
 firefox
 \end{verbatim}
 
 \subsubsection{Tor\hfill{}\textsc{application}}
-\label{sec:org410c21b}
+\label{sec:org297533e}
 \paragraph{Installation\hfill{}\textsc{install}}
-\label{sec:org3da64b5}
+\label{sec:orgf82848e}
 \begin{verbatim}
 tor
 \end{verbatim}
 
 \subsection{Text editors}
-\label{sec:orgc1c08f0}
+\label{sec:orgb958959}
 \subsubsection{Emacs\hfill{}\textsc{application}}
-\label{sec:orgf84893f}
+\label{sec:org67655fe}
+
+Include link to spacemacs installation and configuration files
 \paragraph{Installation\hfill{}\textsc{install}}
-\label{sec:orgb36105a}
+\label{sec:orgf4e8df1}
 \begin{verbatim}
 emacs
 \end{verbatim}
 
 \subsection{cURL configurations options}
-\label{sec:org51f3a61}
+\label{sec:orgc7debc7}
 
 \url{https://curl.haxx.se/docs/manpage.html}
 
 
 \subsubsection{Limit the time (in seconds) the connection is allowed to take.}
-\label{sec:org9661510}
+\label{sec:org3fba4f8}
 \begin{verbatim}
 connect-timeout = 60
 \end{verbatim}
 \subsubsection{Follow HTTP redirects.}
-\label{sec:org5fdefa3}
+\label{sec:orgac0a6d6}
 \begin{verbatim}
 location
 \end{verbatim}
 \subsubsection{Display progress as a simple progress bar.}
-\label{sec:org37691d5}
+\label{sec:org81fcc8e}
 \begin{verbatim}
 progress-bar
 \end{verbatim}
 \subsubsection{Show error messages.}
-\label{sec:orge227c5a}
+\label{sec:orgce0a202}
 \begin{verbatim}
 show-error
 \end{verbatim}
 \subsubsection{Send a fake UA string for the HTTP servers that sniff it.}
-\label{sec:org96d052c}
+\label{sec:org56de04a}
 \begin{verbatim}
 user-agent = "Mozilla/5.0 Gecko"
 \end{verbatim}
 
 \subsection{Version Control}
-\label{sec:org474b466}
+\label{sec:orgd6148d7}
 \subsubsection{Git\hfill{}\textsc{application}}
-\label{sec:orgcc67935}
+\label{sec:org21e25cc}
 \paragraph{Installation\hfill{}\textsc{install}}
-\label{sec:orgbce2ecd}
+\label{sec:orga6154da}
 \begin{verbatim}
 git
 \end{verbatim}
 
 \paragraph{Spacemacs Layer\hfill{}\textsc{spacemacs}}
-\label{sec:org6ca7da9}
+\label{sec:org0281edb}
 \begin{verbatim}
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; git version control ;;
@@ -2039,45 +2059,45 @@ magit                  ;;
 \end{verbatim}
 
 \paragraph{Configuration\hfill{}\textsc{configuration}}
-\label{sec:org0642c64}
+\label{sec:org99b21c6}
 \subsection{Media}
-\label{sec:org87fdd95}
+\label{sec:org28a315a}
 \subsubsection{VLC - Video Player\hfill{}\textsc{application}}
-\label{sec:orgc74f766}
+\label{sec:org46829d3}
 \paragraph{Installation\hfill{}\textsc{install}}
-\label{sec:orge3108ab}
+\label{sec:orgfdd3148}
 \begin{verbatim}
 vlc
 \end{verbatim}
 
 \subsubsection{Vocal - Podcast Client\hfill{}\textsc{application}}
-\label{sec:org0ffcafe}
+\label{sec:orgf735f48}
 \paragraph{Installation\hfill{}\textsc{install}}
-\label{sec:org0c06d66}
+\label{sec:orged55109}
 \begin{verbatim}
 vocal
 \end{verbatim}
 
 \subsubsection{youtube-dl - Downloader for youtube videos\hfill{}\textsc{application}}
-\label{sec:org27790fd}
+\label{sec:org849cad9}
 \paragraph{Installation\hfill{}\textsc{python2:install}}
-\label{sec:org29beaf3}
+\label{sec:orgffc2337}
 \begin{verbatim}
 youtube-dl
 \end{verbatim}
 
 \subsection{Activity Monitor}
-\label{sec:orgcdd8c00}
+\label{sec:orgc948593}
 \subsubsection{htop\hfill{}\textsc{application}}
-\label{sec:org42f533c}
+\label{sec:org262f1df}
 \paragraph{Installation\hfill{}\textsc{install}}
-\label{sec:org3c5de80}
+\label{sec:orgaa9491f}
 \begin{verbatim}
 htop
 \end{verbatim}
 
 \paragraph{Configuration\hfill{}\textsc{configuration}}
-\label{sec:org88041e4}
+\label{sec:orgb64764a}
 All configuration options are located in the .htoprc file.
 Stolen from god knows where - seems like everyone uses it.
 
@@ -2107,12 +2127,12 @@ right_meter_modes=1
 \end{verbatim}
 
 \subsection{Communication}
-\label{sec:org24ebf2f}
+\label{sec:org7209009}
 \subsubsection{Slack}
-\label{sec:org3bdea9b}
+\label{sec:org15a22e9}
 
 \paragraph{Spacemacs Layer\hfill{}\textsc{spacemacs}}
-\label{sec:orgdcb531f}
+\label{sec:org079c3a3}
 \begin{verbatim}
 
 ;; There's no escaping the beast
@@ -2125,10 +2145,10 @@ slack                 ;;
 \end{verbatim}
 
 \subsubsection{Twitter}
-\label{sec:orgc001f58}
+\label{sec:orgdd56533}
 
 \paragraph{Spacemacs Layer\hfill{}\textsc{spacemacs}}
-\label{sec:org7fa68b1}
+\label{sec:org42a7a67}
 \begin{verbatim}
 
 ;; Because Twitter is addictive
@@ -2141,10 +2161,10 @@ twitter         ;;
 \end{verbatim}
 
 \subsubsection{Email}
-\label{sec:orgcfb80bc}
+\label{sec:org21a82c6}
 
 \paragraph{Spacemacs Layer\hfill{}\textsc{spacemacs}}
-\label{sec:orgb0a65e9}
+\label{sec:orge3e56e6}
 \begin{verbatim}
 
 ;; Decent email client
@@ -2157,7 +2177,7 @@ mu4e            ;;
 \end{verbatim}
 
 \subsubsection{RSS}
-\label{sec:org9a4e47b}
+\label{sec:org1931cf8}
 \begin{verbatim}
 
 ;; RSS - clinginging on to Web 2.0
@@ -2170,7 +2190,7 @@ elfeed        ;;
 \end{verbatim}
 
 \subsection{Documents}
-\label{sec:orgfe4e628}
+\label{sec:org09dd4c8}
 
 \begin{verbatim}
 
@@ -2184,9 +2204,9 @@ pdf-tools        ;;
 \end{verbatim}
 
 \subsection{File manager}
-\label{sec:org1bd5a01}
+\label{sec:org5c34e70}
 \subsubsection{ranger}
-\label{sec:org8e0dfbe}
+\label{sec:org32cb29c}
 
 \begin{verbatim}
 
@@ -2200,10 +2220,8 @@ pdf-tools        ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 \end{verbatim}
 
-
-
 \section{Python}
-\label{sec:org759573a}
+\label{sec:orgdcfec23}
 \begin{verbatim}
 #########
 # Pyenv #
@@ -2251,7 +2269,7 @@ curl -L http://hbn.link/hb-ipython-startup-script > ~/.ipython/profile_default/s
 \end{verbatim}
 
 \subsection{Spacemacs Layer\hfill{}\textsc{spacemacs}}
-\label{sec:org5dc0da4}
+\label{sec:org71e1783}
 \begin{verbatim}
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; python layer configuration                          ;;
@@ -2265,11 +2283,11 @@ curl -L http://hbn.link/hb-ipython-startup-script > ~/.ipython/profile_default/s
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 \end{verbatim}
 \subsection{Pyenv}
-\label{sec:org4904965}
+\label{sec:orgb73b4bb}
 pyenv is used to isolate Python versions. For example, you may want to test your code against Python 2.6, 2.7, 3.3, 3.4 and 3.5, so you'll need a way to switch between them. Once activated, it prefixes the PATH environment variable with \textasciitilde{}/.pyenv/shims, where there are special files matching the Python commands (python, pip). These are not copies of the Python-shipped commands; they are special scripts that decide on the fly which version of Python to run based on the PYENV\(_{\text{VERSION}}\) environment variable, or the .python-version file, or the \textasciitilde{}/.pyenv/version file. pyenv also makes the process of downloading and installing multiple Python versions easier, using the command pyenv install.
 
 \subsubsection{Installation of pyenv and extensions\hfill{}\textsc{install}}
-\label{sec:org46c33a5}
+\label{sec:org5cc6872}
 
 We won't be installing pyenv through zypper since zypper doesn't have it unless you add someone's personal repo (which I am unwilling to do).
 Instead, we'll be installing it through cloning a git repo. Since pyenv is just a bunch of shell scripts, we'll be alright.
@@ -2300,18 +2318,18 @@ python3-virtualenv
 \end{verbatim}
 
 \subsubsection{Installing different versions of python}
-\label{sec:org96ce628}
+\label{sec:orgb219421}
 Installing new Python versions is very straightforward. All Python versions are installed in the versions directory under the pyenv root.
 
 \begin{verbatim}
 pyenv install 3.6.0
 pyenv install 2.7.13
 \end{verbatim}
-\captionof{figure}{\label{orgfd7e283}
+\captionof{figure}{\label{org8de3485}
 Install CPython 3.6.0 and CPython 2.7.13.}
 
 \subsubsection{virtualvenv setup}
-\label{sec:org5c192fe}
+\label{sec:org9062a4a}
 With virtualenv all your virtualenvs are kept on a same directory and your projects' code on another. My setup is:
 \begin{verbatim}
 # All virtualenvs will be on...
@@ -2335,7 +2353,7 @@ if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 \end{verbatim}
 
 \subsubsection{Resist the temptation to contaminate your global Python install}
-\label{sec:orga2d11bc}
+\label{sec:org3fc0cbd}
 
 I frequently use programs written in Python. I like them to be available in all sessions without activate any virtualenv.
 
@@ -2355,7 +2373,7 @@ pyenv virtualenv 2.7.13 tools2
 Jupyter supports many kernels. This allows a single Jupyter install to create notebooks for Python2, Python3, R, Bash and many other languages. At this time I only want to support Python2 and Python3.
 
 \paragraph{Installing jupyter under jupyter3}
-\label{sec:org26e5409}
+\label{sec:org7ccfeae}
 
 \begin{verbatim}
 pyenv activate jupyter3
@@ -2365,7 +2383,7 @@ pyenv deactivate
 \end{verbatim}
 
 \paragraph{Installing ipython under ipython2}
-\label{sec:orgbebe4ab}
+\label{sec:org8f30cf1}
 
 \begin{verbatim}
 pyenv activate ipython2
@@ -2377,7 +2395,7 @@ pyenv deactivate
 Note that when I install Jupyter on Python3 it will by default install iPython and the Kernel too. For Python2 I only need to install iPython and the Kernel. I'll explain this better bellow.
 
 \paragraph{Tools which run on Python 3}
-\label{sec:orgba0b0ed}
+\label{sec:org70cd959}
 
 \begin{verbatim}
 pyenv activate tools3
@@ -2386,7 +2404,7 @@ pyenv deactivate
 \end{verbatim}
 
 \paragraph{Tools that only run on Python 2}
-\label{sec:org32abd8e}
+\label{sec:orga66b052}
 
 \begin{verbatim}
 pyenv activate tools2
@@ -2395,7 +2413,7 @@ pyenv deactivate
 \end{verbatim}
 
 \paragraph{Final Step}
-\label{sec:orgacb6a92}
+\label{sec:org747d8d4}
 Finally, it's time to make all Python versions and special virtualenvs work with each other.
 
 \begin{verbatim}
@@ -2405,7 +2423,7 @@ pyenv global 3.6.0 2.7.13 jupyter3 ipython2 tools3 tools2
 The above command establishes the PATH priority so scripts can be accessed in the right order without activating any virtualenv.
 
 \subsubsection{How to use Jupyter and iPython with my projects?}
-\label{sec:org7613ec9}
+\label{sec:org3cffbef}
 
 This was the main motivation to write this guide.
 
@@ -2428,13 +2446,13 @@ With this, no matter the mode iPython starts, the virtualenv's site-packages wil
 Back to our proj3, after activating its virtualenv running workon proj3, you can simply execute ipython to run the interactive mode, or jupyter notebook to get all the fun.
 
 \subsection{Pylint}
-\label{sec:orga7160ad}
+\label{sec:org118d2fb}
 
 \section{Bash}
-\label{sec:org93de435}
+\label{sec:orgff22841}
 
 \subsection{bats-core}
-\label{sec:org16c8e9c}
+\label{sec:orgf1d7bdf}
 bats-core is a unit test library for 
 
 \begin{verbatim}
@@ -2448,9 +2466,9 @@ sudo ./install.sh /usr/local
 \end{verbatim}
 
 \section{Haskell}
-\label{sec:org2281885}
+\label{sec:org6aa81d2}
 \subsection{Spacemacs Layer\hfill{}\textsc{spacemacs}}
-\label{sec:org0abef70}
+\label{sec:orgd68aad7}
 \begin{verbatim}
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; haskell layer configuration                         ;;
@@ -2460,14 +2478,13 @@ sudo ./install.sh /usr/local
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 \end{verbatim}
 
-
 \section{Markup Languages}
-\label{sec:orgf21433b}
+\label{sec:orgad48858}
 \subsection{csv}
-\label{sec:orgfd74811}
+\label{sec:org5978683}
 Probably not markup but close enough
 \subsubsection{Spacemacs Layer\hfill{}\textsc{spacemacs}}
-\label{sec:orgda6688d}
+\label{sec:org0b3ae9b}
 \begin{verbatim}
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; csv layer configuration      ;;
@@ -2477,9 +2494,9 @@ csv                             ;;
 \end{verbatim}
 
 \subsection{html}
-\label{sec:org14e1247}
+\label{sec:org3e7ce5d}
 \subsubsection{Spacemacs Layer\hfill{}\textsc{spacemacs}}
-\label{sec:org44f339b}
+\label{sec:orgda45262}
 \begin{verbatim}
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; html layer configuration    ;;
@@ -2489,9 +2506,9 @@ html                           ;;
 \end{verbatim}
 
 \subsection{markdown}
-\label{sec:org1a6477b}
+\label{sec:org236bc25}
 \subsubsection{Spacemacs Layer\hfill{}\textsc{spacemacs}}
-\label{sec:orgd8b3f15}
+\label{sec:org42b325e}
 \begin{verbatim}
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; markdown layer configuration   ;;
@@ -2501,9 +2518,9 @@ markdown                          ;;
 \end{verbatim}
 
 \subsection{yaml}
-\label{sec:org608c20b}
+\label{sec:org1b0eb3a}
 \subsubsection{Spacemacs Layer\hfill{}\textsc{spacemacs}}
-\label{sec:org8726e32}
+\label{sec:org0426e4f}
 \begin{verbatim}
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; yaml layer configuration   ;;
@@ -2512,22 +2529,10 @@ yaml                          ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 \end{verbatim}
 
-\subsection{org}
-\label{sec:orgfd2fa9b}
-\subsubsection{Spacemacs Layer\hfill{}\textsc{spacemacs}}
-\label{sec:orgab0a854}
-\begin{verbatim}
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; org layer configuration  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-org                         ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-\end{verbatim}
-
 \subsection{asciidoc}
-\label{sec:org371126b}
+\label{sec:org4f006bc}
 \subsubsection{Spacemacs Layer\hfill{}\textsc{spacemacs}}
-\label{sec:org47ab6e0}
+\label{sec:org7a1fd69}
 \begin{verbatim}
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; asciidoc layer configuration   ;;
@@ -2537,9 +2542,9 @@ asciidoc                          ;;
 \end{verbatim}
 
 \subsection{dot \& graphviz}
-\label{sec:orgf79324c}
+\label{sec:org7cf8bce}
 \subsubsection{Spacemacs Layer\hfill{}\textsc{spacemacs}}
-\label{sec:org0bb83fd}
+\label{sec:org7faeafc}
 \begin{verbatim}
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; graphviz layer configuration   ;;
@@ -2548,10 +2553,229 @@ graphviz                          ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 \end{verbatim}
 
+\section{Org}
+\label{sec:org0ea0e95}
+Why is org not considered a markup language? Because it's just too complex and has too many configurations
+\subsection{Spacemacs Layer\hfill{}\textsc{spacemacs}}
+\label{sec:org767d295}
+\begin{verbatim}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; org layer configuration                     ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(org :variables org-enable-github-support t    ;;
+                org-enable-bootstrap-support t ;;
+                org-enable-reveal-js-support t ;;     ;; Use #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/ at the top of the org file
+)                                              ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+\end{verbatim}
+
+
+\subsection{Settings}
+\label{sec:org6e13ae2}
+Lots of org mode stuff
+
+
+\subsubsection{Babel}
+\label{sec:org3f7c8ae}
+\paragraph{Languages}
+\label{sec:org2c81c24}
+\begin{verbatim}
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '(
+   (shell . t)
+   (python . t)
+   (R . t)
+   (ruby . t)
+   (ocaml . t)
+   (ditaa . t)
+   (dot . t)
+   (octave . t)
+   (sqlite . t)
+   (perl . t)
+   (screen . t)
+   (plantuml . t)
+   (lilypond . t)
+   (org . t)
+   (makefile . t)
+   ))
+(setq org-src-preserve-indentation t)
+\end{verbatim}
+
+\paragraph{Adding Source blocks}
+\label{sec:org8cefd7e}
+
+Need to add info about the capital letters being sessioned (how do i explain that?)
+\begin{verbatim}
+
+(add-to-list 'org-structure-template-alist
+        '("S" "#+begin_src ?\n\n#+end_src" "<src lang=\"?\">\n\n</src>"))
+
+
+;; R code
+(add-to-list 'org-structure-template-alist
+        '("r" "#+begin_src R :results output :session *R* :exports both\n\n#+end_src" "<src lang=\"R\">\n\n</src>"))
+(add-to-list 'org-structure-template-alist
+        '("R" "#+begin_src R :results output graphics :file (org-babel-temp-file \"figure\" \".png\") :exports both :width 600 :height 400 :session *R* \n\n#+end_src" "<src lang=\"R\">\n\n</src>"))
+
+
+
+
+;; Python code
+(add-to-list 'org-structure-template-alist
+        '("p" "#+begin_src python :results output :exports both\n\n#+end_src" "<src lang=\"python\">\n\n</src>"))
+(add-to-list 'org-structure-template-alist
+        '("P" "#+begin_src python :results output :session *python* :exports both\n\n#+end_src" "<src lang=\"python\">\n\n</src>"))
+
+
+
+;; Bash code
+(add-to-list 'org-structure-template-alist
+        '("b" "#+begin_src shell :results output :exports both\n\n#+end_src" "<src lang=\"sh\">\n\n</src>"))
+(add-to-list 'org-structure-template-alist
+        '("B" "#+begin_src shell :session *shell* :results output :exports both \n\n#+end_src" "<src lang=\"sh\">\n\n</src>"))
+
+
+
+
+;; Graphviz
+(add-to-list 'org-structure-template-alist
+        '("g" "#+begin_src dot :results output graphics :file \"/tmp/graph.pdf\" :exports both
+   digraph G {
+      node [color=black,fillcolor=white,shape=rectangle,style=filled,fontname=\"Helvetica\"];
+      A[label=\"A\"]
+      B[label=\"B\"]
+      A->B
+   }\n#+end_src" "<src lang=\"dot\">\n\n</src>"))
+\end{verbatim}
+
+\subsubsection{Heading is DONE when all checkboxes are filled}
+\label{sec:org1d4bd4c}
+\begin{verbatim}
+;; see http://thread.gmane.org/gmane.emacs.orgmode/42715
+(eval-after-load 'org-list
+  '(add-hook 'org-checkbox-statistics-hook (function ndk/checkbox-list-complete)))
+
+(defun ndk/checkbox-list-complete ()
+  (save-excursion
+    (org-back-to-heading t)
+    (let ((beg (point)) end)
+      (end-of-line)
+      (setq end (point))
+      (goto-char beg)
+      (if (re-search-forward "\\[\\([0-9]*%\\)\\]\\|\\[\\([0-9]*\\)/\\([0-9]*\\)\\]" end t)
+            (if (match-end 1)
+                (if (equal (match-string 1) "100%")
+                    ;; all done - do the state change
+                    (org-todo 'done)
+                  (org-todo 'todo))
+              (if (and (> (match-end 2) (match-beginning 2))
+                       (equal (match-string 2) (match-string 3)))
+                  (org-todo 'done)
+                (org-todo 'todo)))))))
+\end{verbatim}
+\subsubsection{Custom Protocols for links}
+\label{sec:orgbf7e140}
+\begin{verbatim}
+
+;; https://caiorss.github.io/Emacs-Elisp-Programming/Org-Mode.html | 2.4 Custom Protocols
+;; Hyperlink syntax: dir:<file-path>
+(add-hook 'org-mode-hook
+          (lambda ()
+              (org-add-link-type "dir" #'dired nil)))
+
+(add-hook 'org-mode-hook
+          (lambda ()
+                 (org-add-link-type  "man" #'woman nil)))
+\end{verbatim}
+
+
+\subsubsection{Disable security confirmations}
+\label{sec:org1524517}
+\begin{verbatim}
+;; https://caiorss.github.io/Emacs-Elisp-Programming/Org-Mode.html | 2.5 Settings
+;; Disable security confirmations
+;;
+(setq   ;; Confirmation for running coide blocks
+        org-confirm-babel-evaluate      nil
+        ;; Confirmation for elisp links
+        org-confirm-elisp-link-function nil
+        ;; Confirmation for shell links
+        org-confirm-shell-link-function nil
+
+        org-export-babel-evaluate       nil
+        )
+\end{verbatim}
+
+\subsubsection{Export backends}
+\label{sec:org86ae0c2}
+\begin{verbatim}
+;; Prepare stuff for org-export-backends
+(setq org-export-backends '(org latex icalendar html ascii))
+\end{verbatim}
+
+\subsubsection{Modules}
+\label{sec:org8e937fc}
+\begin{verbatim}
+;; Experiment with and explain why you use it. Lots of links!
+  (setq org-modules '(org-bbdb
+                      org-gnus
+                      org-drill
+                      org-info
+                      org-jsinfo
+                      org-habit
+                      org-irc
+                      org-mouse
+                      org-protocol
+                      org-annotate-file
+                      org-eval
+                      org-expiry
+                      org-interactive-query
+                      org-man
+                      org-collector
+                      org-panel
+                      org-screen
+                      org-toc))
+
+\end{verbatim}
+
+\subsubsection{Todo Keywords}
+\label{sec:org6906a4d}
+\begin{verbatim}
+;; Change to fit your style
+(setq org-todo-keywords
+ '((sequence
+    "TODO(t)"  ; next action
+    "TOBLOG(b)"  ; next action
+    "STARTED(s)"
+    "WAITING(w@/!)"
+    "SOMEDAY(.)" "|" "DONE(x!)" "CANCELLED(c@)")
+   (sequence "LEARN" "TRY" "TEACH" "|" "COMPLETE(x)")
+   (sequence "TOSKETCH" "SKETCHED" "|" "POSTED")
+   (sequence "TOBUY" "TOSHRINK" "TOCUT"  "TOSEW" "|" "DONE(x)")
+   (sequence "TODELEGATE(-)" "DELEGATED(d)" "|" "COMPLETE(x)")))
+
+(setq org-todo-keyword-faces
+      '(("TODO" . (:foreground "green" :weight bold))
+        ("DONE" . (:foreground "cyan" :weight bold))
+        ("WAITING" . (:foreground "red" :weight bold))
+        ("SOMEDAY" . (:foreground "gray" :weight bold))))
+
+\end{verbatim}
+
+\subsubsection{Tags}
+\label{sec:org92c714c}
+\begin{verbatim}
+;; We don't want the project tag to be inherited by its children
+(setq org-tags-exclude-from-inheritance '("project"))
+\end{verbatim}
+
+
+
 \section{Javascript}
-\label{sec:org8b3a9f5}
-\subsubsection{Spacemacs Layer\hfill{}\textsc{spacemacs}}
-\label{sec:org527b2df}
+\label{sec:org60f302c}
+\subsection{Spacemacs Layer\hfill{}\textsc{spacemacs}}
+\label{sec:org8e4829a}
 \begin{verbatim}
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; javascript layer configuration ;;
@@ -2561,9 +2785,9 @@ javascript                        ;;
 \end{verbatim}
 
 \section{Emacs-lisp}
-\label{sec:orgeda6ac4}
-\subsubsection{Spacemacs Layer\hfill{}\textsc{spacemacs}}
-\label{sec:orgf0bfc3e}
+\label{sec:orgd91cd55}
+\subsection{Spacemacs Layer\hfill{}\textsc{spacemacs}}
+\label{sec:org3e1f2b0}
 \begin{verbatim}
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; emacs-lisp layer configuration   ;;
@@ -2573,9 +2797,9 @@ emacs-lisp                          ;;
 \end{verbatim}
 
 \section{C \& C++}
-\label{sec:org4122860}
-\subsubsection{Spacemacs Layer\hfill{}\textsc{spacemacs}}
-\label{sec:org14945f7}
+\label{sec:org8bfdc8e}
+\subsection{Spacemacs Layer\hfill{}\textsc{spacemacs}}
+\label{sec:org8832311}
 \begin{verbatim}
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; c & C++ layer configuration    ;;
@@ -2585,11 +2809,11 @@ c-c++                             ;;
 \end{verbatim}
 
 \section{Spacemacs}
-\label{sec:org04f18d0}
+\label{sec:org8977cb4}
 \subsection{iBuffer}
-\label{sec:orgb67bd46}
+\label{sec:orge47f0dc}
 \subsubsection{Spacemacs Layer\hfill{}\textsc{spacemacs}}
-\label{sec:org087e389}
+\label{sec:org8cee790}
 \begin{verbatim}
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; iBuffer configuration                 ;;
@@ -2599,59 +2823,684 @@ c-c++                             ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 \end{verbatim}
 
+\subsection{Customization}
+\label{sec:org4451e40}
 
+\subsubsection{Ask y or n instead of yes or no}
+\label{sec:org5366d41}
+\begin{verbatim}
+;; https://news.ycombinator.com/item?id=1654164
+(defalias 'yes-or-no-p 'y-or-n-p)
+\end{verbatim}
+
+\subsubsection{Character encodings default to utf-8}
+\label{sec:orgdc8783b}
+\begin{verbatim}
+;; From https://caiorss.github.io/Emacs-Elisp-Programming/Customization.html
+;; Character encodings default to utf-8.
+(prefer-coding-system 'utf-8)
+(set-language-environment 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+\end{verbatim}
+
+\subsubsection{Create file if nonexistent without confirmation}
+\label{sec:org6dfafe9}
+\begin{verbatim}
+;; https://news.ycombinator.com/item?id=1654164 | Kototama's comment
+;; do not confirm file creation
+(setq confirm-nonexistent-file-or-buffer nil)
+\end{verbatim}
+
+\subsubsection{Indentation Settings}
+\label{sec:org6442d6e}
+\begin{verbatim}
+;; From https://bitbucket.org/brodie/dotfiles/src/tip/.emacs?fileviewer=file-view-default
+; Indentation settings
+(setq-default indent-tabs-mode nil) ; disable tab character insertion
+(setq standard-indent 4)
+(setq c-default-style "bsd") ; brackets go on a separate line
+(setq c-basic-offset 4)
+(setq-default c-indent-level 4)
+(setq-default js-indent-level 2)
+(setq-default css-indent-offset 2)
+; line up args on separate lines with opening parens
+(setq c-offsets-alist
+      '((arglist-intro c-lineup-arglist-intro-after-paren)))
+(setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76
+                        80 84 88 92 96 100 104 108 112 116 120))
+\end{verbatim}
+
+\subsubsection{zck's settings}
+\label{sec:org9faa2d1}
+
+\begin{verbatim}
+;; From https://github.com/zck/emacs/blob/master/.emacs
+
+(setq show-paren-style 'expression)
+;; Highlight the entire expression
+;; http://www.emacsblog.org/2007/08/07/quick-tip-show-paren-mode/
+(tool-bar-mode -1)
+;; remove toolbar
+;; http://www.emacswiki.org/emacs/ToolBar
+(menu-bar-mode -1)
+;; who needs 'em?
+;; http://www.emacswiki.org/emacs/ToolBar
+(set-scroll-bar-mode 'right)
+;; http://www.emacswiki.org/emacs/ScrollBar
+(mouse-avoidance-mode 'exile)
+;; move the mouse pointer to the corner of the screen when approached
+;; http://www.emacswiki.org/emacs/MouseAvoidance
+
+(setq frame-title-format '("%b - " invocation-name "@" system-name))
+;; change the title of emacs
+;; http://www.gnu.org/software/emacs/elisp/html_node/Frame-Titles.html
+
+(setq confirm-kill-emacs 'y-or-n-p)
+;; yell at me before going away
+;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Exiting.html
+
+(setq inhibit-startup-message t)
+
+(setq default-indicate-empty-lines t)
+;; http://www.emacswiki.org/emacs/TheFringe
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+\end{verbatim}
+
+
+\subsubsection{Emacs Server must be used to avoid startup delay as much as possible}
+\label{sec:org8786612}
+\begin{verbatim}
+;; https://news.ycombinator.com/item?id=1654670
+;; Emacsclient is a real must.
+  ;; use this to start server for emacsclient
+  (if (not (boundp 'server-process))
+     (server-start))
+\end{verbatim}
+
+\subsubsection{Font settings}
+\label{sec:org4251fbf}
+\begin{verbatim}
+;; Font
+;; https://github.com/xahlee/xah_emacs_init/blob/master/xah_emacs_font.el
+(progn
+  ;; set a default font
+  (cond
+   ((string-equal system-type "gnu/linux")
+    (when (member "DejaVu Sans Mono" (font-family-list)) (set-frame-font "DejaVu Sans Mono" t t))
+    ;; specify font for chinese characters using default chinese font on linux
+    (when (member "WenQuanYi Micro Hei" (font-family-list))
+      (set-fontset-font t '(#x4e00 . #x9fff) "WenQuanYi Micro Hei" ))
+    ;;
+    )
+   ((string-equal system-type "darwin") ; Mac
+    (when (member "Menlo" (font-family-list)) (set-frame-font "Menlo-14" t t))
+    ;;
+    )
+   ((string-equal system-type "windows-nt") ; Windows
+   nil))
+
+  ;; specify font for all unicode characters
+  (when (member "Symbola" (font-family-list))
+    (set-fontset-font t 'unicode "Symbola" nil 'prepend))
+)
+\end{verbatim}
+
+
+\subsection{.spacemacs file}
+\label{sec:orgd433bf5}
+
+\begin{verbatim}
+#+NAME: dotspacemacs/layers/dotspacemacs-configuration-layers
+#+BEGIN_SRC emacs-lisp
+ 
+#+END_SRC
+\end{verbatim}
+
+\begin{verbatim}
+#+NAME: dotspacemacs/user-init
+#+BEGIN_SRC emacs-lisp
+
+#+END_SRC
+\end{verbatim}
+
+\begin{verbatim}
+#+NAME: dotspacemacs/user-config
+#+BEGIN_SRC emacs-lisp
+
+#+END_SRC
+\end{verbatim}
+
+\begin{verbatim}
+;; -*- mode: emacs-lisp -*-
+;; This file is loaded by Spacemacs at startup.
+;; It must be stored in your home directory.
+
+(defun dotspacemacs/layers ()
+  "Configuration Layers declaration.
+You should not put any user code in this function besides modifying the variable
+values."
+  (setq-default
+   ;; Base distribution to use. This is a layer contained in the directory
+   ;; `+distribution'. For now available distributions are `spacemacs-base'
+   ;; or `spacemacs'. (default 'spacemacs)
+   dotspacemacs-distribution 'spacemacs
+   ;; Lazy installation of layers (i.e. layers are installed only when a file
+   ;; with a supported type is opened). Possible values are `all', `unused'
+   ;; and `nil'. `unused' will lazy install only unused layers (i.e. layers
+   ;; not listed in variable `dotspacemacs-configuration-layers'), `all' will
+   ;; lazy install any layer that support lazy installation even the layers
+   ;; listed in `dotspacemacs-configuration-layers'. `nil' disable the lazy
+   ;; installation feature and you have to explicitly list a layer in the
+   ;; variable `dotspacemacs-configuration-layers' to install it.
+   ;; (default 'unused)
+   dotspacemacs-enable-lazy-installation 'unused
+   ;; If non-nil then Spacemacs will ask for confirmation before installing
+   ;; a layer lazily. (default t)
+   dotspacemacs-ask-for-lazy-installation t
+   ;; If non-nil layers with lazy install support are lazy installed.
+   ;; List of additional paths where to look for configuration layers.
+   ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
+   dotspacemacs-configuration-layer-path '()
+   ;; List of configuration layers to load.
+   dotspacemacs-configuration-layers
+   '(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     )
+   ;; List of additional packages that will be installed without being
+   ;; wrapped in a layer. If you need some configuration for these
+   ;; packages, then consider creating a layer. You can also put the
+   ;; configuration in `dotspacemacs/user-config'.
+   dotspacemacs-additional-packages '()
+   ;; A list of packages that cannot be updated.
+   dotspacemacs-frozen-packages '()
+   ;; A list of packages that will not be installed and loaded.
+   dotspacemacs-excluded-packages '()
+   ;; Defines the behaviour of Spacemacs when installing packages.
+   ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
+   ;; `used-only' installs only explicitly used packages and uninstall any
+   ;; unused packages as well as their unused dependencies.
+   ;; `used-but-keep-unused' installs only the used packages but won't uninstall
+   ;; them if they become unused. `all' installs *all* packages supported by
+   ;; Spacemacs and never uninstall them. (default is `used-only')
+   dotspacemacs-install-packages 'used-only))
+
+(defun dotspacemacs/init ()
+  "Initialization function.
+This function is called at the very startup of Spacemacs initialization
+before layers configuration.
+You should not put any user code in there besides modifying the variable
+values."
+  ;; This setq-default sexp is an exhaustive list of all the supported
+  ;; spacemacs settings.
+  (setq-default
+   ;; If non nil ELPA repositories are contacted via HTTPS whenever it's
+   ;; possible. Set it to nil if you have no way to use HTTPS in your
+   ;; environment, otherwise it is strongly recommended to let it set to t.
+   ;; This variable has no effect if Emacs is launched with the parameter
+   ;; `--insecure' which forces the value of this variable to nil.
+   ;; (default t)
+   dotspacemacs-elpa-https t
+   ;; Maximum allowed time in seconds to contact an ELPA repository.
+   dotspacemacs-elpa-timeout 5
+   ;; If non nil then spacemacs will check for updates at startup
+   ;; when the current branch is not `develop'. Note that checking for
+   ;; new versions works via git commands, thus it calls GitHub services
+   ;; whenever you start Emacs. (default nil)
+   dotspacemacs-check-for-update nil
+   ;; If non-nil, a form that evaluates to a package directory. For example, to
+   ;; use different package directories for different Emacs versions, set this
+   ;; to `emacs-version'.
+   dotspacemacs-elpa-subdirectory nil
+   ;; One of `vim', `emacs' or `hybrid'.
+   ;; `hybrid' is like `vim' except that `insert state' is replaced by the
+   ;; `hybrid state' with `emacs' key bindings. The value can also be a list
+   ;; with `:variables' keyword (similar to layers). Check the editing styles
+   ;; section of the documentation for details on available variables.
+   ;; (default 'vim)
+   dotspacemacs-editing-style 'vim
+   ;; If non nil output loading progress in `*Messages*' buffer. (default nil)
+   dotspacemacs-verbose-loading nil
+   ;; Specify the startup banner. Default value is `official', it displays
+   ;; the official spacemacs logo. An integer value is the index of text
+   ;; banner, `random' chooses a random text banner in `core/banners'
+   ;; directory. A string value must be a path to an image format supported
+   ;; by your Emacs build.
+   ;; If the value is nil then no banner is displayed. (default 'official)
+   dotspacemacs-startup-banner 'nil                                                              ;; Changed to 'nil from 'official
+   ;; List of items to show in startup buffer or an association list of
+   ;; the form `(list-type . list-size)`. If nil then it is disabled.
+   ;; Possible values for list-type are:
+   ;; `recents' `bookmarks' `projects' `agenda' `todos'."
+   ;; List sizes may be nil, in which case
+   ;; `spacemacs-buffer-startup-lists-length' takes effect.
+   dotspacemacs-startup-lists '(
+                                (agenda . 10)                                                    ;; Added agenda to startup list
+                                (recents . 2)                                                    ;; Changed value from 5 to 2
+                                (projects . 2)                                                   ;; Changed value from 7 to 2
+                                )
+   ;; True if the home buffer should respond to resize events.
+   dotspacemacs-startup-buffer-responsive t
+   ;; Default major mode of the scratch buffer (default `text-mode')
+   dotspacemacs-scratch-mode 'text-mode
+   ;; List of themes, the first of the list is loaded when spacemacs starts.
+   ;; Press <SPC> T n to cycle to the next theme in the list (works great
+   ;; with 2 themes variants, one dark and one light)
+   dotspacemacs-themes '(spacemacs-dark
+                         spacemacs-light)
+   ;; If non nil the cursor color matches the state color in GUI Emacs.
+   dotspacemacs-colorize-cursor-according-to-state t
+   ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
+   ;; quickly tweak the mode-line size to make separators look not too crappy.
+   dotspacemacs-default-font '("Source Code Pro"
+                               :size 13
+                               :weight normal
+                               :width normal
+                               :powerline-scale 1.1)
+   ;; The leader key
+   dotspacemacs-leader-key "SPC"
+   ;; The key used for Emacs commands (M-x) (after pressing on the leader key).
+   ;; (default "SPC")
+   dotspacemacs-emacs-command-key "SPC"
+   ;; The key used for Vim Ex commands (default ":")
+   dotspacemacs-ex-command-key ":"
+   ;; The leader key accessible in `emacs state' and `insert state'
+   ;; (default "M-m")
+   dotspacemacs-emacs-leader-key "M-m"
+   ;; Major mode leader key is a shortcut key which is the equivalent of
+   ;; pressing `<leader> m`. Set it to `nil` to disable it. (default ",")
+   dotspacemacs-major-mode-leader-key ","
+   ;; Major mode leader key accessible in `emacs state' and `insert state'.
+   ;; (default "C-M-m")
+   dotspacemacs-major-mode-emacs-leader-key "C-M-m"
+   ;; These variables control whether separate commands are bound in the GUI to
+   ;; the key pairs C-i, TAB and C-m, RET.
+   ;; Setting it to a non-nil value, allows for separate commands under <C-i>
+   ;; and TAB or <C-m> and RET.
+   ;; In the terminal, these pairs are generally indistinguishable, so this only
+   ;; works in the GUI. (default nil)
+   dotspacemacs-distinguish-gui-tab nil
+   ;; If non nil `Y' is remapped to `y$' in Evil states. (default nil)
+   dotspacemacs-remap-Y-to-y$ nil
+   ;; If non-nil, the shift mappings `<' and `>' retain visual state if used
+   ;; there. (default t)
+   dotspacemacs-retain-visual-state-on-shift t
+   ;; If non-nil, J and K move lines up and down when in visual mode.
+   ;; (default nil)
+   dotspacemacs-visual-line-move-text nil
+   ;; If non nil, inverse the meaning of `g' in `:substitute' Evil ex-command.
+   ;; (default nil)
+   dotspacemacs-ex-substitute-global nil
+   ;; Name of the default layout (default "Default")
+   dotspacemacs-default-layout-name "Default"
+   ;; If non nil the default layout name is displayed in the mode-line.
+   ;; (default nil)
+   dotspacemacs-display-default-layout nil
+   ;; If non nil then the last auto saved layouts are resume automatically upon
+   ;; start. (default nil)
+   dotspacemacs-auto-resume-layouts nil
+   ;; Size (in MB) above which spacemacs will prompt to open the large file
+   ;; literally to avoid performance issues. Opening a file literally means that
+   ;; no major mode or minor modes are active. (default is 1)
+   dotspacemacs-large-file-size 1
+   ;; Location where to auto-save files. Possible values are `original' to
+   ;; auto-save the file in-place, `cache' to auto-save the file to another
+   ;; file stored in the cache directory and `nil' to disable auto-saving.
+   ;; (default 'cache)
+   dotspacemacs-auto-save-file-location 'cache
+   ;; Maximum number of rollback slots to keep in the cache. (default 5)
+   dotspacemacs-max-rollback-slots 5
+   ;; If non nil, `helm' will try to minimize the space it uses. (default nil)
+   dotspacemacs-helm-resize nil
+   ;; if non nil, the helm header is hidden when there is only one source.
+   ;; (default nil)
+   dotspacemacs-helm-no-header nil
+   ;; define the position to display `helm', options are `bottom', `top',
+   ;; `left', or `right'. (default 'bottom)
+   dotspacemacs-helm-position 'bottom
+   ;; Controls fuzzy matching in helm. If set to `always', force fuzzy matching
+   ;; in all non-asynchronous sources. If set to `source', preserve individual
+   ;; source settings. Else, disable fuzzy matching in all sources.
+   ;; (default 'always)
+   dotspacemacs-helm-use-fuzzy 'always
+   ;; If non nil the paste micro-state is enabled. When enabled pressing `p`
+   ;; several times cycle between the kill ring content. (default nil)
+   dotspacemacs-enable-paste-transient-state nil
+   ;; Which-key delay in seconds. The which-key buffer is the popup listing
+   ;; the commands bound to the current keystroke sequence. (default 0.4)
+   dotspacemacs-which-key-delay 0.4
+   ;; Which-key frame position. Possible values are `right', `bottom' and
+   ;; `right-then-bottom'. right-then-bottom tries to display the frame to the
+   ;; right; if there is insufficient space it displays it at the bottom.
+   ;; (default 'bottom)
+   dotspacemacs-which-key-position 'bottom
+   ;; If non nil a progress bar is displayed when spacemacs is loading. This
+   ;; may increase the boot time on some systems and emacs builds, set it to
+   ;; nil to boost the loading time. (default t)
+   dotspacemacs-loading-progress-bar t
+   ;; If non nil the frame is fullscreen when Emacs starts up. (default nil)
+   ;; (Emacs 24.4+ only)
+   dotspacemacs-fullscreen-at-startup t                                                                   ;; Changed value from nil to t
+   ;; If non nil `spacemacs/toggle-fullscreen' will not use native fullscreen.
+   ;; Use to disable fullscreen animations in OSX. (default nil)
+   dotspacemacs-fullscreen-use-non-native nil
+   ;; If non nil the frame is maximized when Emacs starts up.
+   ;; Takes effect only if `dotspacemacs-fullscreen-at-startup' is nil.
+   ;; (default nil) (Emacs 24.4+ only)
+   dotspacemacs-maximized-at-startup nil
+   ;; A value from the range (0..100), in increasing opacity, which describes
+   ;; the transparency level of a frame when it's active or selected.
+   ;; Transparency can be toggled through `toggle-transparency'. (default 90)
+   dotspacemacs-active-transparency 90
+   ;; A value from the range (0..100), in increasing opacity, which describes
+   ;; the transparency level of a frame when it's inactive or deselected.
+   ;; Transparency can be toggled through `toggle-transparency'. (default 90)
+   dotspacemacs-inactive-transparency 90
+   ;; If non nil show the titles of transient states. (default t)
+   dotspacemacs-show-transient-state-title t
+   ;; If non nil show the color guide hint for transient state keys. (default t)
+   dotspacemacs-show-transient-state-color-guide t
+   ;; If non nil unicode symbols are displayed in the mode line. (default t)
+   dotspacemacs-mode-line-unicode-symbols t
+   ;; If non nil smooth scrolling (native-scrolling) is enabled. Smooth
+   ;; scrolling overrides the default behavior of Emacs which recenters point
+   ;; when it reaches the top or bottom of the screen. (default t)
+   dotspacemacs-smooth-scrolling t
+   ;; Control line numbers activation.
+   ;; If set to `t' or `relative' line numbers are turned on in all `prog-mode' and
+   ;; `text-mode' derivatives. If set to `relative', line numbers are relative.
+   ;; This variable can also be set to a property list for finer control:
+   ;; '(:relative nil
+   ;;   :disabled-for-modes dired-mode
+   ;;                       doc-view-mode
+   ;;                       markdown-mode
+   ;;                       org-mode
+   ;;                       pdf-view-mode
+   ;;                       text-mode
+   ;;   :size-limit-kb 1000)
+   ;; (default nil)
+   dotspacemacs-line-numbers nil
+   ;; Code folding method. Possible values are `evil' and `origami'.
+   ;; (default 'evil)
+   dotspacemacs-folding-method 'evil
+   ;; If non-nil smartparens-strict-mode will be enabled in programming modes.
+   ;; (default nil)
+   dotspacemacs-smartparens-strict-mode nil
+   ;; If non-nil pressing the closing parenthesis `)' key in insert mode passes
+   ;; over any automatically added closing parenthesis, bracket, quote, etcâ¦
+   ;; This can be temporary disabled by pressing `C-q' before `)'. (default nil)
+   dotspacemacs-smart-closing-parenthesis nil
+   ;; Select a scope to highlight delimiters. Possible values are `any',
+   ;; `current', `all' or `nil'. Default is `all' (highlight any scope and
+   ;; emphasis the current one). (default 'all)
+   dotspacemacs-highlight-delimiters 'all
+   ;; If non nil, advise quit functions to keep server open when quitting.
+   ;; (default nil)
+   dotspacemacs-persistent-server nil
+   ;; List of search tool executable names. Spacemacs uses the first installed
+   ;; tool of the list. Supported tools are `ag', `pt', `ack' and `grep'.
+   ;; (default '("ag" "pt" "ack" "grep"))
+   dotspacemacs-search-tools '("ag" "pt" "ack" "grep")
+   ;; The default package repository used if no explicit repository has been
+   ;; specified with an installed package.
+   ;; Not used for now. (default nil)
+   dotspacemacs-default-package-repository nil
+   ;; Delete whitespace while saving buffer. Possible values are `all'
+   ;; to aggressively delete empty line and long sequences of whitespace,
+   ;; `trailing' to delete only the whitespace at end of lines, `changed'to
+   ;; delete only whitespace for changed lines or `nil' to disable cleanup.
+   ;; (default nil)
+   dotspacemacs-whitespace-cleanup nil
+   ))
+
+(defun dotspacemacs/user-init (
+
+
+
+
+
+
+
+
+
+
+
+
+
+)
+  "Initialization function for user code.
+It is called immediately after `dotspacemacs/init', before layer configuration
+executes.
+ This function is mostly useful for variables that need to be set
+before packages are loaded. If you are unsure, you should try in setting them in
+`dotspacemacs/user-config' first."
+  )
+
+(defun dotspacemacs/user-config (
+
+
+
+
+
+
+;; https://news.ycombinator.com/item?id=1654164
+(defalias 'yes-or-no-p 'y-or-n-p)
+;; From https://caiorss.github.io/Emacs-Elisp-Programming/Customization.html
+;; Character encodings default to utf-8.
+(prefer-coding-system 'utf-8)
+(set-language-environment 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+;; https://news.ycombinator.com/item?id=1654164 | Kototama's comment
+;; do not confirm file creation
+(setq confirm-nonexistent-file-or-buffer nil)
+;; From https://bitbucket.org/brodie/dotfiles/src/tip/.emacs?fileviewer=file-view-default
+; Indentation settings
+(setq-default indent-tabs-mode nil) ; disable tab character insertion
+(setq standard-indent 4)
+(setq c-default-style "bsd") ; brackets go on a separate line
+(setq c-basic-offset 4)
+(setq-default c-indent-level 4)
+(setq-default js-indent-level 2)
+(setq-default css-indent-offset 2)
+; line up args on separate lines with opening parens
+(setq c-offsets-alist
+      '((arglist-intro c-lineup-arglist-intro-after-paren)))
+(setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76
+                        80 84 88 92 96 100 104 108 112 116 120))
+;; From https://github.com/zck/emacs/blob/master/.emacs
+
+(setq show-paren-style 'expression)
+;; Highlight the entire expression
+;; http://www.emacsblog.org/2007/08/07/quick-tip-show-paren-mode/
+(tool-bar-mode -1)
+;; remove toolbar
+;; http://www.emacswiki.org/emacs/ToolBar
+(menu-bar-mode -1)
+;; who needs 'em?
+;; http://www.emacswiki.org/emacs/ToolBar
+(set-scroll-bar-mode 'right)
+;; http://www.emacswiki.org/emacs/ScrollBar
+(mouse-avoidance-mode 'exile)
+;; move the mouse pointer to the corner of the screen when approached
+;; http://www.emacswiki.org/emacs/MouseAvoidance
+
+(setq frame-title-format '("%b - " invocation-name "@" system-name))
+;; change the title of emacs
+;; http://www.gnu.org/software/emacs/elisp/html_node/Frame-Titles.html
+
+(setq confirm-kill-emacs 'y-or-n-p)
+;; yell at me before going away
+;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Exiting.html
+
+(setq inhibit-startup-message t)
+
+(setq default-indicate-empty-lines t)
+;; http://www.emacswiki.org/emacs/TheFringe
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; https://news.ycombinator.com/item?id=1654670
+;; Emacsclient is a real must.
+  ;; use this to start server for emacsclient
+  (if (not (boundp 'server-process))
+     (server-start))
+;; Font
+;; https://github.com/xahlee/xah_emacs_init/blob/master/xah_emacs_font.el
+(progn
+  ;; set a default font
+  (cond
+   ((string-equal system-type "gnu/linux")
+    (when (member "DejaVu Sans Mono" (font-family-list)) (set-frame-font "DejaVu Sans Mono" t t))
+    ;; specify font for chinese characters using default chinese font on linux
+    (when (member "WenQuanYi Micro Hei" (font-family-list))
+      (set-fontset-font t '(#x4e00 . #x9fff) "WenQuanYi Micro Hei" ))
+    ;;
+    )
+   ((string-equal system-type "darwin") ; Mac
+    (when (member "Menlo" (font-family-list)) (set-frame-font "Menlo-14" t t))
+    ;;
+    )
+   ((string-equal system-type "windows-nt") ; Windows
+   nil))
+
+  ;; specify font for all unicode characters
+  (when (member "Symbola" (font-family-list))
+    (set-fontset-font t 'unicode "Symbola" nil 'prepend))
+)
+
+(defun eshell/clear ()
+  "clear the eshell buffer."
+  (interactive)
+  (let ((inhibit-read-only t))
+    (erase-buffer)))
+
+
+;; Simple prompt for eshell
+;; (setq eshell-prompt-function (lambda () "eshell > "))
+
+;; Colorfull prompt for eshell
+(setq eshell-prompt-function
+      (lambda nil
+        (concat
+         (propertize (eshell/pwd) 'face '(:foreground "#8787af"))
+         (propertize ">" 'face '(:foreground "#f75f5f"))
+         (propertize ">" 'face '(:foreground "#ffaf5f"))
+         (propertize ">" 'face '(:foreground "#87af5f"))
+         (propertize " " 'face nil))))
+
+
+
+
+
+
+)
+  "Configuration function for user code.
+This function is called at the very end of Spacemacs initialization after
+layers configuration.
+This is the place where most of your configurations should be done. Unless it is
+explicitly specified that a variable should be set before a package is loaded,
+you should place your code here."
+  )
+
+;; Do not write anything past this comment. This is where Emacs will
+;; auto-generate custom variable definitions.
+\end{verbatim}
+
+
+\section{eshell}
+\label{sec:org31a7a09}
+
+\begin{verbatim}
+
+(defun eshell/clear ()
+  "clear the eshell buffer."
+  (interactive)
+  (let ((inhibit-read-only t))
+    (erase-buffer)))
+
+
+;; Simple prompt for eshell
+;; (setq eshell-prompt-function (lambda () "eshell > "))
+
+;; Colorfull prompt for eshell
+(setq eshell-prompt-function
+      (lambda nil
+        (concat
+         (propertize (eshell/pwd) 'face '(:foreground "#8787af"))
+         (propertize ">" 'face '(:foreground "#f75f5f"))
+         (propertize ">" 'face '(:foreground "#ffaf5f"))
+         (propertize ">" 'face '(:foreground "#87af5f"))
+         (propertize " " 'face nil))))
+\end{verbatim}
 
 
 \section{gpg.conf}
-\label{sec:org825cc85}
+\label{sec:orgb55cd9f}
 
 This is an implementation of the Riseup OpenPGP Best Practices
 \url{https://help.riseup.net/en/security/message-security/openpgp/best-practices}
 
-
 \subsection{default key}
-\label{sec:org8e66ed1}
+\label{sec:orgef47f3a}
 The default key to sign with. If this option is not used, the default key is the first key found in the secret keyring
 \begin{verbatim}
 default-key 0x18F3685C0022BFF3
 \end{verbatim}
 \subsection{behavior}
-\label{sec:org2840c88}
+\label{sec:org82f0636}
 \subsubsection{Disable inclusion of the version string in ASCII armored output}
-\label{sec:orgc39f4f5}
+\label{sec:org112d000}
 \begin{verbatim}
 no-emit-version
 \end{verbatim}
 \subsubsection{Disable comment string in clear text signatures and ASCII armored messages}
-\label{sec:org889a6a7}
+\label{sec:org1a2176c}
 \begin{verbatim}
 no-comments
 \end{verbatim}
 \subsubsection{Display long key IDs}
-\label{sec:org848ef04}
+\label{sec:org620d5c4}
 \begin{verbatim}
 keyid-format 0xlong
 \end{verbatim}
 \subsubsection{List all keys (or the specified ones) along with their fingerprints}
-\label{sec:org92188c1}
+\label{sec:orgbcaf6ca}
 \begin{verbatim}
 with-fingerprint
 \end{verbatim}
 \subsubsection{Display the calculated validity of user IDs during key listings}
-\label{sec:orga8a0eef}
+\label{sec:org171c80d}
 \begin{verbatim}
 list-options show-uid-validity
 verify-options show-uid-validity
 \end{verbatim}
 \subsubsection{Try to use the GnuPG-Agent. With this option, GnuPG first tries to connect to the agent before it asks for a passphrase.}
-\label{sec:org1ea8e3e}
+\label{sec:org699ed46}
 \begin{verbatim}
 use-agent
 charset utf-8
 fixed-list-mode
 \end{verbatim}
 \subsection{keyserver}
-\label{sec:org4e8d02a}
+\label{sec:orgeb41373}
 This is the server that --recv-keys, --send-keys, and --search-keys will communicate with to receive keys from, send keys to, and search for keys on
 \begin{verbatim}
 #keyserver hkps://hkps.pool.sks-keyservers.net
@@ -2689,7 +3538,7 @@ keyserver-options include-revoked
 \end{verbatim}
 
 \subsection{algorithm and ciphers}
-\label{sec:orgb4145e5}
+\label{sec:org49c82d0}
 list of personal digest preferences. When multiple digests are supported by all recipients, choose the strongest one
 \begin{verbatim}
 personal-cipher-preferences AES256 AES192 AES CAST5
