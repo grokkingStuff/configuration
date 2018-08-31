@@ -9,26 +9,26 @@
 
 [[https://travis-ci.org/grokkingStuff/configuration.svg?branch=master]]
 
- #+NAME: connect.sh
- #+CAPTION: The overall structure of connect.sh
- #+BEGIN_SRC sh :tangle install.sh :noweb yes
-   #!/usr/bin/env bash
-   ## Description: Connects to remote server and relays local changes made in git repo and opens a shell in remote server.
+#+NAME: install.sh
+#+CAPTION: The overall structure of install.sh
+#+BEGIN_SRC sh :tangle install.sh :noweb yes :exports code
+#!/usr/bin/env bash
+## Description: Main install script
 
 
-                     <<author_information>>
+                  <<author_information>>
 
 
-   <<license_information>>
+<<license_information>>
 
    
-   <<system_library>>
+<<system_library>>
    
 
-   # MAIN CONTROL FLOW
-   function main() {
+# MAIN CONTROL FLOW
+function main() {
 
-   #<<preamble_library>>
+#<<preamble_library>>
 
 #####################################################################################################
    bot "Installing Applications!"
@@ -49,12 +49,13 @@ bats test_install.bats
 
    }
 
-   main "$@"
- #+END_SRC
+main "$@"
+#+END_SRC
 
-** DONE Author Information
-   CLOSED: [2018-06-15 Fri 21:59]
-Because someone needs to take the blame for when this script goes insane. Seriously, someone take this piece of shit code from me and make it better. Free brownies for whoever does that.
+** Author Information
+Because someone needs to take the blame for when this script goes insane.
+Seriously, someone take this piece of shit code from me and make it better.
+Free brownies for whoever does that.
 
  #+NAME: author_information
  #+BEGIN_SRC sh :noweb yes
@@ -68,8 +69,16 @@ Because someone needs to take the blame for when this script goes insane. Seriou
 ################################################
  #+END_SRC
 
-** DONE License information
-   CLOSED: [2018-06-15 Fri 21:59]
+*** Spacemacs Configuration                                       :spacemacs:
+#+BEGIN_SRC emacs-lisp
+(setq user-full-name "Vishakh Kumar"
+      user-mail-address "vishakhpradeepkumar@gmail.com")
+      ;; calendar-latitude 37.4
+      ;; calendar-longitude -122.1
+      ;; calendar-location-name "Mountain View, CA")
+#+END_SRC
+
+** License information
 Even if it seems pretentious, it's good to have a license so that other people can use it. Since this code isn't exactly going to be used in a production environment, I'm going to stick a GPL license on it.
 
 #+NAME: license_information
@@ -129,7 +138,7 @@ script:
 #+END_SRC
 
 
-* Bash Library
+* Bash Helper Functions
 Bash is a pain in the ass to work with if you need to be safe. This library allows you to write bash that's well-organized, somewhat tested, and hopefully cross platform.
 
 ** Preamble
@@ -689,11 +698,179 @@ Text attributes can be changed by writing "ta_" followed by the particular text 
      echo -e "[error] " "$1"
  }
   #+End_SRC
+* Organization
+#+NAME: organization
+#+BEGIN_SRC sh :noweb yes 
+if [ -d "~/Dropbox" ]; then
+    dropbox start
+    dropbox status
+
+    #<<organization_folder>>
+
+    #<<organization_file>>
+fi
+#+END_SRC
+
+** Dropbox
+*** Installation                                                    :install:
+#+NAME: install
+#+BEGIN_SRC sh 
+dropbox
+#+END_SRC
+** Folder Organization
+*** Projects
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/Projects
+ln ~/Dropbox/Projects ~/Projects
+#+END_SRC
+
+#+NAME: test_
+#+BEGIN_SRC sh 
+@test "Test if the Projects folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Projects ]
+ [ -d ~/Projects ]
+}
+#+END_SRC
+*** Agenda
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/Agenda
+#+END_SRC
+
+#+NAME: test_
+#+BEGIN_SRC sh 
+@test "Test if the Agenda folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Agenda ]
+}
+#+END_SRC
+
+*** Documents
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/Documents
+ln ~/Dropbox/Documents ~/Documents
+#+END_SRC
+
+#+NAME: test_
+#+BEGIN_SRC sh 
+@test "Test if the Documents folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Documents ]
+ [ -d ~/Documents ]
+}
+#+END_SRC
+
+*** Configuration
 
 
-* Applications to install
+- org-agenda integration
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-files
+    (file-expand-wildcards "~/Proposals/*.org")
+    (file-expand-wildcards "~/Projects/*.org")
+    (file-expand-wildcards "~/PersonalDevelopment/*.org")
+    (file-expand-wildcards "~/College/*.org")
+    (file-expand-wildcards "~/Business/*.org")
+    (file-expand-wildcards "~/Finances/*.org")
+)
+#+END_SRC emacs-lisp
 
-In this section, we'll be listing the application name and general info, it's package name for our package manager to install it, and any configuration files related to said software.
+
+
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/Configuration
+ln ~/Dropbox/Configuration ~/Configuration
+#+END_SRC
+
+#+NAME: test_
+#+BEGIN_SRC sh 
+@test "Test if the Configuration folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Configuration ]
+ [ -d ~/Configuration ]
+}
+#+END_SRC
+
+*** Archive
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/Archive
+ln ~/Dropbox/Archive ~/Archive
+#+END_SRC
+
+#+NAME: test_
+#+BEGIN_SRC sh 
+@test "Test if the Archive folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Archive ]
+ [ -d ~/Archive ]
+}
+#+END_SRC
+
+*** Website
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/Website
+ln ~/Dropbox/Website ~/Website
+#+END_SRC
+
+#+NAME: test_
+#+BEGIN_SRC sh 
+@test "Test if the Website folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Website ]
+ [ -d ~/Website ]
+}
+#+END_SRC
+
+*** Learning
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/Learning
+ln ~/Dropbox/Learning ~/Learning
+#+END_SRC
+
+#+NAME: test_
+#+BEGIN_SRC sh 
+@test "Test if the Learning folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Learning ]
+ [ -d ~/Learning ]
+}
+#+END_SRC
+
+*** Medical
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/Medical
+ln ~/Dropbox/Medical ~/Medical
+#+END_SRC
+
+#+NAME: test_
+#+BEGIN_SRC sh 
+@test "Test if the Medical folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Medical ]
+ [ -d ~/Medical ]
+}
+#+END_SRC
+
+*** Asset Management
+#+NAME: organization_folder
+#+BEGIN_SRC sh
+touch ~/Dropbox/AssetManagement
+ln ~/Dropbox/AssetManagement ~/AssetManagement
+#+END_SRC
+
+#+NAME: test_
+#+BEGIN_SRC sh 
+@test "Test if the AssetManagement folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/AssetManagement ]
+ [ -d ~/AssetManagement ]
+}
+#+END_SRC
+
+*** Contacts
+
+* Applications
+
+In this section, we'll be listing the application name and general info, its package name for our package manager to install it, and any configuration files related to said software.
 
 This allows us to create a list of all applications that we'll need in a single file while keeping them all nice and organized in seperate categories. Keep in mind that programming languages are not included in this section (they have special requirements for a proper development environment) but applications that are installed using a language's package manager belong here.
 
@@ -738,7 +915,6 @@ echo "\n\n"
     command -v <<install>>
 }
 #+END_SRC
-
 
 ** Terminal Emulators
 Plenty of shells for a hermit crab to choose. I'm going with fish for my interactive shell and bash for my scripts. Will try zsh for specific types of repositories.
@@ -927,7 +1103,6 @@ tor
 emacs
 #+END_SRC
 
-
 ** cURL configurations options
 
  https://curl.haxx.se/docs/manpage.html
@@ -962,6 +1137,18 @@ emacs
 git
 #+END_SRC
 
+**** Spacemacs Layer                                              :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+    ;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; git version control ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;
+    git                    ;;
+    github                 ;;
+    magit                  ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;
+#+END_SRC
+
 **** Configuration                                            :configuration:
 ***** TODO COMMENT git config
    What would you do without our favourite git config?
@@ -970,9 +1157,10 @@ git
 
    As for why we've doing this via commands instead of just dumping all our settings in a .gitconfig file?
    Well, this script can be run on any system and I'd rather git know where to install stuff than have to know it myself.
-   Sure it's ugly but it works. And more importantly, I have a reference for when I have to do this for the thousandth time on someone else's computer and I don't necessarily want to overwrite their script and a command just works.
+   Sure it's ugly but it works. And more importantly, I have a reference for when I have to do this for the thousandth time on someone else's computer;
+   I don't necessarily want to overwrite their script (if it even exists) and a command just works.
 
-   Also, it allows me to refer to this document anytime I want and copy paste code without thinking.
+   In short, it allows me to refer to this document anytime I want and copy paste code without thinking.
 ****** User name and email
    #+BEGIN_SRC sh :tangle git/git_config.sh :padline no
    git config --global user.name 'Vi Kumar'
@@ -1247,176 +1435,97 @@ htop
  right_meter_modes=1
  #+END_SRC
 
-* Organization
-#+NAME: organization
-#+BEGIN_SRC sh :noweb yes 
-if [ -d "~/Dropbox" ]; then
-    dropbox start
-    dropbox status
+** Communication
+*** Slack
 
-    #<<organization_folder>>
+**** Spacemacs Layer                                              :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
 
-    #<<organization_file>>
-fi
+    ;; There's no escaping the beast
+
+    ;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; Team Communication ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;
+    slack                 ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;
 #+END_SRC
 
-** Dropbox
-*** Installation                                                    :install:
-#+NAME: install
-#+BEGIN_SRC sh 
-dropbox
-#+END_SRC
-** Folder Organization
-*** Projects
-#+NAME: organization_folder
-#+BEGIN_SRC sh
-touch ~/Dropbox/Projects
-ln ~/Dropbox/Projects ~/Projects
-#+END_SRC
+*** Twitter
 
-#+NAME: test_
-#+BEGIN_SRC sh 
-@test "Test if the Projects folder exists in the Dropbox folder and in the home directory" {
- [ -d ~/Dropbox/Projects ]
- [ -d ~/Projects ]
-}
-#+END_SRC
-*** Agenda
-#+NAME: organization_folder
-#+BEGIN_SRC sh
-touch ~/Dropbox/Agenda
+**** Spacemacs Layer                                              :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+
+    ;; Because Twitter is addictive
+
+    ;;;;;;;;;;;;;;;;;;
+    ;; Social Media ;;
+    ;;;;;;;;;;;;;;;;;;
+    twitter         ;;
+    ;;;;;;;;;;;;;;;;;;
 #+END_SRC
 
-#+NAME: test_
-#+BEGIN_SRC sh 
-@test "Test if the Agenda folder exists in the Dropbox folder and in the home directory" {
- [ -d ~/Dropbox/Agenda ]
-}
+*** Email
+
+**** Spacemacs Layer                                              :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+
+    ;; Decent email client
+
+    ;;;;;;;;;;;;;;;;;;
+    ;; Email client ;;
+    ;;;;;;;;;;;;;;;;;;
+    mu4e            ;;
+    ;;;;;;;;;;;;;;;;;;
 #+END_SRC
 
-*** Documents
-#+NAME: organization_folder
-#+BEGIN_SRC sh
-touch ~/Dropbox/Documents
-ln ~/Dropbox/Documents ~/Documents
+*** RSS
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+
+    ;; RSS - clinginging on to Web 2.0
+
+    ;;;;;;;;;;;;;;;;
+    ;; RSS client ;;
+    ;;;;;;;;;;;;;;;;
+    elfeed        ;;
+    ;;;;;;;;;;;;;;;;
 #+END_SRC
 
-#+NAME: test_
-#+BEGIN_SRC sh 
-@test "Test if the Documents folder exists in the Dropbox folder and in the home directory" {
- [ -d ~/Dropbox/Documents ]
- [ -d ~/Documents ]
-}
+** Documents
+
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+
+    ;; RSS - clinginging on to Web 2.0
+
+    ;;;;;;;;;;;;;;;;;;;
+    ;; pdf utilities ;;
+    ;;;;;;;;;;;;;;;;;;;
+    pdf-tools        ;;
+    ;;;;;;;;;;;;;;;;;;;
 #+END_SRC
 
-*** Configuration
+** File manager
+*** ranger
 
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
 
-- org-agenda integration
-#+BEGIN_SRC emacs-lisp
-(setq org-agenda-files
-    (file-expand-wildcards "~/Proposals/*.org")
-    (file-expand-wildcards "~/Projects/*.org")
-    (file-expand-wildcards "~/PersonalDevelopment/*.org")
-    (file-expand-wildcards "~/College/*.org")
-    (file-expand-wildcards "~/Business/*.org")
-    (file-expand-wildcards "~/Finances/*.org")
-)
-#+END_SRC emacs-lisp
+    ;; RSS - clinginging on to Web 2.0
 
-
-
-#+NAME: organization_folder
-#+BEGIN_SRC sh
-touch ~/Dropbox/Configuration
-ln ~/Dropbox/Configuration ~/Configuration
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; pdf utilities               ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (ranger :variables             ;;
+            ranger-show-preview t) ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+END_SRC
 
-#+NAME: test_
-#+BEGIN_SRC sh 
-@test "Test if the Configuration folder exists in the Dropbox folder and in the home directory" {
- [ -d ~/Dropbox/Configuration ]
- [ -d ~/Configuration ]
-}
-#+END_SRC
 
-*** Archive
-#+NAME: organization_folder
-#+BEGIN_SRC sh
-touch ~/Dropbox/Archive
-ln ~/Dropbox/Archive ~/Archive
-#+END_SRC
-
-#+NAME: test_
-#+BEGIN_SRC sh 
-@test "Test if the Archive folder exists in the Dropbox folder and in the home directory" {
- [ -d ~/Dropbox/Archive ]
- [ -d ~/Archive ]
-}
-#+END_SRC
-
-*** Website
-#+NAME: organization_folder
-#+BEGIN_SRC sh
-touch ~/Dropbox/Website
-ln ~/Dropbox/Website ~/Website
-#+END_SRC
-
-#+NAME: test_
-#+BEGIN_SRC sh 
-@test "Test if the Website folder exists in the Dropbox folder and in the home directory" {
- [ -d ~/Dropbox/Website ]
- [ -d ~/Website ]
-}
-#+END_SRC
-
-*** Learning
-#+NAME: organization_folder
-#+BEGIN_SRC sh
-touch ~/Dropbox/Learning
-ln ~/Dropbox/Learning ~/Learning
-#+END_SRC
-
-#+NAME: test_
-#+BEGIN_SRC sh 
-@test "Test if the Learning folder exists in the Dropbox folder and in the home directory" {
- [ -d ~/Dropbox/Learning ]
- [ -d ~/Learning ]
-}
-#+END_SRC
-
-*** Medical
-#+NAME: organization_folder
-#+BEGIN_SRC sh
-touch ~/Dropbox/Medical
-ln ~/Dropbox/Medical ~/Medical
-#+END_SRC
-
-#+NAME: test_
-#+BEGIN_SRC sh 
-@test "Test if the Medical folder exists in the Dropbox folder and in the home directory" {
- [ -d ~/Dropbox/Medical ]
- [ -d ~/Medical ]
-}
-#+END_SRC
-
-*** Asset Management
-#+NAME: organization_folder
-#+BEGIN_SRC sh
-touch ~/Dropbox/AssetManagement
-ln ~/Dropbox/AssetManagement ~/AssetManagement
-#+END_SRC
-
-#+NAME: test_
-#+BEGIN_SRC sh 
-@test "Test if the AssetManagement folder exists in the Dropbox folder and in the home directory" {
- [ -d ~/Dropbox/AssetManagement ]
- [ -d ~/AssetManagement ]
-}
-#+END_SRC
-
-*** Contacts
-* Python Environment Configuration
+* Python
 #+NAME: python
 #+BEGIN_SRC sh :noweb yes
 #########
@@ -1425,6 +1534,21 @@ ln ~/Dropbox/AssetManagement ~/AssetManagement
 
 <<python_pyenv>>
 
+#+END_SRC
+
+** Spacemacs Layer                                                :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; python layer configuration                          ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (python :variables                                     ;;
+            python-sort-imports-on-save t                  ;;
+            python-test-runner 'pytest                     ;;
+            :packages                                      ;;
+            (not hy-mode)  ; I maintain local `hy-mode'    ;;
+            (not importmagic))  ; Broken? Don't need it.   ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+END_SRC
 ** Pyenv
 pyenv is used to isolate Python versions. For example, you may want to test your code against Python 2.6, 2.7, 3.3, 3.4 and 3.5, so you'll need a way to switch between them. Once activated, it prefixes the PATH environment variable with ~/.pyenv/shims, where there are special files matching the Python commands (python, pip). These are not copies of the Python-shipped commands; they are special scripts that decide on the fly which version of Python to run based on the PYENV_VERSION environment variable, or the .python-version file, or the ~/.pyenv/version file. pyenv also makes the process of downloading and installing multiple Python versions easier, using the command pyenv install.
@@ -1593,7 +1717,7 @@ python3-virtualenv
 
 ** Pylint
 
-* Bash Environment Configuration
+* Bash
 
 ** bats-core
 bats-core is a unit test library for 
@@ -1609,6 +1733,142 @@ cd bats-core
 sudo ./install.sh /usr/local
 #+END_SRC
 
+* Haskell
+** Spacemacs Layer                                                :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; haskell layer configuration                         ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (haskell :variables                                    ;;
+             haskell-completion-backend 'intero)           ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+END_SRC
+
+* Markup Languages
+** csv
+Probably not markup but close enough
+*** Spacemacs Layer                                               :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; csv layer configuration      ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    csv                             ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+END_SRC
+
+** html
+*** Spacemacs Layer                                               :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; html layer configuration    ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    html                           ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+END_SRC
+
+** markdown
+*** Spacemacs Layer                                               :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; markdown layer configuration   ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    markdown                          ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+END_SRC
+
+** yaml
+*** Spacemacs Layer                                               :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; yaml layer configuration   ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    yaml                          ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+END_SRC
+
+** org
+*** Spacemacs Layer                                               :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; org layer configuration  ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    org                         ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+END_SRC
+
+** asciidoc
+*** Spacemacs Layer                                               :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; asciidoc layer configuration   ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    asciidoc                          ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+END_SRC
+
+** dot & graphviz
+*** Spacemacs Layer                                               :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; graphviz layer configuration   ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    graphviz                          ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+END_SRC
+
+* Javascript
+*** Spacemacs Layer                                               :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; javascript layer configuration ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    javascript                        ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+END_SRC
+
+* Emacs-lisp
+*** Spacemacs Layer                                               :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; emacs-lisp layer configuration   ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    emacs-lisp                          ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+END_SRC
+
+* C & C++
+*** Spacemacs Layer                                               :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; c & C++ layer configuration    ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    c-c++                             ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+END_SRC
+
+* Spacemacs
+** iBuffer
+*** Spacemacs Layer                                               :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; iBuffer configuration                 ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (ibuffer :variables                      ;;
+             ibuffer-group-buffers-by 'mode) ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+END_SRC
 
 
 
@@ -1710,6 +1970,5 @@ This preference list is used for new keys and becomes the default for "setpref" 
 #+BEGIN_SRC sh
 default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 ZLIB BZIP2 ZIP Uncompressed
 #+END_SRC
-
 
 
