@@ -1527,533 +1527,329 @@ htop
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+END_SRC
 
-* Python
-#+NAME: python
-#+BEGIN_SRC sh :noweb yes
-#########
-# Pyenv #
-#########
 
-<<python_pyenv>>
+* Language Environment Configuration
+** Python
+ #+NAME: python
+ #+BEGIN_SRC sh :noweb yes
+ #########
+ # Pyenv #
+ #########
 
-#+END_SRC
+ <<python_pyenv>>
 
-** Spacemacs Layer                                                :spacemacs:
-#+NAME: dotspacemacs/layers/variables
-#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; python layer configuration                          ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    (python :variables                                     ;;
-            python-sort-imports-on-save t                  ;;
-            python-test-runner 'pytest                     ;;
-            :packages                                      ;;
-            (not hy-mode)  ; I maintain local `hy-mode'    ;;
-            (not importmagic))  ; Broken? Don't need it.   ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+END_SRC
-** Pyenv
-pyenv is used to isolate Python versions. For example, you may want to test your code against Python 2.6, 2.7, 3.3, 3.4 and 3.5, so you'll need a way to switch between them. Once activated, it prefixes the PATH environment variable with ~/.pyenv/shims, where there are special files matching the Python commands (python, pip). These are not copies of the Python-shipped commands; they are special scripts that decide on the fly which version of Python to run based on the PYENV_VERSION environment variable, or the .python-version file, or the ~/.pyenv/version file. pyenv also makes the process of downloading and installing multiple Python versions easier, using the command pyenv install.
+ #+END_SRC
 
-*** Installation of pyenv and extensions                            :install:
+*** Spacemacs Layer                                               :spacemacs:
+ #+NAME: dotspacemacs/layers/variables
+ #+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
 
-We won't be installing pyenv through zypper since zypper doesn't have it unless you add someone's personal repo (which I am unwilling to do).
-Instead, we'll be installing it through cloning a git repo. Since pyenv is just a bunch of shell scripts, we'll be alright.
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;; python layer configuration                          ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     (python :variables                                     ;;
+             python-sort-imports-on-save t                  ;;
+             python-test-runner 'pytest                     ;;
+             :packages                                      ;;
+             (not hy-mode)  ; I maintain local `hy-mode'    ;;
+             (not importmagic))  ; Broken? Don't need it.   ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+NAME: python_pyenv
-#+BEGIN_SRC sh 
-# Taken from https://www.reddit.com/r/openSUSE/comments/70ozge/using_multiple_python_versions_on_leap/dos6798
+ #+END_SRC
+*** Pyenv
+ pyenv is used to isolate Python versions. For example, you may want to test your code against Python 2.6, 2.7, 3.3, 3.4 and 3.5, so you'll need a way to switch between them. Once activated, it prefixes the PATH environment variable with ~/.pyenv/shims, where there are special files matching the Python commands (python, pip). These are not copies of the Python-shipped commands; they are special scripts that decide on the fly which version of Python to run based on the PYENV_VERSION environment variable, or the .python-version file, or the ~/.pyenv/version file. pyenv also makes the process of downloading and installing multiple Python versions easier, using the command pyenv install.
 
-git clone https://github.com/pyenv/pyenv.git ~/.pyenv
-echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
-echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
-echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.bashrc
-#+END_SRC
+**** Installation of pyenv and extensions                           :install:
 
-Install the missing headers needed by Python modules
-#+NAME: install_
-#+BEGIN_SRC sh
-readline-devel sqlite3-devel libbz2-devel zlib-devel libopenssl-devel
-#+END_SRC
-
-Install virtualvenv
-#+NAME: install_
-#+BEGIN_SRC sh 
-python3-virtualenv
-#+END_SRC
-
-#+NAME: test
-#+BEGIN_SRC sh :tangle no
-@test "Check if pyenv has installed successfully" {
-    command -v pyenv
-}
-#+END_SRC
-
-*** Installing different versions of python
- Installing new Python versions is very straightforward. All Python versions are installed in the versions directory under the pyenv root.
+ We won't be installing pyenv through zypper since zypper doesn't have it unless you add someone's personal repo (which I am unwilling to do).
+ Instead, we'll be installing it through cloning a git repo. Since pyenv is just a bunch of shell scripts, we'll be alright.
 
  #+NAME: python_pyenv
- #+CAPTION: Install CPython 3.6.0 and CPython 2.7.13.
- #+BEGIN_SRC sh
- pyenv install 3.6.0
- pyenv install 2.7.13
- #+END_SRC
-
-*** virtualvenv setup
- With virtualenv all your virtualenvs are kept on a same directory and your projects' code on another. My setup is:
- #+NAME: python_pyenv
- #+BEGIN_SRC sh :padline no
- # All virtualenvs will be on...
- # export WORKON_HOME=~/.ve
- mkdir -p ~/.ve 
-
- # All projects will be on...
- # export PROJECT_HOME=~/Projects
- mkdir -p ~/Projects 
-
- # The -p flag is in case these folders have been created earlier - without it, mkdir returns an error.
- #+END_SRC
-
- It's necessary to configure the shell to initialize pyenv when you start a terminal session. Put the lines bellow on your ~/.bashrc file:
- #+NAME: bashrc
- #+BEGIN_SRC sh :padline no
- export PATH="~/.pyenv/bin/:$PATH"
-
- export WORKON_HOME=~/.ve
- export PROJECT_HOME=~/Projects
- if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
- #+END_SRC
-
-*** Resist the temptation to contaminate your global Python install
-
- I frequently use programs written in Python. I like them to be available in all sessions without activate any virtualenv.
-
- However I don't like to mess with the global Python installation to avoid library conflict issues.
-
- Another thing that I don't like is installing Jupyter/iPython on each of my projects' virtualenvs.
-
- I like to have only one install of Jupyter Notebook , one of iPython Console for Python3, one of iPython Console for Python2, and other tools like youtube-dl, rename, gnucash-to-beancount, rows, s3cmd, fabric, mercurial, etc.
-
-#+NAME: python_pyenv
- #+BEGIN_SRC sh
- pyenv virtualenv 3.6.0 jupyter3
- pyenv virtualenv 3.6.0 tools3
- pyenv virtualenv 2.7.13 ipython2
- pyenv virtualenv 2.7.13 tools2
- #+END_SRC
-
- Jupyter supports many kernels. This allows a single Jupyter install to create notebooks for Python2, Python3, R, Bash and many other languages. At this time I only want to support Python2 and Python3.
-
-**** Installing jupyter under jupyter3
-
-#+NAME: python_pyenv
- #+BEGIN_SRC sh
- pyenv activate jupyter3
- pip install jupyter
- python -m ipykernel install --user
- pyenv deactivate
- #+END_SRC
-
-**** Installing ipython under ipython2
-
-#+NAME: python_pyenv
- #+BEGIN_SRC sh
- pyenv activate ipython2
- pip install ipykernel
- python -m ipykernel install --user
- pyenv deactivate
- #+END_SRC
-
- Note that when I install Jupyter on Python3 it will by default install iPython and the Kernel too. For Python2 I only need to install iPython and the Kernel. I'll explain this better bellow.
-
-**** Tools which run on Python 3
-
-#+NAME: python_pyenv
- #+BEGIN_SRC sh
- pyenv activate tools3
- pip install youtube-dl gnucash-to-beancount rows 
- pyenv deactivate
- #+END_SRC
-
-**** Tools that only run on Python 2
-
-#+NAME: python_pyenv
  #+BEGIN_SRC sh 
- pyenv activate tools2
- pip install rename s3cmd fabric mercurial
- pyenv deactivate
+ # Taken from https://www.reddit.com/r/openSUSE/comments/70ozge/using_multiple_python_versions_on_leap/dos6798
+
+ git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+ echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+ echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+ echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.bashrc
  #+END_SRC
 
-**** Final Step
- Finally, it's time to make all Python versions and special virtualenvs work with each other.
-
-#+NAME: python_pyenv
+ Install the missing headers needed by Python modules
+ #+NAME: install_
  #+BEGIN_SRC sh
- pyenv global 3.6.0 2.7.13 jupyter3 ipython2 tools3 tools2
+ readline-devel sqlite3-devel libbz2-devel zlib-devel libopenssl-devel
  #+END_SRC
 
- The above command establishes the PATH priority so scripts can be accessed in the right order without activating any virtualenv.
+ Install virtualvenv
+ #+NAME: install_
+ #+BEGIN_SRC sh 
+ python3-virtualenv
+ #+END_SRC
 
-*** How to use Jupyter and iPython with my projects?
+ #+NAME: test
+ #+BEGIN_SRC sh :tangle no
+ @test "Check if pyenv has installed successfully" {
+     command -v pyenv
+ }
+ #+END_SRC
 
- This was the main motivation to write this guide.
+**** Installing different versions of python
+  Installing new Python versions is very straightforward. All Python versions are installed in the versions directory under the pyenv root.
 
- Both Notebook and Console were part of the iPython project, which, as the name suggests, were only about Python. But the Notebook evolution enabled it to become language agnostic, so developers decided to split the project in 2: Jupyter and iPython
+  #+NAME: python_pyenv
+  #+CAPTION: Install CPython 3.6.0 and CPython 2.7.13.
+  #+BEGIN_SRC sh
+  pyenv install 3.6.0
+  pyenv install 2.7.13
+  #+END_SRC
 
- Now Jupyter contains Notebook, while iPython contains Console and the Python Kernel which Jupyter uses to execute Python code.
+**** virtualvenv setup
+  With virtualenv all your virtualenvs are kept on a same directory and your projects' code on another. My setup is:
+  #+NAME: python_pyenv
+  #+BEGIN_SRC sh :padline no
+  # All virtualenvs will be on...
+  # export WORKON_HOME=~/.ve
+  mkdir -p ~/.ve 
 
- I used to use an old iPython version and during a clumsy upgrade Jupyter stopped detecting the active virtualenv, so I couldn't import its installed libraries.
+  # All projects will be on...
+  # export PROJECT_HOME=~/Projects
+  mkdir -p ~/Projects 
 
- Actually, Jupyter does not detect the active virtualenv: it's the iPython instance which Jupyter initializes. The problem then is that iPython's virtualenv detection code only runs in the interactive shell mode, but not in the kernel mode. Besides that the detection code only works properly if the active virtualenv's Python version and the Python version running iPython are the same.
+  # The -p flag is in case these folders have been created earlier - without it, mkdir returns an error.
+  #+END_SRC
 
- The solution is to customize iPython's startup process. For that we need to create an iPython profile and install a magic script I wrote to do the trick:
+  It's necessary to configure the shell to initialize pyenv when you start a terminal session. Put the lines bellow on your ~/.bashrc file:
+  #+NAME: bashrc
+  #+BEGIN_SRC sh :padline no
+  export PATH="~/.pyenv/bin/:$PATH"
 
-#+NAME: python_pyenv
+  export WORKON_HOME=~/.ve
+  export PROJECT_HOME=~/Projects
+  if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+  #+END_SRC
+
+**** Resist the temptation to contaminate your global Python install
+
+  I frequently use programs written in Python. I like them to be available in all sessions without activate any virtualenv.
+
+  However I don't like to mess with the global Python installation to avoid library conflict issues.
+
+  Another thing that I don't like is installing Jupyter/iPython on each of my projects' virtualenvs.
+
+  I like to have only one install of Jupyter Notebook , one of iPython Console for Python3, one of iPython Console for Python2, and other tools like youtube-dl, rename, gnucash-to-beancount, rows, s3cmd, fabric, mercurial, etc.
+
+ #+NAME: python_pyenv
+  #+BEGIN_SRC sh
+  pyenv virtualenv 3.6.0 jupyter3
+  pyenv virtualenv 3.6.0 tools3
+  pyenv virtualenv 2.7.13 ipython2
+  pyenv virtualenv 2.7.13 tools2
+  #+END_SRC
+
+  Jupyter supports many kernels. This allows a single Jupyter install to create notebooks for Python2, Python3, R, Bash and many other languages. At this time I only want to support Python2 and Python3.
+
+***** Installing jupyter under jupyter3
+
+ #+NAME: python_pyenv
+  #+BEGIN_SRC sh
+  pyenv activate jupyter3
+  pip install jupyter
+  python -m ipykernel install --user
+  pyenv deactivate
+  #+END_SRC
+
+***** Installing ipython under ipython2
+
+ #+NAME: python_pyenv
+  #+BEGIN_SRC sh
+  pyenv activate ipython2
+  pip install ipykernel
+  python -m ipykernel install --user
+  pyenv deactivate
+  #+END_SRC
+
+  Note that when I install Jupyter on Python3 it will by default install iPython and the Kernel too. For Python2 I only need to install iPython and the Kernel. I'll explain this better bellow.
+
+***** Tools which run on Python 3
+
+ #+NAME: python_pyenv
+  #+BEGIN_SRC sh
+  pyenv activate tools3
+  pip install youtube-dl gnucash-to-beancount rows 
+  pyenv deactivate
+  #+END_SRC
+
+***** Tools that only run on Python 2
+
+ #+NAME: python_pyenv
+  #+BEGIN_SRC sh 
+  pyenv activate tools2
+  pip install rename s3cmd fabric mercurial
+  pyenv deactivate
+  #+END_SRC
+
+***** Final Step
+  Finally, it's time to make all Python versions and special virtualenvs work with each other.
+
+ #+NAME: python_pyenv
+  #+BEGIN_SRC sh
+  pyenv global 3.6.0 2.7.13 jupyter3 ipython2 tools3 tools2
+  #+END_SRC
+
+  The above command establishes the PATH priority so scripts can be accessed in the right order without activating any virtualenv.
+
+**** How to use Jupyter and iPython with my projects?
+
+  This was the main motivation to write this guide.
+
+  Both Notebook and Console were part of the iPython project, which, as the name suggests, were only about Python. But the Notebook evolution enabled it to become language agnostic, so developers decided to split the project in 2: Jupyter and iPython
+
+  Now Jupyter contains Notebook, while iPython contains Console and the Python Kernel which Jupyter uses to execute Python code.
+
+  I used to use an old iPython version and during a clumsy upgrade Jupyter stopped detecting the active virtualenv, so I couldn't import its installed libraries.
+
+  Actually, Jupyter does not detect the active virtualenv: it's the iPython instance which Jupyter initializes. The problem then is that iPython's virtualenv detection code only runs in the interactive shell mode, but not in the kernel mode. Besides that the detection code only works properly if the active virtualenv's Python version and the Python version running iPython are the same.
+
+  The solution is to customize iPython's startup process. For that we need to create an iPython profile and install a magic script I wrote to do the trick:
+
+ #+NAME: python_pyenv
+  #+BEGIN_SRC sh
+  ipython profile create
+  curl -L http://hbn.link/hb-ipython-startup-script > ~/.ipython/profile_default/startup/00-venv-sitepackages.py
+  #+END_SRC
+  With this, no matter the mode iPython starts, the virtualenv's site-packages will be available in the PYTHONPATH.
+
+  Back to our proj3, after activating its virtualenv running workon proj3, you can simply execute ipython to run the interactive mode, or jupyter notebook to get all the fun.
+
+*** Pylint
+
+** Bash
+
+*** bats-core
+ bats-core is a unit test library for 
+
+ #+NAME: install
  #+BEGIN_SRC sh
- ipython profile create
- curl -L http://hbn.link/hb-ipython-startup-script > ~/.ipython/profile_default/startup/00-venv-sitepackages.py
+ bats
  #+END_SRC
- With this, no matter the mode iPython starts, the virtualenv's site-packages will be available in the PYTHONPATH.
 
- Back to our proj3, after activating its virtualenv running workon proj3, you can simply execute ipython to run the interactive mode, or jupyter notebook to get all the fun.
+ #+BEGIN_SRC sh
+ git clone https://github.com/bats-core/bats-core.git
+ cd bats-core
+ sudo ./install.sh /usr/local
+ #+END_SRC
 
-** Pylint
-
-* Bash
-
-** bats-core
-bats-core is a unit test library for 
-
-#+NAME: install
-#+BEGIN_SRC sh
-bats
-#+END_SRC
-
-#+BEGIN_SRC sh
-git clone https://github.com/bats-core/bats-core.git
-cd bats-core
-sudo ./install.sh /usr/local
-#+END_SRC
-
-* Haskell
-** Spacemacs Layer                                                :spacemacs:
-#+NAME: dotspacemacs/layers/variables
-#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; haskell layer configuration                         ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    (haskell :variables                                    ;;
-             haskell-completion-backend 'intero)           ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+END_SRC
-
-* Markup Languages
-** csv
-Probably not markup but close enough
+** Haskell
 *** Spacemacs Layer                                               :spacemacs:
-#+NAME: dotspacemacs/layers/variables
-#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; csv layer configuration      ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    csv                             ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+END_SRC
-
-** html
+ #+NAME: dotspacemacs/layers/variables
+ #+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;; haskell layer configuration                         ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     (haskell :variables                                    ;;
+              haskell-completion-backend 'intero)           ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ #+END_SRC
+** Javascript
 *** Spacemacs Layer                                               :spacemacs:
-#+NAME: dotspacemacs/layers/variables
-#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; html layer configuration    ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    html                           ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+END_SRC
+ #+NAME: dotspacemacs/layers/variables
+ #+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;; javascript layer configuration ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     javascript                        ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ #+END_SRC
 
-** markdown
+** Emacs-lisp
 *** Spacemacs Layer                                               :spacemacs:
-#+NAME: dotspacemacs/layers/variables
-#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; markdown layer configuration   ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    markdown                          ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+END_SRC
+ #+NAME: dotspacemacs/layers/variables
+ #+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;; emacs-lisp layer configuration   ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     emacs-lisp                          ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ #+END_SRC
 
-** yaml
+** C & C++
 *** Spacemacs Layer                                               :spacemacs:
-#+NAME: dotspacemacs/layers/variables
-#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; yaml layer configuration   ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    yaml                          ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+END_SRC
+ #+NAME: dotspacemacs/layers/variables
+ #+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;; c & C++ layer configuration    ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     c-c++                             ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ #+END_SRC
 
-** asciidoc
-*** Spacemacs Layer                                               :spacemacs:
-#+NAME: dotspacemacs/layers/variables
-#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; asciidoc layer configuration   ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    asciidoc                          ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+END_SRC
+** Markup Languages
+*** csv
+ Probably not markup but close enough
+**** Spacemacs Layer                                              :spacemacs:
+ #+NAME: dotspacemacs/layers/variables
+ #+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;; csv layer configuration      ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     csv                             ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ #+END_SRC
 
-** dot & graphviz
-*** Spacemacs Layer                                               :spacemacs:
-#+NAME: dotspacemacs/layers/variables
-#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; graphviz layer configuration   ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    graphviz                          ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+END_SRC
+*** html
+**** Spacemacs Layer                                              :spacemacs:
+ #+NAME: dotspacemacs/layers/variables
+ #+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;; html layer configuration    ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     html                           ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ #+END_SRC
 
-* Org
-Why is org not considered a markup language? Because it's just too complex and has too many configurations
-** Spacemacs Layer                                                :spacemacs:
-#+NAME: dotspacemacs/layers/variables
-#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; org layer configuration                     ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    (org :variables org-enable-github-support t    ;;
-                    org-enable-bootstrap-support t ;;
-                    org-enable-reveal-js-support t ;;     ;; Use #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/ at the top of the org file
-    )                                              ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+END_SRC
+*** markdown
+**** Spacemacs Layer                                              :spacemacs:
+ #+NAME: dotspacemacs/layers/variables
+ #+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;; markdown layer configuration   ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     markdown                          ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ #+END_SRC
 
+*** yaml
+**** Spacemacs Layer                                              :spacemacs:
+ #+NAME: dotspacemacs/layers/variables
+ #+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;; yaml layer configuration   ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     yaml                          ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ #+END_SRC
 
-** Settings
-Lots of org mode stuff
+*** asciidoc
+**** Spacemacs Layer                                              :spacemacs:
+ #+NAME: dotspacemacs/layers/variables
+ #+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;; asciidoc layer configuration   ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     asciidoc                          ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ #+END_SRC
 
-
-*** Babel
-**** Languages
-#+BEGIN_SRC emacs-lisp
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '(
-     (shell . t)
-     (python . t)
-     (R . t)
-     (ruby . t)
-     (ocaml . t)
-     (ditaa . t)
-     (dot . t)
-     (octave . t)
-     (sqlite . t)
-     (perl . t)
-     (screen . t)
-     (plantuml . t)
-     (lilypond . t)
-     (org . t)
-     (makefile . t)
-     ))
-  (setq org-src-preserve-indentation t)
-#+END_SRC
-
-**** Adding Source blocks
-
-Need to add info about the capital letters being sessioned (how do i explain that?)
-#+BEGIN_SRC emacs-lisp
-
-(add-to-list 'org-structure-template-alist
-        '("S" "#+begin_src ?\n\n#+end_src" "<src lang=\"?\">\n\n</src>"))
-
-
-;; R code
-(add-to-list 'org-structure-template-alist
-        '("r" "#+begin_src R :results output :session *R* :exports both\n\n#+end_src" "<src lang=\"R\">\n\n</src>"))
-(add-to-list 'org-structure-template-alist
-        '("R" "#+begin_src R :results output graphics :file (org-babel-temp-file \"figure\" \".png\") :exports both :width 600 :height 400 :session *R* \n\n#+end_src" "<src lang=\"R\">\n\n</src>"))
-
-
-
-
-;; Python code
-(add-to-list 'org-structure-template-alist
-        '("p" "#+begin_src python :results output :exports both\n\n#+end_src" "<src lang=\"python\">\n\n</src>"))
-(add-to-list 'org-structure-template-alist
-        '("P" "#+begin_src python :results output :session *python* :exports both\n\n#+end_src" "<src lang=\"python\">\n\n</src>"))
-
-
-
-;; Bash code
-(add-to-list 'org-structure-template-alist
-        '("b" "#+begin_src shell :results output :exports both\n\n#+end_src" "<src lang=\"sh\">\n\n</src>"))
-(add-to-list 'org-structure-template-alist
-        '("B" "#+begin_src shell :session *shell* :results output :exports both \n\n#+end_src" "<src lang=\"sh\">\n\n</src>"))
-
-
-
-
-;; Graphviz
-(add-to-list 'org-structure-template-alist
-        '("g" "#+begin_src dot :results output graphics :file \"/tmp/graph.pdf\" :exports both
-   digraph G {
-      node [color=black,fillcolor=white,shape=rectangle,style=filled,fontname=\"Helvetica\"];
-      A[label=\"A\"]
-      B[label=\"B\"]
-      A->B
-   }\n#+end_src" "<src lang=\"dot\">\n\n</src>"))
-#+END_SRC
-
-*** Heading is DONE when all checkboxes are filled
-#+BEGIN_SRC emacs-lisp
-;; see http://thread.gmane.org/gmane.emacs.orgmode/42715
-(eval-after-load 'org-list
-  '(add-hook 'org-checkbox-statistics-hook (function ndk/checkbox-list-complete)))
-
-(defun ndk/checkbox-list-complete ()
-  (save-excursion
-    (org-back-to-heading t)
-    (let ((beg (point)) end)
-      (end-of-line)
-      (setq end (point))
-      (goto-char beg)
-      (if (re-search-forward "\\[\\([0-9]*%\\)\\]\\|\\[\\([0-9]*\\)/\\([0-9]*\\)\\]" end t)
-            (if (match-end 1)
-                (if (equal (match-string 1) "100%")
-                    ;; all done - do the state change
-                    (org-todo 'done)
-                  (org-todo 'todo))
-              (if (and (> (match-end 2) (match-beginning 2))
-                       (equal (match-string 2) (match-string 3)))
-                  (org-todo 'done)
-                (org-todo 'todo)))))))
-#+END_SRC
-*** Custom Protocols for links
-#+BEGIN_SRC emacs-lisp
-
-;; https://caiorss.github.io/Emacs-Elisp-Programming/Org-Mode.html | 2.4 Custom Protocols
-;; Hyperlink syntax: dir:<file-path>
-(add-hook 'org-mode-hook
-          (lambda ()
-              (org-add-link-type "dir" #'dired nil)))
-
-(add-hook 'org-mode-hook
-          (lambda ()
-                 (org-add-link-type  "man" #'woman nil)))
-#+END_SRC
-
-
-*** Disable security confirmations
-#+BEGIN_SRC emacs-lisp
-;; https://caiorss.github.io/Emacs-Elisp-Programming/Org-Mode.html | 2.5 Settings
-;; Disable security confirmations
-;;
-(setq   ;; Confirmation for running coide blocks
-        org-confirm-babel-evaluate      nil
-        ;; Confirmation for elisp links
-        org-confirm-elisp-link-function nil
-        ;; Confirmation for shell links
-        org-confirm-shell-link-function nil
-
-        org-export-babel-evaluate       nil
-        )
-#+END_SRC
-
-*** Export backends
-#+BEGIN_SRC emacs-lisp
-;; Prepare stuff for org-export-backends
-(setq org-export-backends '(org latex icalendar html ascii))
-#+END_SRC
-
-*** Modules
-#+BEGIN_SRC emacs-lisp
-;; Experiment with and explain why you use it. Lots of links!
-  (setq org-modules '(org-bbdb
-                      org-gnus
-                      org-drill
-                      org-info
-                      org-jsinfo
-                      org-habit
-                      org-irc
-                      org-mouse
-                      org-protocol
-                      org-annotate-file
-                      org-eval
-                      org-expiry
-                      org-interactive-query
-                      org-man
-                      org-collector
-                      org-panel
-                      org-screen
-                      org-toc))
-
-#+END_SRC
-
-*** Todo Keywords
-#+BEGIN_SRC emacs-lisp
-;; Change to fit your style
-(setq org-todo-keywords
- '((sequence
-    "TODO(t)"  ; next action
-    "TOBLOG(b)"  ; next action
-    "STARTED(s)"
-    "WAITING(w@/!)"
-    "SOMEDAY(.)" "|" "DONE(x!)" "CANCELLED(c@)")
-   (sequence "LEARN" "TRY" "TEACH" "|" "COMPLETE(x)")
-   (sequence "TOSKETCH" "SKETCHED" "|" "POSTED")
-   (sequence "TOBUY" "TOSHRINK" "TOCUT"  "TOSEW" "|" "DONE(x)")
-   (sequence "TODELEGATE(-)" "DELEGATED(d)" "|" "COMPLETE(x)")))
-
-(setq org-todo-keyword-faces
-      '(("TODO" . (:foreground "green" :weight bold))
-        ("DONE" . (:foreground "cyan" :weight bold))
-        ("WAITING" . (:foreground "red" :weight bold))
-        ("SOMEDAY" . (:foreground "gray" :weight bold))))
-
-#+END_SRC
-
-*** Tags
-#+BEGIN_SRC emacs-lisp
-;; We don't want the project tag to be inherited by its children
-(setq org-tags-exclude-from-inheritance '("project"))
-#+END_SRC
-
-
-
-* Javascript
-** Spacemacs Layer                                                :spacemacs:
-#+NAME: dotspacemacs/layers/variables
-#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; javascript layer configuration ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    javascript                        ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+END_SRC
-
-* Emacs-lisp
-** Spacemacs Layer                                                :spacemacs:
-#+NAME: dotspacemacs/layers/variables
-#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; emacs-lisp layer configuration   ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    emacs-lisp                          ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+END_SRC
-
-* C & C++
-** Spacemacs Layer                                                :spacemacs:
-#+NAME: dotspacemacs/layers/variables
-#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; c & C++ layer configuration    ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    c-c++                             ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+END_SRC
+*** dot & graphviz
+**** Spacemacs Layer                                              :spacemacs:
+ #+NAME: dotspacemacs/layers/variables
+ #+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;; graphviz layer configuration   ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     graphviz                          ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ #+END_SRC
 
 * Spacemacs
 ** iBuffer
@@ -2070,129 +1866,264 @@ Need to add info about the capital letters being sessioned (how do i explain tha
 
 ** Customization
 
-*** Ask y or n instead of yes or no
-#+NAME: dot
-#+NAME: dotspacemacs/user-config
+*** Delete trailing space before saving
 #+BEGIN_SRC emacs-lisp
-;; https://news.ycombinator.com/item?id=1654164
-(defalias 'yes-or-no-p 'y-or-n-p)
+;; 2016-02-06: https://www.reddit.com/r/emacs/comments/445w6s/whats_some_small_thing_in_your_dotemacs_that_you/
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 #+END_SRC
 
-*** Character encodings default to utf-8
-#+NAME: dotspacemacs/user-config
+*** twittering-mode
+
 #+BEGIN_SRC emacs-lisp
-;; From https://caiorss.github.io/Emacs-Elisp-Programming/Customization.html
-;; Character encodings default to utf-8.
-(prefer-coding-system 'utf-8)
-(set-language-environment 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-selection-coding-system 'utf-8)
-#+END_SRC
+;;;;; twittering-mode
 
-*** Create file if nonexistent without confirmation
-#+NAME: dotspacemacs/user-config
-#+BEGIN_SRC emacs-lisp
-;; https://news.ycombinator.com/item?id=1654164 | Kototama's comment
-;; do not confirm file creation
-(setq confirm-nonexistent-file-or-buffer nil)
-#+END_SRC
+(require 'twittering-mode)
+(setq twittering-username "avarab")
 
-*** Indentation Settings
-#+NAME: dotspacemacs/user-config
-#+BEGIN_SRC emacs-lisp
-;; From https://bitbucket.org/brodie/dotfiles/src/tip/.emacs?fileviewer=file-view-default
-; Indentation settings
-(setq-default indent-tabs-mode nil) ; disable tab character insertion
-(setq standard-indent 4)
-(setq c-default-style "bsd") ; brackets go on a separate line
-(setq c-basic-offset 4)
-(setq-default c-indent-level 4)
-(setq-default js-indent-level 2)
-(setq-default css-indent-offset 2)
-; line up args on separate lines with opening parens
-(setq c-offsets-alist
-      '((arglist-intro c-lineup-arglist-intro-after-paren)))
-(setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76
-                        80 84 88 92 96 100 104 108 112 116 120))
-#+END_SRC
+(setq twittering-icon-mode t) 
+(setq twittering-timer-interval 300)
 
-*** zck's settings
-
-#+NAME: dotspacemacs/user-config
-#+BEGIN_SRC emacs-lisp
-;; From https://github.com/zck/emacs/blob/master/.emacs
-
-(setq show-paren-style 'expression)
-;; Highlight the entire expression
-;; http://www.emacsblog.org/2007/08/07/quick-tip-show-paren-mode/
-(tool-bar-mode -1)
-;; remove toolbar
-;; http://www.emacswiki.org/emacs/ToolBar
-(menu-bar-mode -1)
-;; who needs 'em?
-;; http://www.emacswiki.org/emacs/ToolBar
-(set-scroll-bar-mode 'right)
-;; http://www.emacswiki.org/emacs/ScrollBar
-(mouse-avoidance-mode 'exile)
-;; move the mouse pointer to the corner of the screen when approached
-;; http://www.emacswiki.org/emacs/MouseAvoidance
-
-(setq frame-title-format '("%b - " invocation-name "@" system-name))
-;; change the title of emacs
-;; http://www.gnu.org/software/emacs/elisp/html_node/Frame-Titles.html
-
-(setq confirm-kill-emacs 'y-or-n-p)
-;; yell at me before going away
-;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Exiting.html
-
-(setq inhibit-startup-message t)
-
-(setq default-indicate-empty-lines t)
-;; http://www.emacswiki.org/emacs/TheFringe
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Needs libnotify-bin
+(add-hook 'twittering-new-tweets-hook (lambda ()
+   (let ((n twittering-new-tweets-count))
+     (start-process "twittering-notify" nil "notify-send"
+                    "-i" "/usr/share/pixmaps/gnome-emacs.png"
+                    "New tweets"
+                    (format "You have %d new tweet%s"
+                            n (if (> n 1) "s" ""))))))
 
 #+END_SRC
 
+*** dockerfile-mode
 
-*** Emacs Server must be used to avoid startup delay as much as possible
-#+NAME: dotspacemacs/user-config
 #+BEGIN_SRC emacs-lisp
-;; https://news.ycombinator.com/item?id=1654670
-;; Emacsclient is a real must.
-  ;; use this to start server for emacsclient
-  (if (not (boundp 'server-process))
-     (server-start))
+;;;;; dockerfile-mode
+(require 'dockerfile-mode)                 ;; Add to top of dockerfile
+(add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
+#+END_SRC
+*** Use woman instead of man
+#+BEGIN_SRC emacs-lisp
+;;;;; woman
+
+;; Use woman instead of man
+(defalias 'man 'woman)
 #+END_SRC
 
-*** Font settings
-#+NAME: dotspacemacs/user-config
-#+BEGIN_SRC emacs-lisp
-;; Font
-;; https://github.com/xahlee/xah_emacs_init/blob/master/xah_emacs_font.el
-(progn
-  ;; set a default font
-  (cond
-   ((string-equal system-type "gnu/linux")
-    (when (member "DejaVu Sans Mono" (font-family-list)) (set-frame-font "DejaVu Sans Mono" t t))
-    ;; specify font for chinese characters using default chinese font on linux
-    (when (member "WenQuanYi Micro Hei" (font-family-list))
-      (set-fontset-font t '(#x4e00 . #x9fff) "WenQuanYi Micro Hei" ))
-    ;;
-    )
-   ((string-equal system-type "darwin") ; Mac
-    (when (member "Menlo" (font-family-list)) (set-frame-font "Menlo-14" t t))
-    ;;
-    )
-   ((string-equal system-type "windows-nt") ; Windows
-   nil))
+*** auto-mode-alist 
+ #+BEGIN_SRC emacs-lisp
+ ;;;; auto-mode-alist
+ (setq auto-mode-alist
+       (append
+        '(("\\.css$" . css-mode)
+          ("\\.ya?ml$" . yaml-mode)
+          ("^mutt-" . mail-mode)
+          ("\\.html$" . html-mode)
+          ("configure.in" . m4-mode)
+          ("\\.tt2?$" . html-mode)
+          ("\\.tmpl$" . html-mode)
+          ("\\.pir$" . pir-mode)
+          ("\\.[hg]s$"  . haskell-mode)
+          ("\\.hi$"     . haskell-mode)
+          ("\\.ml[iyl]?$" . caml-mode)
+          ("\\.l[hg]s$" . literate-haskell-mode)
+          ;; shellscript
+          ("/etc/profile" . sh-mode)
+          ("/etc/bash_completion" . sh-mode)
+          ("\\.SH" . sh-mode)
+          ("\\.bashrc" . sh-mode)
+          ;; Markdown
+          ("\\.md$"      . markdown-mode)
+          ("\\.mkdn$"    . markdown-mode)
+          ;; JavaScript
+          ("\\.js$"    . javascript-mode)
+          ("\\.json$"    . javascript-mode)
+          ;; emacs
+          ("\\.elt$"    . emacs-lisp-mode)
+          ;; cperl-mode
+          ("\\.PL$" . cperl-mode)
+          ("\\.pl$" . cperl-mode)
+          ("\\.nqp$" . cperl-mode)
+          ("\\.perl$" . cperl-mode) ; git source tree
+          ("\\.pm$" . cperl-mode)
+          ("\\.t$" . cperl-mode)
+          ("\\.psgi$" . cperl-mode)
+          ("\\.comp$" . cperl-mode)
+          ("/gitweb\\.conf$"  . cperl-mode)
+          ;; pod-mode
+          ("\\.pod$" . pod-mode)
+          ;; tap-mode
+          ("\\.tap$" . tap-mode)
+          ;; makefile-mode
+          ("\\.mak$" . makefile-mode) ;; used in Git
+          ("/Makefile$" . makefile-mode) ;; Evidently not the default
+          ("/Dockerfile$" . dockerfile-mode) ;; Evidently not the default
+          ;; xs
+          ("\\.xs$" . xs-mode)
+          ;; php
+          ("\\.php$" . php-mode)
+          ("\\.inc$" . php-mode)
+          ;; org-mode
+          ("\\.org$" . org-mode)
+          ;; po-mode
+          ("\\.po$" . po-mode) ;; not \.po\. as is the po-mode default
+          ("\\.pot$" . po-mode)
+          ("\\.recentf$" . emacs-lisp-mode)
+          ;; conf-mode
+          ("\\.vhost$"  . conf-mode)
+          ("\\.hgrc$"  . conf-mode)
+          ("\\.rc$"  . conf-mode)
+          ("\\.cnf$" . conf-mode)
+          ("\\.gitconfig$" . conf-mode)
+          ("\\.gitmodules$" . conf-mode)
+          ("\\.offlineimaprc" . conf-mode)
+          ("\\.mbsyncrc" . conf-mode)
+          ("^/etc/apache2/sites-" . conf-mode)
+          ("^/etc/ssh/sshd" . conf-mode)
+          ("^/etc/deb-packages" . conf-mode)
+          ("^/etc/apt/" . conf-mode)
+          ("\\.screenrc" . conf-mode)
+          ("\\.screenrc\.d/" . conf-mode)
+          ;; git
+          ("COMMIT_EDITMSG" . git-commit-mode)
+          ;; sh
+          ("\\.aliases$" . sh-mode)
+          ;; lua
+          ("\\.lua$" . lua-mode)
+          ;; ruby
+          ("\\.pp$" . puppet-mode)
+          ("\\.rhtml$" . ruby-mode)
+          ("\\.rjs$"   . ruby-mode)
+          ("\\.rxml$"   . ruby-mode)
+          ("\\.erb$"   . ruby-mode)
+          ("\\.builder$"   . ruby-mode)
+          ("\\.rake$" . ruby-mode)
+          ("\\.kick$" . ruby-mode))
+        auto-mode-alist))
+ #+END_SRC
 
-  ;; specify font for all unicode characters
-  (when (member "Symbola" (font-family-list))
-    (set-fontset-font t 'unicode "Symbola" nil 'prepend))
-)
-#+END_SRC
+**** Ask y or n instead of yes or no
+ #+NAME: dot
+ #+NAME: dotspacemacs/user-config
+ #+BEGIN_SRC emacs-lisp
+ ;; https://news.ycombinator.com/item?id=1654164
+ (defalias 'yes-or-no-p 'y-or-n-p)
+ #+END_SRC
+
+**** Character encodings default to utf-8
+ #+NAME: dotspacemacs/user-config
+ #+BEGIN_SRC emacs-lisp
+ ;; From https://caiorss.github.io/Emacs-Elisp-Programming/Customization.html
+ ;; Character encodings default to utf-8.
+ (prefer-coding-system 'utf-8)
+ (set-language-environment 'utf-8)
+ (set-default-coding-systems 'utf-8)
+ (set-terminal-coding-system 'utf-8)
+ (set-selection-coding-system 'utf-8)
+ #+END_SRC
+
+**** Create file if nonexistent without confirmation
+ #+NAME: dotspacemacs/user-config
+ #+BEGIN_SRC emacs-lisp
+ ;; https://news.ycombinator.com/item?id=1654164 | Kototama's comment
+ ;; do not confirm file creation
+ (setq confirm-nonexistent-file-or-buffer nil)
+ #+END_SRC
+
+**** Indentation Settings
+ #+NAME: dotspacemacs/user-config
+ #+BEGIN_SRC emacs-lisp
+ ;; From https://bitbucket.org/brodie/dotfiles/src/tip/.emacs?fileviewer=file-view-default
+ ; Indentation settings
+ (setq-default indent-tabs-mode nil) ; disable tab character insertion
+ (setq standard-indent 4)
+ (setq c-default-style "bsd") ; brackets go on a separate line
+ (setq c-basic-offset 4)
+ (setq-default c-indent-level 4)
+ (setq-default js-indent-level 2)
+ (setq-default css-indent-offset 2)
+ ; line up args on separate lines with opening parens
+ (setq c-offsets-alist
+       '((arglist-intro c-lineup-arglist-intro-after-paren)))
+ (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76
+                         80 84 88 92 96 100 104 108 112 116 120))
+ #+END_SRC
+
+**** zck's settings
+
+ #+NAME: dotspacemacs/user-config
+ #+BEGIN_SRC emacs-lisp
+ ;; From https://github.com/zck/emacs/blob/master/.emacs
+
+ (setq show-paren-style 'expression)
+ ;; Highlight the entire expression
+ ;; http://www.emacsblog.org/2007/08/07/quick-tip-show-paren-mode/
+ (tool-bar-mode -1)
+ ;; remove toolbar
+ ;; http://www.emacswiki.org/emacs/ToolBar
+ (menu-bar-mode -1)
+ ;; who needs 'em?
+ ;; http://www.emacswiki.org/emacs/ToolBar
+ (set-scroll-bar-mode 'right)
+ ;; http://www.emacswiki.org/emacs/ScrollBar
+ (mouse-avoidance-mode 'exile)
+ ;; move the mouse pointer to the corner of the screen when approached
+ ;; http://www.emacswiki.org/emacs/MouseAvoidance
+
+ (setq frame-title-format '("%b - " invocation-name "@" system-name))
+ ;; change the title of emacs
+ ;; http://www.gnu.org/software/emacs/elisp/html_node/Frame-Titles.html
+
+ (setq confirm-kill-emacs 'y-or-n-p)
+ ;; yell at me before going away
+ ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Exiting.html
+
+ (setq inhibit-startup-message t)
+
+ (setq default-indicate-empty-lines t)
+ ;; http://www.emacswiki.org/emacs/TheFringe
+
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ #+END_SRC
+
+
+**** Emacs Server must be used to avoid startup delay as much as possible
+ #+NAME: dotspacemacs/user-config
+ #+BEGIN_SRC emacs-lisp
+ ;; https://news.ycombinator.com/item?id=1654670
+ ;; Emacsclient is a real must.
+   ;; use this to start server for emacsclient
+   (if (not (boundp 'server-process))
+      (server-start))
+ #+END_SRC
+
+**** Font settings
+ #+NAME: dotspacemacs/user-config
+ #+BEGIN_SRC emacs-lisp
+ ;; Font
+ ;; https://github.com/xahlee/xah_emacs_init/blob/master/xah_emacs_font.el
+ (progn
+   ;; set a default font
+   (cond
+    ((string-equal system-type "gnu/linux")
+     (when (member "DejaVu Sans Mono" (font-family-list)) (set-frame-font "DejaVu Sans Mono" t t))
+     ;; specify font for chinese characters using default chinese font on linux
+     (when (member "WenQuanYi Micro Hei" (font-family-list))
+       (set-fontset-font t '(#x4e00 . #x9fff) "WenQuanYi Micro Hei" ))
+     ;;
+     )
+    ((string-equal system-type "darwin") ; Mac
+     (when (member "Menlo" (font-family-list)) (set-frame-font "Menlo-14" t t))
+     ;;
+     )
+    ((string-equal system-type "windows-nt") ; Windows
+    nil))
+
+   ;; specify font for all unicode characters
+   (when (member "Symbola" (font-family-list))
+     (set-fontset-font t 'unicode "Symbola" nil 'prepend))
+ )
+ #+END_SRC
 
 
 ** .spacemacs file
@@ -2569,6 +2500,216 @@ you should place your code here."
 ;; auto-generate custom variable definitions.
 #+END_SRC
 
+
+
+** Looking for binaries
+https://github.com/novoid/dot-emacs/blob/master/config.org#looking-for-binaries
+^^ Use it. It's pretty handy.
+
+* Org
+** Spacemacs Layer                                                :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; org layer configuration                     ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (org :variables org-enable-github-support t    ;;
+                    org-enable-bootstrap-support t ;;
+                    org-enable-reveal-js-support t ;;     ;; Use #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/ at the top of the org file
+    )                                              ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+END_SRC
+
+** Settings
+Lots of org mode stuff
+
+
+*** Babel
+**** Languages
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '(
+     (shell . t)
+     (python . t)
+     (R . t)
+     (ruby . t)
+     (ocaml . t)
+     (ditaa . t)
+     (dot . t)
+     (octave . t)
+     (sqlite . t)
+     (perl . t)
+     (screen . t)
+     (plantuml . t)
+     (lilypond . t)
+     (org . t)
+     (makefile . t)
+     ))
+  (setq org-src-preserve-indentation t)
+#+END_SRC
+
+**** Adding Source blocks
+
+Need to add info about the capital letters being sessioned (how do i explain that?)
+#+BEGIN_SRC emacs-lisp
+
+(add-to-list 'org-structure-template-alist
+        '("S" "#+begin_src ?\n\n#+end_src" "<src lang=\"?\">\n\n</src>"))
+
+
+;; R code
+(add-to-list 'org-structure-template-alist
+        '("r" "#+begin_src R :results output :session *R* :exports both\n\n#+end_src" "<src lang=\"R\">\n\n</src>"))
+(add-to-list 'org-structure-template-alist
+        '("R" "#+begin_src R :results output graphics :file (org-babel-temp-file \"figure\" \".png\") :exports both :width 600 :height 400 :session *R* \n\n#+end_src" "<src lang=\"R\">\n\n</src>"))
+
+
+
+
+;; Python code
+(add-to-list 'org-structure-template-alist
+        '("p" "#+begin_src python :results output :exports both\n\n#+end_src" "<src lang=\"python\">\n\n</src>"))
+(add-to-list 'org-structure-template-alist
+        '("P" "#+begin_src python :results output :session *python* :exports both\n\n#+end_src" "<src lang=\"python\">\n\n</src>"))
+
+
+
+;; Bash code
+(add-to-list 'org-structure-template-alist
+        '("b" "#+begin_src shell :results output :exports both\n\n#+end_src" "<src lang=\"sh\">\n\n</src>"))
+(add-to-list 'org-structure-template-alist
+        '("B" "#+begin_src shell :session *shell* :results output :exports both \n\n#+end_src" "<src lang=\"sh\">\n\n</src>"))
+
+
+
+
+;; Graphviz
+(add-to-list 'org-structure-template-alist
+        '("g" "#+begin_src dot :results output graphics :file \"/tmp/graph.pdf\" :exports both
+   digraph G {
+      node [color=black,fillcolor=white,shape=rectangle,style=filled,fontname=\"Helvetica\"];
+      A[label=\"A\"]
+      B[label=\"B\"]
+      A->B
+   }\n#+end_src" "<src lang=\"dot\">\n\n</src>"))
+#+END_SRC
+
+*** Heading is DONE when all checkboxes are filled
+#+BEGIN_SRC emacs-lisp
+;; see http://thread.gmane.org/gmane.emacs.orgmode/42715
+(eval-after-load 'org-list
+  '(add-hook 'org-checkbox-statistics-hook (function ndk/checkbox-list-complete)))
+
+(defun ndk/checkbox-list-complete ()
+  (save-excursion
+    (org-back-to-heading t)
+    (let ((beg (point)) end)
+      (end-of-line)
+      (setq end (point))
+      (goto-char beg)
+      (if (re-search-forward "\\[\\([0-9]*%\\)\\]\\|\\[\\([0-9]*\\)/\\([0-9]*\\)\\]" end t)
+            (if (match-end 1)
+                (if (equal (match-string 1) "100%")
+                    ;; all done - do the state change
+                    (org-todo 'done)
+                  (org-todo 'todo))
+              (if (and (> (match-end 2) (match-beginning 2))
+                       (equal (match-string 2) (match-string 3)))
+                  (org-todo 'done)
+                (org-todo 'todo)))))))
+#+END_SRC
+*** Custom Protocols for links
+
+DO ONE FOR THE WEB TO OPEN IN EMACS' BROWSER
+
+#+BEGIN_SRC emacs-lisp
+
+;; https://caiorss.github.io/Emacs-Elisp-Programming/Org-Mode.html | 2.4 Custom Protocols
+;; Hyperlink syntax: dir:<file-path>
+(add-hook 'org-mode-hook
+          (lambda ()
+              (org-add-link-type "dir" #'dired nil)))
+
+(add-hook 'org-mode-hook
+          (lambda ()
+                 (org-add-link-type  "man" #'woman nil)))
+#+END_SRC
+
+*** Disable security confirmations
+#+BEGIN_SRC emacs-lisp
+;; https://caiorss.github.io/Emacs-Elisp-Programming/Org-Mode.html | 2.5 Settings
+;; Disable security confirmations
+;;
+(setq   ;; Confirmation for running coide blocks
+        org-confirm-babel-evaluate      nil
+        ;; Confirmation for elisp links
+        org-confirm-elisp-link-function nil
+        ;; Confirmation for shell links
+        org-confirm-shell-link-function nil
+
+        org-export-babel-evaluate       nil
+        )
+#+END_SRC
+
+*** Export backends
+#+BEGIN_SRC emacs-lisp
+;; Prepare stuff for org-export-backends
+(setq org-export-backends '(org latex icalendar html ascii))
+#+END_SRC
+
+*** Modules
+#+BEGIN_SRC emacs-lisp
+;; Experiment with and explain why you use it. Lots of links!
+  (setq org-modules '(org-bbdb
+                      org-gnus
+                      org-drill
+                      org-info
+                      org-jsinfo
+                      org-habit
+                      org-irc
+                      org-mouse
+                      org-protocol
+                      org-annotate-file
+                      org-eval
+                      org-expiry
+                      org-interactive-query
+                      org-man
+                      org-collector
+                      org-panel
+                      org-screen
+                      org-toc))
+
+#+END_SRC
+
+*** Todo Keywords
+#+BEGIN_SRC emacs-lisp
+;; Change to fit your style
+(setq org-todo-keywords
+ '((sequence
+    "TODO(t)"  ; next action
+    "TOBLOG(b)"  ; next action
+    "STARTED(s)"
+    "WAITING(w@/!)"
+    "SOMEDAY(.)" "|" "DONE(x!)" "CANCELLED(c@)")
+   (sequence "LEARN" "TRY" "TEACH" "|" "COMPLETE(x)")
+   (sequence "TOSKETCH" "SKETCHED" "|" "POSTED")
+   (sequence "TOBUY" "TOSHRINK" "TOCUT"  "TOSEW" "|" "DONE(x)")
+   (sequence "TODELEGATE(-)" "DELEGATED(d)" "|" "COMPLETE(x)")))
+
+(setq org-todo-keyword-faces
+      '(("TODO" . (:foreground "green" :weight bold))
+        ("DONE" . (:foreground "cyan" :weight bold))
+        ("WAITING" . (:foreground "red" :weight bold))
+        ("SOMEDAY" . (:foreground "gray" :weight bold))))
+
+#+END_SRC
+
+*** Tags
+#+BEGIN_SRC emacs-lisp
+;; We don't want the project tag to be inherited by its children
+(setq org-tags-exclude-from-inheritance '("project"))
+#+END_SRC
 
 * eshell
 
