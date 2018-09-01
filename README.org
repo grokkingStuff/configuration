@@ -698,6 +698,7 @@ Text attributes can be changed by writing "ta_" followed by the particular text 
      echo -e "[error] " "$1"
  }
   #+End_SRC
+
 * Organization
 #+NAME: organization
 #+BEGIN_SRC sh :noweb yes 
@@ -717,6 +718,7 @@ fi
 #+BEGIN_SRC sh 
 dropbox
 #+END_SRC
+
 ** Folder Organization
 *** Projects
 #+NAME: organization_folder
@@ -1171,7 +1173,7 @@ git
    #+END_SRC
 
 ****** Default Editor
-   Changing the editor to emacs because I prefer using an actual editor instead of the vim prompt.
+   Changing the editor to vi because emacs is too bulky for this.
    #+BEGIN_SRC sh :tangle git/git_config.sh :padline no
    git config --global core.editor $EDITOR
    #+END_SRC
@@ -1527,7 +1529,6 @@ htop
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+END_SRC
 
-
 * Language Environment Configuration
 ** Python
  #+NAME: python
@@ -1574,7 +1575,7 @@ htop
  echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.bashrc
  #+END_SRC
 
- Install the missing headers needed by Python modules
+ Install the missing headers needed by Python modules. We're installing under install_ as there's no point for tests (these are high level libraries).
  #+NAME: install_
  #+BEGIN_SRC sh
  readline-devel sqlite3-devel libbz2-devel zlib-devel libopenssl-devel
@@ -1747,18 +1748,22 @@ htop
      ;; haskell layer configuration                         ;;
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      (haskell :variables                                    ;;
-              haskell-completion-backend 'intero)           ;;
+              haskell-completion-backend 'intero            ;;
+              haskell-enable-hindent-style "johan-tibell")  ;;
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  #+END_SRC
+
 ** Javascript
 *** Spacemacs Layer                                               :spacemacs:
  #+NAME: dotspacemacs/layers/variables
  #+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      ;; javascript layer configuration ;;
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      javascript                        ;;
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
  #+END_SRC
 
 ** Emacs-lisp
@@ -1796,6 +1801,12 @@ htop
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  #+END_SRC
 
+**** Stuff
+#+BEGIN_SRC emacs-lisp
+(add-auto-mode 'csv-mode "\\.[Cc][Ss][Vv]\\'")
+
+(setq csv-separators '("," ";" "|" " "))
+#+END_SRC
 *** html
 **** Spacemacs Layer                                              :spacemacs:
  #+NAME: dotspacemacs/layers/variables
@@ -1851,281 +1862,228 @@ htop
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  #+END_SRC
 
-* Spacemacs
-** iBuffer
+** Org
+Too awesome to be classified as just a markup language. 
 *** Spacemacs Layer                                               :spacemacs:
-#+NAME: dotspacemacs/layers/variables
-#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; iBuffer configuration                 ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    (ibuffer :variables                      ;;
-             ibuffer-group-buffers-by 'mode) ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+END_SRC
-
-** Customization
-
-*** Delete trailing space before saving
-#+BEGIN_SRC emacs-lisp
-;; 2016-02-06: https://www.reddit.com/r/emacs/comments/445w6s/whats_some_small_thing_in_your_dotemacs_that_you/
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-#+END_SRC
-
-*** twittering-mode
-
-#+BEGIN_SRC emacs-lisp
-;;;;; twittering-mode
-
-(require 'twittering-mode)
-(setq twittering-username "avarab")
-
-(setq twittering-icon-mode t) 
-(setq twittering-timer-interval 300)
-
-;; Needs libnotify-bin
-(add-hook 'twittering-new-tweets-hook (lambda ()
-   (let ((n twittering-new-tweets-count))
-     (start-process "twittering-notify" nil "notify-send"
-                    "-i" "/usr/share/pixmaps/gnome-emacs.png"
-                    "New tweets"
-                    (format "You have %d new tweet%s"
-                            n (if (> n 1) "s" ""))))))
-
-#+END_SRC
-
-*** dockerfile-mode
-
-#+BEGIN_SRC emacs-lisp
-;;;;; dockerfile-mode
-(require 'dockerfile-mode)                 ;; Add to top of dockerfile
-(add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
-#+END_SRC
-*** Use woman instead of man
-#+BEGIN_SRC emacs-lisp
-;;;;; woman
-
-;; Use woman instead of man
-(defalias 'man 'woman)
-#+END_SRC
-
-*** auto-mode-alist 
- #+BEGIN_SRC emacs-lisp
- ;;;; auto-mode-alist
- (setq auto-mode-alist
-       (append
-        '(("\\.css$" . css-mode)
-          ("\\.ya?ml$" . yaml-mode)
-          ("^mutt-" . mail-mode)
-          ("\\.html$" . html-mode)
-          ("configure.in" . m4-mode)
-          ("\\.tt2?$" . html-mode)
-          ("\\.tmpl$" . html-mode)
-          ("\\.pir$" . pir-mode)
-          ("\\.[hg]s$"  . haskell-mode)
-          ("\\.hi$"     . haskell-mode)
-          ("\\.ml[iyl]?$" . caml-mode)
-          ("\\.l[hg]s$" . literate-haskell-mode)
-          ;; shellscript
-          ("/etc/profile" . sh-mode)
-          ("/etc/bash_completion" . sh-mode)
-          ("\\.SH" . sh-mode)
-          ("\\.bashrc" . sh-mode)
-          ;; Markdown
-          ("\\.md$"      . markdown-mode)
-          ("\\.mkdn$"    . markdown-mode)
-          ;; JavaScript
-          ("\\.js$"    . javascript-mode)
-          ("\\.json$"    . javascript-mode)
-          ;; emacs
-          ("\\.elt$"    . emacs-lisp-mode)
-          ;; cperl-mode
-          ("\\.PL$" . cperl-mode)
-          ("\\.pl$" . cperl-mode)
-          ("\\.nqp$" . cperl-mode)
-          ("\\.perl$" . cperl-mode) ; git source tree
-          ("\\.pm$" . cperl-mode)
-          ("\\.t$" . cperl-mode)
-          ("\\.psgi$" . cperl-mode)
-          ("\\.comp$" . cperl-mode)
-          ("/gitweb\\.conf$"  . cperl-mode)
-          ;; pod-mode
-          ("\\.pod$" . pod-mode)
-          ;; tap-mode
-          ("\\.tap$" . tap-mode)
-          ;; makefile-mode
-          ("\\.mak$" . makefile-mode) ;; used in Git
-          ("/Makefile$" . makefile-mode) ;; Evidently not the default
-          ("/Dockerfile$" . dockerfile-mode) ;; Evidently not the default
-          ;; xs
-          ("\\.xs$" . xs-mode)
-          ;; php
-          ("\\.php$" . php-mode)
-          ("\\.inc$" . php-mode)
-          ;; org-mode
-          ("\\.org$" . org-mode)
-          ;; po-mode
-          ("\\.po$" . po-mode) ;; not \.po\. as is the po-mode default
-          ("\\.pot$" . po-mode)
-          ("\\.recentf$" . emacs-lisp-mode)
-          ;; conf-mode
-          ("\\.vhost$"  . conf-mode)
-          ("\\.hgrc$"  . conf-mode)
-          ("\\.rc$"  . conf-mode)
-          ("\\.cnf$" . conf-mode)
-          ("\\.gitconfig$" . conf-mode)
-          ("\\.gitmodules$" . conf-mode)
-          ("\\.offlineimaprc" . conf-mode)
-          ("\\.mbsyncrc" . conf-mode)
-          ("^/etc/apache2/sites-" . conf-mode)
-          ("^/etc/ssh/sshd" . conf-mode)
-          ("^/etc/deb-packages" . conf-mode)
-          ("^/etc/apt/" . conf-mode)
-          ("\\.screenrc" . conf-mode)
-          ("\\.screenrc\.d/" . conf-mode)
-          ;; git
-          ("COMMIT_EDITMSG" . git-commit-mode)
-          ;; sh
-          ("\\.aliases$" . sh-mode)
-          ;; lua
-          ("\\.lua$" . lua-mode)
-          ;; ruby
-          ("\\.pp$" . puppet-mode)
-          ("\\.rhtml$" . ruby-mode)
-          ("\\.rjs$"   . ruby-mode)
-          ("\\.rxml$"   . ruby-mode)
-          ("\\.erb$"   . ruby-mode)
-          ("\\.builder$"   . ruby-mode)
-          ("\\.rake$" . ruby-mode)
-          ("\\.kick$" . ruby-mode))
-        auto-mode-alist))
+ #+NAME: dotspacemacs/layers/variables
+ #+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;; org layer configuration                     ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     (org :variables org-enable-github-support t    ;;
+                     org-enable-bootstrap-support t ;;
+                     org-enable-reveal-js-support t ;;     ;; Use #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/ at the top of the org file
+     )                                              ;;
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  #+END_SRC
 
-**** Ask y or n instead of yes or no
- #+NAME: dot
- #+NAME: dotspacemacs/user-config
+*** Settings
+ Lots of org mode stuff
+
+
+**** Babel
+***** Languages
  #+BEGIN_SRC emacs-lisp
- ;; https://news.ycombinator.com/item?id=1654164
- (defalias 'yes-or-no-p 'y-or-n-p)
+   (org-babel-do-load-languages
+    'org-babel-load-languages
+    '(
+      (shell . t)
+      (python . t)
+      (R . t)
+      (ruby . t)
+      (ocaml . t)
+      (ditaa . t)
+      (dot . t)
+      (octave . t)
+      (sqlite . t)
+      (perl . t)
+      (screen . t)
+      (plantuml . t)
+      (lilypond . t)
+      (org . t)
+      (makefile . t)
+      ))
+   (setq org-src-preserve-indentation t)
  #+END_SRC
 
-**** Character encodings default to utf-8
- #+NAME: dotspacemacs/user-config
+***** Adding Source blocks
+
+ Need to add info about the capital letters being sessioned (how do i explain that?)
  #+BEGIN_SRC emacs-lisp
- ;; From https://caiorss.github.io/Emacs-Elisp-Programming/Customization.html
- ;; Character encodings default to utf-8.
- (prefer-coding-system 'utf-8)
- (set-language-environment 'utf-8)
- (set-default-coding-systems 'utf-8)
- (set-terminal-coding-system 'utf-8)
- (set-selection-coding-system 'utf-8)
- #+END_SRC
 
-**** Create file if nonexistent without confirmation
- #+NAME: dotspacemacs/user-config
- #+BEGIN_SRC emacs-lisp
- ;; https://news.ycombinator.com/item?id=1654164 | Kototama's comment
- ;; do not confirm file creation
- (setq confirm-nonexistent-file-or-buffer nil)
- #+END_SRC
-
-**** Indentation Settings
- #+NAME: dotspacemacs/user-config
- #+BEGIN_SRC emacs-lisp
- ;; From https://bitbucket.org/brodie/dotfiles/src/tip/.emacs?fileviewer=file-view-default
- ; Indentation settings
- (setq-default indent-tabs-mode nil) ; disable tab character insertion
- (setq standard-indent 4)
- (setq c-default-style "bsd") ; brackets go on a separate line
- (setq c-basic-offset 4)
- (setq-default c-indent-level 4)
- (setq-default js-indent-level 2)
- (setq-default css-indent-offset 2)
- ; line up args on separate lines with opening parens
- (setq c-offsets-alist
-       '((arglist-intro c-lineup-arglist-intro-after-paren)))
- (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76
-                         80 84 88 92 96 100 104 108 112 116 120))
- #+END_SRC
-
-**** zck's settings
-
- #+NAME: dotspacemacs/user-config
- #+BEGIN_SRC emacs-lisp
- ;; From https://github.com/zck/emacs/blob/master/.emacs
-
- (setq show-paren-style 'expression)
- ;; Highlight the entire expression
- ;; http://www.emacsblog.org/2007/08/07/quick-tip-show-paren-mode/
- (tool-bar-mode -1)
- ;; remove toolbar
- ;; http://www.emacswiki.org/emacs/ToolBar
- (menu-bar-mode -1)
- ;; who needs 'em?
- ;; http://www.emacswiki.org/emacs/ToolBar
- (set-scroll-bar-mode 'right)
- ;; http://www.emacswiki.org/emacs/ScrollBar
- (mouse-avoidance-mode 'exile)
- ;; move the mouse pointer to the corner of the screen when approached
- ;; http://www.emacswiki.org/emacs/MouseAvoidance
-
- (setq frame-title-format '("%b - " invocation-name "@" system-name))
- ;; change the title of emacs
- ;; http://www.gnu.org/software/emacs/elisp/html_node/Frame-Titles.html
-
- (setq confirm-kill-emacs 'y-or-n-p)
- ;; yell at me before going away
- ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Exiting.html
-
- (setq inhibit-startup-message t)
-
- (setq default-indicate-empty-lines t)
- ;; http://www.emacswiki.org/emacs/TheFringe
-
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
- #+END_SRC
-
-
-**** Emacs Server must be used to avoid startup delay as much as possible
- #+NAME: dotspacemacs/user-config
- #+BEGIN_SRC emacs-lisp
- ;; https://news.ycombinator.com/item?id=1654670
- ;; Emacsclient is a real must.
-   ;; use this to start server for emacsclient
-   (if (not (boundp 'server-process))
-      (server-start))
- #+END_SRC
-
-**** Font settings
- #+NAME: dotspacemacs/user-config
- #+BEGIN_SRC emacs-lisp
- ;; Font
- ;; https://github.com/xahlee/xah_emacs_init/blob/master/xah_emacs_font.el
- (progn
-   ;; set a default font
-   (cond
-    ((string-equal system-type "gnu/linux")
-     (when (member "DejaVu Sans Mono" (font-family-list)) (set-frame-font "DejaVu Sans Mono" t t))
-     ;; specify font for chinese characters using default chinese font on linux
-     (when (member "WenQuanYi Micro Hei" (font-family-list))
-       (set-fontset-font t '(#x4e00 . #x9fff) "WenQuanYi Micro Hei" ))
-     ;;
-     )
-    ((string-equal system-type "darwin") ; Mac
-     (when (member "Menlo" (font-family-list)) (set-frame-font "Menlo-14" t t))
-     ;;
-     )
-    ((string-equal system-type "windows-nt") ; Windows
-    nil))
-
-   ;; specify font for all unicode characters
-   (when (member "Symbola" (font-family-list))
-     (set-fontset-font t 'unicode "Symbola" nil 'prepend))
+ (add-to-list 'org-structure-template-alist
+         '(
+           "S" 
+           "#+BEGIN_SRC ?\n\n#+END_SRC" 
+           "<src lang=\"?\">\n\n</src>"
+          )
  )
+
+
+ ;; R code
+ (add-to-list 'org-structure-template-alist
+         '(
+           "r" 
+           "#+begin_src R :results output :session *R* :exports both\n\n#+end_src" 
+           "<src lang=\"R\">\n\n</src>"
+          )
+ )
+ (add-to-list 'org-structure-template-alist
+         '(
+           "R" 
+           "#+begin_src R :results output graphics :file (org-babel-temp-file \"figure\" \".png\") :exports both :width 600 :height 400 :session *R* \n\n#+end_src" 
+           "<src lang=\"R\">\n\n</src>"
+          )
+ )
+
+
+
+
+ ;; Python code
+ (add-to-list 'org-structure-template-alist
+         '("p" "#+begin_src python :results output :exports both\n\n#+end_src" "<src lang=\"python\">\n\n</src>"))
+ (add-to-list 'org-structure-template-alist
+         '("P" "#+begin_src python :results output :session *python* :exports both\n\n#+end_src" "<src lang=\"python\">\n\n</src>"))
+
+
+
+ ;; Bash code
+ (add-to-list 'org-structure-template-alist
+         '("b" "#+begin_src shell :results output :exports both\n\n#+end_src" "<src lang=\"sh\">\n\n</src>"))
+ (add-to-list 'org-structure-template-alist
+         '("B" "#+begin_src shell :session *shell* :results output :exports both \n\n#+end_src" "<src lang=\"sh\">\n\n</src>"))
+
+
+
+
+ ;; Graphviz
+ (add-to-list 'org-structure-template-alist
+         '("g" "#+begin_src dot :results output graphics :file \"/tmp/graph.pdf\" :exports both
+    digraph G {
+       node [color=black,fillcolor=white,shape=rectangle,style=filled,fontname=\"Helvetica\"];
+       A[label=\"A\"]
+       B[label=\"B\"]
+       A->B
+    }\n#+end_src" "<src lang=\"dot\">\n\n</src>"))
  #+END_SRC
 
+**** Heading is DONE when all checkboxes are filled
+ #+BEGIN_SRC emacs-lisp
+ ;; see http://thread.gmane.org/gmane.emacs.orgmode/42715
+ (eval-after-load 'org-list
+   '(add-hook 'org-checkbox-statistics-hook (function ndk/checkbox-list-complete)))
 
+ (defun ndk/checkbox-list-complete ()
+   (save-excursion
+     (org-back-to-heading t)
+     (let ((beg (point)) end)
+       (end-of-line)
+       (setq end (point))
+       (goto-char beg)
+       (if (re-search-forward "\\[\\([0-9]*%\\)\\]\\|\\[\\([0-9]*\\)/\\([0-9]*\\)\\]" end t)
+             (if (match-end 1)
+                 (if (equal (match-string 1) "100%")
+                     ;; all done - do the state change
+                     (org-todo 'done)
+                   (org-todo 'todo))
+               (if (and (> (match-end 2) (match-beginning 2))
+                        (equal (match-string 2) (match-string 3)))
+                   (org-todo 'done)
+                 (org-todo 'todo)))))))
+ #+END_SRC
+**** Custom Protocols for links
+
+ DO ONE FOR THE WEB TO OPEN IN EMACS' BROWSER
+
+ #+BEGIN_SRC emacs-lisp
+
+ ;; https://caiorss.github.io/Emacs-Elisp-Programming/Org-Mode.html | 2.4 Custom Protocols
+ ;; Hyperlink syntax: dir:<file-path>
+ (add-hook 'org-mode-hook
+           (lambda ()
+               (org-add-link-type "dir" #'dired nil)))
+
+ (add-hook 'org-mode-hook
+           (lambda ()
+                  (org-add-link-type  "man" #'woman nil)))
+ #+END_SRC
+
+**** Disable security confirmations
+ #+BEGIN_SRC emacs-lisp
+ ;; https://caiorss.github.io/Emacs-Elisp-Programming/Org-Mode.html | 2.5 Settings
+ ;; Disable security confirmations
+ ;;
+ (setq   ;; Confirmation for running coide blocks
+         org-confirm-babel-evaluate      nil
+         ;; Confirmation for elisp links
+         org-confirm-elisp-link-function nil
+         ;; Confirmation for shell links
+         org-confirm-shell-link-function nil
+
+         org-export-babel-evaluate       nil
+         )
+ #+END_SRC
+
+**** Export backends
+ #+BEGIN_SRC emacs-lisp
+ ;; Prepare stuff for org-export-backends
+ (setq org-export-backends '(org latex icalendar html ascii))
+ #+END_SRC
+
+**** Modules
+ #+BEGIN_SRC emacs-lisp
+ ;; Experiment with and explain why you use it. Lots of links!
+   (setq org-modules '(org-bbdb
+                       org-gnus
+                       org-drill
+                       org-info
+                       org-jsinfo
+                       org-habit
+                       org-irc
+                       org-mouse
+                       org-protocol
+                       org-annotate-file
+                       org-eval
+                       org-expiry
+                       org-interactive-query
+                       org-man
+                       org-collector
+                       org-panel
+                       org-screen
+                       org-toc))
+
+ #+END_SRC
+
+**** Todo Keywords
+ #+BEGIN_SRC emacs-lisp
+ ;; Change to fit your style
+ (setq org-todo-keywords
+  '((sequence
+     "TODO(t)"  ; next action
+     "TOBLOG(b)"  ; next action
+     "STARTED(s)"
+     "WAITING(w@/!)"
+     "SOMEDAY(.)" "|" "DONE(x!)" "CANCELLED(c@)")
+    (sequence "LEARN" "TRY" "TEACH" "|" "COMPLETE(x)")
+    (sequence "TOSKETCH" "SKETCHED" "|" "POSTED")
+    (sequence "TOBUY" "TOSHRINK" "TOCUT"  "TOSEW" "|" "DONE(x)")
+    (sequence "TODELEGATE(-)" "DELEGATED(d)" "|" "COMPLETE(x)")))
+
+ (setq org-todo-keyword-faces
+       '(("TODO" . (:foreground "green" :weight bold))
+         ("DONE" . (:foreground "cyan" :weight bold))
+         ("WAITING" . (:foreground "red" :weight bold))
+         ("SOMEDAY" . (:foreground "gray" :weight bold))))
+
+ #+END_SRC
+
+**** Tags
+ #+BEGIN_SRC emacs-lisp
+ ;; We don't want the project tag to be inherited by its children
+ (setq org-tags-exclude-from-inheritance '("project"))
+ #+END_SRC
+
+* Spacemacs
 ** .spacemacs file
 
 #+BEGIN_EXAMPLE
@@ -2500,243 +2458,308 @@ you should place your code here."
 ;; auto-generate custom variable definitions.
 #+END_SRC
 
+** iBuffer
+*** Spacemacs Layer                                               :spacemacs:
+#+NAME: dotspacemacs/layers/variables
+#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; iBuffer configuration                 ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (ibuffer :variables                      ;;
+             ibuffer-group-buffers-by 'mode) ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+END_SRC
 
+** Customization
+
+*** Delete trailing space before saving
+#+BEGIN_SRC emacs-lisp
+;; 2016-02-06: https://www.reddit.com/r/emacs/comments/445w6s/whats_some_small_thing_in_your_dotemacs_that_you/
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+END_SRC
+
+*** twittering-mode
+
+#+BEGIN_SRC emacs-lisp
+;;;;; twittering-mode
+
+(require 'twittering-mode)
+(setq twittering-username "grokkingStuff")
+
+(setq twittering-icon-mode t) 
+(setq twittering-timer-interval 300)
+
+;; Needs libnotify-bin
+(add-hook 'twittering-new-tweets-hook (lambda ()
+   (let ((n twittering-new-tweets-count))
+     (start-process "twittering-notify" nil "notify-send"
+                    "-i" "/usr/share/pixmaps/gnome-emacs.png"
+                    "New tweets"
+                    (format "You have %d new tweet%s"
+                            n (if (> n 1) "s" ""))))))
+
+#+END_SRC
+
+*** dockerfile-mode
+
+#+BEGIN_SRC emacs-lisp
+;;;;; dockerfile-mode
+(require 'dockerfile-mode)                 ;; Add to top of dockerfile
+(add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
+#+END_SRC
+*** Use woman instead of man
+#+BEGIN_SRC emacs-lisp
+;;;;; woman
+
+;; Use woman instead of man
+(defalias 'man 'woman)
+#+END_SRC
+
+*** auto-mode-alist 
+ #+BEGIN_SRC emacs-lisp
+ ;;;; auto-mode-alist
+ (setq auto-mode-alist
+       (append
+        '(("\\.css$" . css-mode)
+          ("\\.ya?ml$" . yaml-mode)
+          ("^mutt-" . mail-mode)
+          ("\\.html$" . html-mode)
+          ("configure.in" . m4-mode)
+          ("\\.tt2?$" . html-mode)
+          ("\\.tmpl$" . html-mode)
+          ("\\.pir$" . pir-mode)
+          ("\\.[hg]s$"  . haskell-mode)
+          ("\\.hi$"     . haskell-mode)
+          ("\\.ml[iyl]?$" . caml-mode)
+          ("\\.l[hg]s$" . literate-haskell-mode)
+          ;; shellscript
+          ("/etc/profile" . sh-mode)
+          ("/etc/bash_completion" . sh-mode)
+          ("\\.SH" . sh-mode)
+          ("\\.bashrc" . sh-mode)
+          ;; Markdown
+          ("\\.md$"      . markdown-mode)
+          ("\\.mkdn$"    . markdown-mode)
+          ;; JavaScript
+          ("\\.js$"    . javascript-mode)
+          ("\\.json$"    . javascript-mode)
+          ;; emacs
+          ("\\.elt$"    . emacs-lisp-mode)
+          ;; cperl-mode
+          ("\\.PL$" . cperl-mode)
+          ("\\.pl$" . cperl-mode)
+          ("\\.nqp$" . cperl-mode)
+          ("\\.perl$" . cperl-mode) ; git source tree
+          ("\\.pm$" . cperl-mode)
+          ("\\.t$" . cperl-mode)
+          ("\\.psgi$" . cperl-mode)
+          ("\\.comp$" . cperl-mode)
+          ("/gitweb\\.conf$"  . cperl-mode)
+          ;; pod-mode
+          ("\\.pod$" . pod-mode)
+          ;; tap-mode
+          ("\\.tap$" . tap-mode)
+          ;; makefile-mode
+          ("\\.mak$" . makefile-mode) ;; used in Git
+          ("/Makefile$" . makefile-mode) ;; Evidently not the default
+          ("/Dockerfile$" . dockerfile-mode) ;; Evidently not the default
+          ;; xs
+          ("\\.xs$" . xs-mode)
+          ;; php
+          ("\\.php$" . php-mode)
+          ("\\.inc$" . php-mode)
+          ;; org-mode
+          ("\\.org$" . org-mode)
+          ;; po-mode
+          ("\\.po$" . po-mode) ;; not \.po\. as is the po-mode default
+          ("\\.pot$" . po-mode)
+          ("\\.recentf$" . emacs-lisp-mode)
+          ;; conf-mode
+          ("\\.vhost$"  . conf-mode)
+          ("\\.hgrc$"  . conf-mode)
+          ("\\.rc$"  . conf-mode)
+          ("\\.cnf$" . conf-mode)
+          ("\\.gitconfig$" . conf-mode)
+          ("\\.gitmodules$" . conf-mode)
+          ("\\.offlineimaprc" . conf-mode)
+          ("\\.mbsyncrc" . conf-mode)
+          ("^/etc/apache2/sites-" . conf-mode)
+          ("^/etc/ssh/sshd" . conf-mode)
+          ("^/etc/deb-packages" . conf-mode)
+          ("^/etc/apt/" . conf-mode)
+          ("\\.screenrc" . conf-mode)
+          ("\\.screenrc\.d/" . conf-mode)
+          ;; git
+          ("COMMIT_EDITMSG" . git-commit-mode)
+          ;; sh
+          ("\\.aliases$" . sh-mode)
+          ;; lua
+          ("\\.lua$" . lua-mode)
+          ;; ruby
+          ("\\.pp$" . puppet-mode)
+          ("\\.rhtml$" . ruby-mode)
+          ("\\.rjs$"   . ruby-mode)
+          ("\\.rxml$"   . ruby-mode)
+          ("\\.erb$"   . ruby-mode)
+          ("\\.builder$"   . ruby-mode)
+          ("\\.rake$" . ruby-mode)
+          ("\\.kick$" . ruby-mode))
+        auto-mode-alist))
+ #+END_SRC
+
+**** Ask y or n instead of yes or no
+ #+NAME: dot
+ #+NAME: dotspacemacs/user-config
+ #+BEGIN_SRC emacs-lisp
+ ;; https://news.ycombinator.com/item?id=1654164
+ (defalias 'yes-or-no-p 'y-or-n-p)
+ #+END_SRC
+
+**** Character encodings default to utf-8
+ #+NAME: dotspacemacs/user-config
+ #+BEGIN_SRC emacs-lisp
+ ;; From https://caiorss.github.io/Emacs-Elisp-Programming/Customization.html
+ ;; Character encodings default to utf-8.
+ (prefer-coding-system 'utf-8)
+ (set-language-environment 'utf-8)
+ (set-default-coding-systems 'utf-8)
+ (set-terminal-coding-system 'utf-8)
+ (set-selection-coding-system 'utf-8)
+ #+END_SRC
+
+**** Create file if nonexistent without confirmation
+ #+NAME: dotspacemacs/user-config
+ #+BEGIN_SRC emacs-lisp
+ ;; https://news.ycombinator.com/item?id=1654164 | Kototama's comment
+ ;; do not confirm file creation
+ (setq confirm-nonexistent-file-or-buffer nil)
+ #+END_SRC
+
+**** Indentation Settings
+ #+NAME: dotspacemacs/user-config
+ #+BEGIN_SRC emacs-lisp
+ ;; From https://bitbucket.org/brodie/dotfiles/src/tip/.emacs?fileviewer=file-view-default
+ ; Indentation settings
+ (setq-default indent-tabs-mode nil) ; disable tab character insertion
+ (setq standard-indent 4)
+ (setq c-default-style "bsd") ; brackets go on a separate line
+ (setq c-basic-offset 4)
+ (setq-default c-indent-level 4)
+ (setq-default js-indent-level 2)
+ (setq-default css-indent-offset 2)
+ ; line up args on separate lines with opening parens
+ (setq c-offsets-alist
+       '((arglist-intro c-lineup-arglist-intro-after-paren)))
+ (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76
+                         80 84 88 92 96 100 104 108 112 116 120))
+ #+END_SRC
+
+**** zck's settings
+
+ #+NAME: dotspacemacs/user-config
+ #+BEGIN_SRC emacs-lisp
+ ;; From https://github.com/zck/emacs/blob/master/.emacs
+
+ (setq show-paren-style 'expression)
+ ;; Highlight the entire expression
+ ;; http://www.emacsblog.org/2007/08/07/quick-tip-show-paren-mode/
+ (tool-bar-mode -1)
+ ;; remove toolbar
+ ;; http://www.emacswiki.org/emacs/ToolBar
+ (menu-bar-mode -1)
+ ;; who needs 'em?
+ ;; http://www.emacswiki.org/emacs/ToolBar
+ (set-scroll-bar-mode 'right)
+ ;; http://www.emacswiki.org/emacs/ScrollBar
+ (mouse-avoidance-mode 'exile)
+ ;; move the mouse pointer to the corner of the screen when approached
+ ;; http://www.emacswiki.org/emacs/MouseAvoidance
+
+ (setq frame-title-format '("%b - " invocation-name "@" system-name))
+ ;; change the title of emacs
+ ;; http://www.gnu.org/software/emacs/elisp/html_node/Frame-Titles.html
+
+ (setq confirm-kill-emacs 'y-or-n-p)
+ ;; yell at me before going away
+ ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Exiting.html
+
+ (setq inhibit-startup-message t)
+
+ (setq default-indicate-empty-lines t)
+ ;; http://www.emacswiki.org/emacs/TheFringe
+
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ #+END_SRC
+
+
+**** Emacs Server must be used to avoid startup delay as much as possible
+ #+NAME: dotspacemacs/user-config
+ #+BEGIN_SRC emacs-lisp
+ ;; https://news.ycombinator.com/item?id=1654670
+ ;; Emacsclient is a real must.
+   ;; use this to start server for emacsclient
+   (if (not (boundp 'server-process))
+      (server-start))
+ #+END_SRC
+
+**** Font settings
+ #+NAME: dotspacemacs/user-config
+ #+BEGIN_SRC emacs-lisp
+ ;; Font
+ ;; https://github.com/xahlee/xah_emacs_init/blob/master/xah_emacs_font.el
+ (progn
+   ;; set a default font
+   (cond
+    ((string-equal system-type "gnu/linux")
+     (when (member "DejaVu Sans Mono" (font-family-list)) (set-frame-font "DejaVu Sans Mono" t t))
+     ;; specify font for chinese characters using default chinese font on linux
+     (when (member "WenQuanYi Micro Hei" (font-family-list))
+       (set-fontset-font t '(#x4e00 . #x9fff) "WenQuanYi Micro Hei" ))
+     ;;
+     )
+    ((string-equal system-type "darwin") ; Mac
+     (when (member "Menlo" (font-family-list)) (set-frame-font "Menlo-14" t t))
+     ;;
+     )
+    ((string-equal system-type "windows-nt") ; Windows
+    nil))
+
+   ;; specify font for all unicode characters
+   (when (member "Symbola" (font-family-list))
+     (set-fontset-font t 'unicode "Symbola" nil 'prepend))
+ )
+ #+END_SRC
 
 ** Looking for binaries
 https://github.com/novoid/dot-emacs/blob/master/config.org#looking-for-binaries
 ^^ Use it. It's pretty handy.
 
-* Org
-** Spacemacs Layer                                                :spacemacs:
-#+NAME: dotspacemacs/layers/variables
-#+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; org layer configuration                     ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    (org :variables org-enable-github-support t    ;;
-                    org-enable-bootstrap-support t ;;
-                    org-enable-reveal-js-support t ;;     ;; Use #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/ at the top of the org file
-    )                                              ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+END_SRC
+** eshell
 
-** Settings
-Lots of org mode stuff
+ #+NAME: dotspacemacs/user-config
+ #+BEGIN_SRC emacs-lisp
+
+ (defun eshell/clear ()
+   "clear the eshell buffer."
+   (interactive)
+   (let ((inhibit-read-only t))
+     (erase-buffer)))
 
 
-*** Babel
-**** Languages
-#+BEGIN_SRC emacs-lisp
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '(
-     (shell . t)
-     (python . t)
-     (R . t)
-     (ruby . t)
-     (ocaml . t)
-     (ditaa . t)
-     (dot . t)
-     (octave . t)
-     (sqlite . t)
-     (perl . t)
-     (screen . t)
-     (plantuml . t)
-     (lilypond . t)
-     (org . t)
-     (makefile . t)
-     ))
-  (setq org-src-preserve-indentation t)
-#+END_SRC
+ ;; Simple prompt for eshell
+ ;; (setq eshell-prompt-function (lambda () "eshell > "))
 
-**** Adding Source blocks
-
-Need to add info about the capital letters being sessioned (how do i explain that?)
-#+BEGIN_SRC emacs-lisp
-
-(add-to-list 'org-structure-template-alist
-        '("S" "#+begin_src ?\n\n#+end_src" "<src lang=\"?\">\n\n</src>"))
-
-
-;; R code
-(add-to-list 'org-structure-template-alist
-        '("r" "#+begin_src R :results output :session *R* :exports both\n\n#+end_src" "<src lang=\"R\">\n\n</src>"))
-(add-to-list 'org-structure-template-alist
-        '("R" "#+begin_src R :results output graphics :file (org-babel-temp-file \"figure\" \".png\") :exports both :width 600 :height 400 :session *R* \n\n#+end_src" "<src lang=\"R\">\n\n</src>"))
-
-
-
-
-;; Python code
-(add-to-list 'org-structure-template-alist
-        '("p" "#+begin_src python :results output :exports both\n\n#+end_src" "<src lang=\"python\">\n\n</src>"))
-(add-to-list 'org-structure-template-alist
-        '("P" "#+begin_src python :results output :session *python* :exports both\n\n#+end_src" "<src lang=\"python\">\n\n</src>"))
-
-
-
-;; Bash code
-(add-to-list 'org-structure-template-alist
-        '("b" "#+begin_src shell :results output :exports both\n\n#+end_src" "<src lang=\"sh\">\n\n</src>"))
-(add-to-list 'org-structure-template-alist
-        '("B" "#+begin_src shell :session *shell* :results output :exports both \n\n#+end_src" "<src lang=\"sh\">\n\n</src>"))
-
-
-
-
-;; Graphviz
-(add-to-list 'org-structure-template-alist
-        '("g" "#+begin_src dot :results output graphics :file \"/tmp/graph.pdf\" :exports both
-   digraph G {
-      node [color=black,fillcolor=white,shape=rectangle,style=filled,fontname=\"Helvetica\"];
-      A[label=\"A\"]
-      B[label=\"B\"]
-      A->B
-   }\n#+end_src" "<src lang=\"dot\">\n\n</src>"))
-#+END_SRC
-
-*** Heading is DONE when all checkboxes are filled
-#+BEGIN_SRC emacs-lisp
-;; see http://thread.gmane.org/gmane.emacs.orgmode/42715
-(eval-after-load 'org-list
-  '(add-hook 'org-checkbox-statistics-hook (function ndk/checkbox-list-complete)))
-
-(defun ndk/checkbox-list-complete ()
-  (save-excursion
-    (org-back-to-heading t)
-    (let ((beg (point)) end)
-      (end-of-line)
-      (setq end (point))
-      (goto-char beg)
-      (if (re-search-forward "\\[\\([0-9]*%\\)\\]\\|\\[\\([0-9]*\\)/\\([0-9]*\\)\\]" end t)
-            (if (match-end 1)
-                (if (equal (match-string 1) "100%")
-                    ;; all done - do the state change
-                    (org-todo 'done)
-                  (org-todo 'todo))
-              (if (and (> (match-end 2) (match-beginning 2))
-                       (equal (match-string 2) (match-string 3)))
-                  (org-todo 'done)
-                (org-todo 'todo)))))))
-#+END_SRC
-*** Custom Protocols for links
-
-DO ONE FOR THE WEB TO OPEN IN EMACS' BROWSER
-
-#+BEGIN_SRC emacs-lisp
-
-;; https://caiorss.github.io/Emacs-Elisp-Programming/Org-Mode.html | 2.4 Custom Protocols
-;; Hyperlink syntax: dir:<file-path>
-(add-hook 'org-mode-hook
-          (lambda ()
-              (org-add-link-type "dir" #'dired nil)))
-
-(add-hook 'org-mode-hook
-          (lambda ()
-                 (org-add-link-type  "man" #'woman nil)))
-#+END_SRC
-
-*** Disable security confirmations
-#+BEGIN_SRC emacs-lisp
-;; https://caiorss.github.io/Emacs-Elisp-Programming/Org-Mode.html | 2.5 Settings
-;; Disable security confirmations
-;;
-(setq   ;; Confirmation for running coide blocks
-        org-confirm-babel-evaluate      nil
-        ;; Confirmation for elisp links
-        org-confirm-elisp-link-function nil
-        ;; Confirmation for shell links
-        org-confirm-shell-link-function nil
-
-        org-export-babel-evaluate       nil
-        )
-#+END_SRC
-
-*** Export backends
-#+BEGIN_SRC emacs-lisp
-;; Prepare stuff for org-export-backends
-(setq org-export-backends '(org latex icalendar html ascii))
-#+END_SRC
-
-*** Modules
-#+BEGIN_SRC emacs-lisp
-;; Experiment with and explain why you use it. Lots of links!
-  (setq org-modules '(org-bbdb
-                      org-gnus
-                      org-drill
-                      org-info
-                      org-jsinfo
-                      org-habit
-                      org-irc
-                      org-mouse
-                      org-protocol
-                      org-annotate-file
-                      org-eval
-                      org-expiry
-                      org-interactive-query
-                      org-man
-                      org-collector
-                      org-panel
-                      org-screen
-                      org-toc))
-
-#+END_SRC
-
-*** Todo Keywords
-#+BEGIN_SRC emacs-lisp
-;; Change to fit your style
-(setq org-todo-keywords
- '((sequence
-    "TODO(t)"  ; next action
-    "TOBLOG(b)"  ; next action
-    "STARTED(s)"
-    "WAITING(w@/!)"
-    "SOMEDAY(.)" "|" "DONE(x!)" "CANCELLED(c@)")
-   (sequence "LEARN" "TRY" "TEACH" "|" "COMPLETE(x)")
-   (sequence "TOSKETCH" "SKETCHED" "|" "POSTED")
-   (sequence "TOBUY" "TOSHRINK" "TOCUT"  "TOSEW" "|" "DONE(x)")
-   (sequence "TODELEGATE(-)" "DELEGATED(d)" "|" "COMPLETE(x)")))
-
-(setq org-todo-keyword-faces
-      '(("TODO" . (:foreground "green" :weight bold))
-        ("DONE" . (:foreground "cyan" :weight bold))
-        ("WAITING" . (:foreground "red" :weight bold))
-        ("SOMEDAY" . (:foreground "gray" :weight bold))))
-
-#+END_SRC
-
-*** Tags
-#+BEGIN_SRC emacs-lisp
-;; We don't want the project tag to be inherited by its children
-(setq org-tags-exclude-from-inheritance '("project"))
-#+END_SRC
-
-* eshell
-
-#+NAME: dotspacemacs/user-config
-#+BEGIN_SRC emacs-lisp
-
-(defun eshell/clear ()
-  "clear the eshell buffer."
-  (interactive)
-  (let ((inhibit-read-only t))
-    (erase-buffer)))
-
-
-;; Simple prompt for eshell
-;; (setq eshell-prompt-function (lambda () "eshell > "))
-
-;; Colorfull prompt for eshell
-(setq eshell-prompt-function
-      (lambda nil
-        (concat
-         (propertize (eshell/pwd) 'face '(:foreground "#8787af"))
-         (propertize ">" 'face '(:foreground "#f75f5f"))
-         (propertize ">" 'face '(:foreground "#ffaf5f"))
-         (propertize ">" 'face '(:foreground "#87af5f"))
-         (propertize " " 'face nil))))
-#+END_SRC
-
+ ;; Colorfull prompt for eshell
+ (setq eshell-prompt-function
+       (lambda nil
+         (concat
+          (propertize (eshell/pwd) 'face '(:foreground "#8787af"))
+          (propertize ">" 'face '(:foreground "#f75f5f"))
+          (propertize ">" 'face '(:foreground "#ffaf5f"))
+          (propertize ">" 'face '(:foreground "#87af5f"))
+          (propertize " " 'face nil))))
+ #+END_SRC
 
 * gpg.conf
 
@@ -2748,6 +2771,7 @@ The default key to sign with. If this option is not used, the default key is the
 #+BEGIN_SRC sh
 default-key 0x18F3685C0022BFF3
 #+END_SRC
+
 ** behavior
 *** Disable inclusion of the version string in ASCII armored output
 #+BEGIN_SRC sh
@@ -2776,6 +2800,7 @@ use-agent
 charset utf-8
 fixed-list-mode
 #+END_SRC
+
 ** keyserver
 This is the server that --recv-keys, --send-keys, and --search-keys will communicate with to receive keys from, send keys to, and search for keys on
 #+BEGIN_SRC sh
