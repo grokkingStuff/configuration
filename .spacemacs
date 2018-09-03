@@ -32,17 +32,11 @@ values."
    dotspacemacs-configuration-layers
    '(
 
-
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; git version control ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 git                    ;;
 github                 ;;
-magit                  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; There's no escaping the beast
@@ -173,13 +167,6 @@ graphviz                          ;;
 (ibuffer :variables                      ;;
          ibuffer-group-buffers-by 'mode) ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
-
-
-
-
-
-
-
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -241,18 +228,15 @@ values."
    ;; directory. A string value must be a path to an image format supported
    ;; by your Emacs build.
    ;; If the value is nil then no banner is displayed. (default 'official)
-   dotspacemacs-startup-banner 'nil                                                              ;; Changed to 'nil from 'official
+   dotspacemacs-startup-banner 'official
    ;; List of items to show in startup buffer or an association list of
    ;; the form `(list-type . list-size)`. If nil then it is disabled.
    ;; Possible values for list-type are:
    ;; `recents' `bookmarks' `projects' `agenda' `todos'."
    ;; List sizes may be nil, in which case
    ;; `spacemacs-buffer-startup-lists-length' takes effect.
-   dotspacemacs-startup-lists '(
-                                (agenda . 10)                                                    ;; Added agenda to startup list
-                                (recents . 2)                                                    ;; Changed value from 5 to 2
-                                (projects . 2)                                                   ;; Changed value from 7 to 2
-                                )
+   dotspacemacs-startup-lists '((recents . 5)
+                                (projects . 7))
    ;; True if the home buffer should respond to resize events.
    dotspacemacs-startup-buffer-responsive t
    ;; Default major mode of the scratch buffer (default `text-mode')
@@ -354,7 +338,7 @@ values."
    dotspacemacs-loading-progress-bar t
    ;; If non nil the frame is fullscreen when Emacs starts up. (default nil)
    ;; (Emacs 24.4+ only)
-   dotspacemacs-fullscreen-at-startup t                                                                   ;; Changed value from nil to t
+   dotspacemacs-fullscreen-at-startup nil
    ;; If non nil `spacemacs/toggle-fullscreen' will not use native fullscreen.
    ;; Use to disable fullscreen animations in OSX. (default nil)
    dotspacemacs-fullscreen-use-non-native nil
@@ -401,7 +385,7 @@ values."
    ;; (default nil)
    dotspacemacs-smartparens-strict-mode nil
    ;; If non-nil pressing the closing parenthesis `)' key in insert mode passes
-   ;; over any automatically added closing parenthesis, bracket, quote, etcâ¦
+   ;; over any automatically added closing parenthesis, bracket, quote, etc…
    ;; This can be temporary disabled by pressing `C-q' before `)'. (default nil)
    dotspacemacs-smart-closing-parenthesis nil
    ;; Select a scope to highlight delimiters. Possible values are `any',
@@ -427,34 +411,26 @@ values."
    dotspacemacs-whitespace-cleanup nil
    ))
 
-(defun dotspacemacs/user-init (
-
-
-
-
-
-
-
-
-
-
-
-
-
-)
+(defun dotspacemacs/user-init ()
   "Initialization function for user code.
 It is called immediately after `dotspacemacs/init', before layer configuration
 executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
+
+
+
+
   )
 
-(defun dotspacemacs/user-config (
-
-
-
-
+(defun dotspacemacs/user-config ()
+  "Configuration function for user code.
+This function is called at the very end of Spacemacs initialization after
+layers configuration.
+This is the place where most of your configurations should be done. Unless it is
+explicitly specified that a variable should be set before a package is loaded,
+you should place your code here."
 
 
 ;; https://news.ycombinator.com/item?id=1654164
@@ -565,17 +541,6 @@ before packages are loaded. If you are unsure, you should try in setting them in
          (propertize " " 'face nil))))
 
 
-
-
-
-
-)
-  "Configuration function for user code.
-This function is called at the very end of Spacemacs initialization after
-layers configuration.
-This is the place where most of your configurations should be done. Unless it is
-explicitly specified that a variable should be set before a package is loaded,
-you should place your code here."
   )
 
 ;; Do not write anything past this comment. This is where Emacs will

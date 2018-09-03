@@ -9,6 +9,10 @@
 
 [[https://travis-ci.org/grokkingStuff/configuration.svg?branch=master]]
 
+
+
+* Intro
+
 #+NAME: install.sh
 #+CAPTION: The overall structure of install.sh
 #+BEGIN_SRC sh :tangle install.sh :noweb yes :exports code
@@ -70,13 +74,13 @@ Free brownies for whoever does that.
  #+END_SRC
 
 *** Spacemacs Configuration                                       :spacemacs:
-#+BEGIN_SRC emacs-lisp
-(setq user-full-name "Vishakh Kumar"
+    #+BEGIN_SRC emacs-lisp
+    (setq user-full-name "Vishakh Kumar"
       user-mail-address "vishakhpradeepkumar@gmail.com")
       ;; calendar-latitude 37.4
       ;; calendar-longitude -122.1
       ;; calendar-location-name "Mountain View, CA")
-#+END_SRC
+    #+END_SRC
 
 ** License information
 Even if it seems pretentious, it's good to have a license so that other people can use it. Since this code isn't exactly going to be used in a production environment, I'm going to stick a GPL license on it.
@@ -110,11 +114,21 @@ We'll be interweaving tests with code in this org file and seperating them in fi
 #+END_SRC
 
 To pull all these submodules into test/libs, run the below from the root of your git repo and commit the result:
-#+BEGIN_SRC ah
+
+#+NAME: test
+#+BEGIN_SRC sh :padline no :tangle no :noweb yes
+@test "Test if applications are installed" {
+    command -v <<install>>
+}
+#+END_SRC
+
+#+BEGIN_SRC sh
 mkdir -p test/libs
 
 git submodule add https://github.com/bats-core/bats-core test/libs/bats-core
 #+END_SRC
+
+
 
 ** Continuous Integration
 We'll be using Travis CI for continuous integration.
@@ -136,7 +150,6 @@ services:
 script:
     - ./test/libs/bats/bin/bats test.bats
 #+END_SRC
-
 
 * Bash Helper Functions
 Bash is a pain in the ass to work with if you need to be safe. This library allows you to write bash that's well-organized, somewhat tested, and hopefully cross platform.
@@ -249,8 +262,8 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
  <<system::detect_operating_system>>
  <<system::err>>
  <<system::check_required_programs>>
- #<<system::vcs_repo_root>>
- #<<system::color_initialization>>
+ <<system::vcs_repo_root>>
+ <<system::color_initialization>>
  <<system::echo>>
  #+END_SRC
 
@@ -269,7 +282,7 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
  # Returns:
  #   None
  ########################################################
- function system::usage() {
+ function systemUsage() {
      echo "$0 usage:" &&              \
        grep "[[:space:]].)\\ ##" "$0" |  \         # Find all line in script that have '##' after a ')'
        sed 's/##//' |                 \         # Replace all '##' with nothing
@@ -291,7 +304,7 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
  # Returns:
  #   MACHINE
  #################################################################
- function system::detect_operating_system() {
+ function systemDetect_operating_system() {
 
      local MACHINE
      MACHINE=""
@@ -386,7 +399,7 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
  # Returns:
  #   None
  ###########################################################
- function system::err() {
+ function systemErr() {
    echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*" >&2
  }
  #+END_SRC
@@ -405,7 +418,7 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
  # Returns:
  #   None
  #####################################################################################
- function system::check_required_programs() {
+ function systemCheck_required_programs() {
    for p in "${@}"; do
      hash "${p}" 2>&- || \
          { system::err "Required program \"${p}\" not installed or in search PATH.";
@@ -431,7 +444,7 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
  # Returns
  #   VCS_REPO_ROOT as String
  ##########################################################################################
- function system::vcs_repo_root() {
+ function systemVcs_repo_root() {
 
    local VCS_REPO_ROOT;
    VCS_REPO_ROOT="";
@@ -658,7 +671,7 @@ Text attributes can be changed by writing "ta_" followed by the particular text 
  # Returns:
  #   None
  ######################################################
- function system::echo () (
+ function systemEcho () (
  fmt=%s end=\\n IFS=" "
 
  while [ $# -gt 1 ] ; do
@@ -675,27 +688,27 @@ Text attributes can be changed by writing "ta_" followed by the particular text 
  )
 
  function ok() {
-     echo -e "[ok] " "$1"
+     systemEcho -e "[ok] " "$1"
  }
 
  function bot() {
-     echo -e "\\[._.]/ - " "$1"
+     systemEcho -e "\\[._.]/ - " "$1"
  }
 
  function running() {
-     echo -en "\\u21d2" "$1" ": "
+     systemEcho -en "\\u21d2" "$1" ": "
  }
 
  function action() {
-     echo -en "\\u21d2 $1..."
+     systemEcho -en "\\u21d2 $1..."
  }
 
  function warn() {
-     echo -e "[warning]" "$1"
+     systemEcho -e "[warning]" "$1"
  }
 
  function error() {
-     echo -e "[error] " "$1"
+     systemEcho -e "[error] " "$1"
  }
   #+End_SRC
 
@@ -907,16 +920,10 @@ echo "\
 cat install.txt | while read line; do action "Installing $line"; sudo zypper -iq --gpg-auto-import-keys --no-refresh in -y $line; done
 
 rm install.txt
-
 echo "\n\n"
 #+END_SRC
 
-#+NAME: test
-#+BEGIN_SRC sh :padline no :tangle no :noweb yes
-@test "Test if applications are installed" {
-    command -v <<install>>
-}
-#+END_SRC
+
 
 ** Shells
 Plenty of shells for a hermit crab to choose. I'm going with fish for my interactive shell and bash for my scripts. This lets me have portable scripts while having a decent shell to work with. Will try zsh for specific types of repositories.
@@ -1150,7 +1157,6 @@ git
     ;;;;;;;;;;;;;;;;;;;;;;;;;
     git                    ;;
     github                 ;;
-    magit                  ;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;
 #+END_SRC
 
@@ -1560,11 +1566,13 @@ htop
 *** Pyenv
  pyenv is used to isolate Python versions. For example, you may want to test your code against Python 2.6, 2.7, 3.3, 3.4 and 3.5, so you'll need a way to switch between them. Once activated, it prefixes the PATH environment variable with ~/.pyenv/shims, where there are special files matching the Python commands (python, pip). These are not copies of the Python-shipped commands; they are special scripts that decide on the fly which version of Python to run based on the PYENV_VERSION environment variable, or the .python-version file, or the ~/.pyenv/version file. pyenv also makes the process of downloading and installing multiple Python versions easier, using the command pyenv install.
 
-**** Installation of pyenv and extensions                           :install:
+**** TODO Installation of pyenv and extensions                      :install:
 
  We won't be installing pyenv through zypper since zypper doesn't have it unless you add someone's personal repo (which I am unwilling to do).
  Instead, we'll be installing it through cloning a git repo. Since pyenv is just a bunch of shell scripts, we'll be alright.
 
+
+# Need to change this to actually be part of some .bashrc script
  #+NAME: python_pyenv
  #+BEGIN_SRC sh 
  # Taken from https://www.reddit.com/r/openSUSE/comments/70ozge/using_multiple_python_versions_on_leap/dos6798
@@ -1801,10 +1809,13 @@ htop
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  #+END_SRC
 
-**** Stuff
+**** add-auto-mode
 #+BEGIN_SRC emacs-lisp
 (add-auto-mode 'csv-mode "\\.[Cc][Ss][Vv]\\'")
+#+END_SRC
 
+**** Settings
+#+BEGIN_SRC emacs-lisp
 (setq csv-separators '("," ";" "|" " "))
 #+END_SRC
 *** html
@@ -2114,6 +2125,9 @@ Too awesome to be classified as just a markup language.
 
 #+NAME: .spacemacs
 #+BEGIN_SRC emacs-lisp :noweb yes :tangle .spacemacs
+
+
+
 ;; -*- mode: emacs-lisp -*-
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
@@ -2148,19 +2162,7 @@ values."
    dotspacemacs-configuration-layers
    '(
 
-
-
-
-
-
 <<dotspacemacs/layers/dotspacemacs-configuration-layers>>
-
-
-
-
-
-
-
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -2222,18 +2224,15 @@ values."
    ;; directory. A string value must be a path to an image format supported
    ;; by your Emacs build.
    ;; If the value is nil then no banner is displayed. (default 'official)
-   dotspacemacs-startup-banner 'nil                                                              ;; Changed to 'nil from 'official
+   dotspacemacs-startup-banner 'official
    ;; List of items to show in startup buffer or an association list of
    ;; the form `(list-type . list-size)`. If nil then it is disabled.
    ;; Possible values for list-type are:
    ;; `recents' `bookmarks' `projects' `agenda' `todos'."
    ;; List sizes may be nil, in which case
    ;; `spacemacs-buffer-startup-lists-length' takes effect.
-   dotspacemacs-startup-lists '(
-                                (agenda . 10)                                                    ;; Added agenda to startup list
-                                (recents . 2)                                                    ;; Changed value from 5 to 2
-                                (projects . 2)                                                   ;; Changed value from 7 to 2
-                                )
+   dotspacemacs-startup-lists '((recents . 5)
+                                (projects . 7))
    ;; True if the home buffer should respond to resize events.
    dotspacemacs-startup-buffer-responsive t
    ;; Default major mode of the scratch buffer (default `text-mode')
@@ -2335,7 +2334,7 @@ values."
    dotspacemacs-loading-progress-bar t
    ;; If non nil the frame is fullscreen when Emacs starts up. (default nil)
    ;; (Emacs 24.4+ only)
-   dotspacemacs-fullscreen-at-startup t                                                                   ;; Changed value from nil to t
+   dotspacemacs-fullscreen-at-startup nil
    ;; If non nil `spacemacs/toggle-fullscreen' will not use native fullscreen.
    ;; Use to disable fullscreen animations in OSX. (default nil)
    dotspacemacs-fullscreen-use-non-native nil
@@ -2382,7 +2381,7 @@ values."
    ;; (default nil)
    dotspacemacs-smartparens-strict-mode nil
    ;; If non-nil pressing the closing parenthesis `)' key in insert mode passes
-   ;; over any automatically added closing parenthesis, bracket, quote, etcâ¦
+   ;; over any automatically added closing parenthesis, bracket, quote, etc…
    ;; This can be temporary disabled by pressing `C-q' before `)'. (default nil)
    dotspacemacs-smart-closing-parenthesis nil
    ;; Select a scope to highlight delimiters. Possible values are `any',
@@ -2408,54 +2407,37 @@ values."
    dotspacemacs-whitespace-cleanup nil
    ))
 
-(defun dotspacemacs/user-init (
-
-
-
-
-
-
-<<dotspacemacs/user-init>>
-
-
-
-
-
-
-)
+(defun dotspacemacs/user-init ()
   "Initialization function for user code.
 It is called immediately after `dotspacemacs/init', before layer configuration
 executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
+
+<<dotspacemacs/user-init>>
+
+
   )
 
-(defun dotspacemacs/user-config (
-
-
-
-
-
-
-<<dotspacemacs/user-config>>
-
-
-
-
-
-
-)
+(defun dotspacemacs/user-config ()
   "Configuration function for user code.
 This function is called at the very end of Spacemacs initialization after
 layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+
+
+<<dotspacemacs/user-config>>
+
+
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
+
+
 #+END_SRC
 
 ** iBuffer
@@ -2692,7 +2674,6 @@ you should place your code here."
 
  #+END_SRC
 
-
 **** Emacs Server must be used to avoid startup delay as much as possible
  #+NAME: dotspacemacs/user-config
  #+BEGIN_SRC emacs-lisp
@@ -2864,3 +2845,4 @@ default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 ZLIB
 
 
 
+> 
