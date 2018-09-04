@@ -358,6 +358,7 @@ function main() {
    git
    vlc
    htop
+   fuse-exfat
    bats" > install.txt
    
    cat install.txt | while read line; do action "Installing $line"; sudo zypper -iq --gpg-auto-import-keys --no-refresh in -y $line; done
@@ -371,23 +372,9 @@ function main() {
        dropbox start
        dropbox status
    
-       #touch ~/Dropbox/Projects
-       #ln ~/Dropbox/Projects ~/Projects
-       #touch ~/Dropbox/Agenda
-       #touch ~/Dropbox/Documents
-       #ln ~/Dropbox/Documents ~/Documents
-       #touch ~/Dropbox/Archive
-       #ln ~/Dropbox/Archive ~/Archive
-       #touch ~/Dropbox/Website
-       #ln ~/Dropbox/Website ~/Website
-       #touch ~/Dropbox/Learning
-       #ln ~/Dropbox/Learning ~/Learning
-       #touch ~/Dropbox/Medical
-       #ln ~/Dropbox/Medical ~/Medical
-       #touch ~/Dropbox/AssetManagement
-       #ln ~/Dropbox/AssetManagement ~/AssetManagement
+       
    
-       #
+       
    fi
    bot "Created organization!"
 #####################################################################################################
@@ -406,6 +393,7 @@ echo "
     command -v git
     command -v vlc
     command -v htop
+    command -v fuse-exfat
     command -v bats
 }
 @test "Check if pyenv has installed successfully" {
@@ -413,38 +401,30 @@ echo "
 }
 @test "Test if the Projects folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Projects ]
- [ -d ~/Projects ]
 }
 @test "Test if the Agenda folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Agenda ]
 }
 @test "Test if the Documents folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Documents ]
- [ -d ~/Documents ]
 }
 @test "Test if the Configuration folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Configuration ]
- [ -d ~/Configuration ]
 }
 @test "Test if the Archive folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Archive ]
- [ -d ~/Archive ]
 }
 @test "Test if the Website folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Website ]
- [ -d ~/Website ]
 }
 @test "Test if the Learning folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Learning ]
- [ -d ~/Learning ]
 }
 @test "Test if the Medical folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Medical ]
- [ -d ~/Medical ]
 }
 @test "Test if the AssetManagement folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/AssetManagement ]
- [ -d ~/AssetManagement ]
 }
 " > test_install.bats
 bats test_install.bats

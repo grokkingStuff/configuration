@@ -12,6 +12,7 @@
     command -v git
     command -v vlc
     command -v htop
+    command -v fuse-exfat
     command -v bats
 }
 @test "Check if pyenv has installed successfully" {

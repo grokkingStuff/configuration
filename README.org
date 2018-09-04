@@ -719,9 +719,9 @@ if [ -d "~/Dropbox" ]; then
     dropbox start
     dropbox status
 
-    #<<organization_folder>>
+    <<organization_folder>>
 
-    #<<organization_file>>
+    <<organization_file>>
 fi
 #+END_SRC
 
@@ -734,24 +734,14 @@ dropbox
 
 ** Folder Organization
 *** Projects
-#+NAME: organization_folder
-#+BEGIN_SRC sh
-touch ~/Dropbox/Projects
-ln ~/Dropbox/Projects ~/Projects
-#+END_SRC
 
 #+NAME: test_
 #+BEGIN_SRC sh 
 @test "Test if the Projects folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Projects ]
- [ -d ~/Projects ]
 }
 #+END_SRC
 *** Agenda
-#+NAME: organization_folder
-#+BEGIN_SRC sh
-touch ~/Dropbox/Agenda
-#+END_SRC
 
 #+NAME: test_
 #+BEGIN_SRC sh 
@@ -761,128 +751,69 @@ touch ~/Dropbox/Agenda
 #+END_SRC
 
 *** Documents
-#+NAME: organization_folder
-#+BEGIN_SRC sh
-touch ~/Dropbox/Documents
-ln ~/Dropbox/Documents ~/Documents
-#+END_SRC
 
 #+NAME: test_
 #+BEGIN_SRC sh 
 @test "Test if the Documents folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Documents ]
- [ -d ~/Documents ]
 }
 #+END_SRC
 
 *** Configuration
 
-
-- org-agenda integration
-#+BEGIN_SRC emacs-lisp
-(setq org-agenda-files
-    (file-expand-wildcards "~/Proposals/*.org")
-    (file-expand-wildcards "~/Projects/*.org")
-    (file-expand-wildcards "~/PersonalDevelopment/*.org")
-    (file-expand-wildcards "~/College/*.org")
-    (file-expand-wildcards "~/Business/*.org")
-    (file-expand-wildcards "~/Finances/*.org")
-)
-#+END_SRC emacs-lisp
-
-
-
-#+NAME: organization_folder
-#+BEGIN_SRC sh
-touch ~/Dropbox/Configuration
-ln ~/Dropbox/Configuration ~/Configuration
-#+END_SRC
-
 #+NAME: test_
 #+BEGIN_SRC sh 
 @test "Test if the Configuration folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Configuration ]
- [ -d ~/Configuration ]
 }
 #+END_SRC
 
 *** Archive
-#+NAME: organization_folder
-#+BEGIN_SRC sh
-touch ~/Dropbox/Archive
-ln ~/Dropbox/Archive ~/Archive
-#+END_SRC
 
 #+NAME: test_
 #+BEGIN_SRC sh 
 @test "Test if the Archive folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Archive ]
- [ -d ~/Archive ]
 }
 #+END_SRC
 
 *** Website
-#+NAME: organization_folder
-#+BEGIN_SRC sh
-touch ~/Dropbox/Website
-ln ~/Dropbox/Website ~/Website
-#+END_SRC
 
 #+NAME: test_
 #+BEGIN_SRC sh 
 @test "Test if the Website folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Website ]
- [ -d ~/Website ]
 }
 #+END_SRC
 
 *** Learning
-#+NAME: organization_folder
-#+BEGIN_SRC sh
-touch ~/Dropbox/Learning
-ln ~/Dropbox/Learning ~/Learning
-#+END_SRC
 
 #+NAME: test_
 #+BEGIN_SRC sh 
 @test "Test if the Learning folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Learning ]
- [ -d ~/Learning ]
 }
 #+END_SRC
 
 *** Medical
-#+NAME: organization_folder
-#+BEGIN_SRC sh
-touch ~/Dropbox/Medical
-ln ~/Dropbox/Medical ~/Medical
-#+END_SRC
 
 #+NAME: test_
 #+BEGIN_SRC sh 
 @test "Test if the Medical folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/Medical ]
- [ -d ~/Medical ]
 }
 #+END_SRC
 
 *** Asset Management
-#+NAME: organization_folder
-#+BEGIN_SRC sh
-touch ~/Dropbox/AssetManagement
-ln ~/Dropbox/AssetManagement ~/AssetManagement
-#+END_SRC
 
 #+NAME: test_
 #+BEGIN_SRC sh 
 @test "Test if the AssetManagement folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/AssetManagement ]
- [ -d ~/AssetManagement ]
 }
 #+END_SRC
 
 *** Contacts
-
 * Applications
 
 In this section, we'll be listing the application name and general info, its package name for our package manager to install it, and any configuration files related to said software.
@@ -1534,6 +1465,16 @@ htop
             ranger-show-preview t) ;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+END_SRC
+** Filesystem support
+*** exfat                                                       :application:
+
+Include link to spacemacs installation and configuration files
+**** Installation                                                   :install:
+#+NAME: install
+#+BEGIN_SRC sh :padline no :tangle no :noweb yes
+fuse-exfat
+#+END_SRC
+
 
 * Language Environment Configuration
 ** Python
@@ -2125,8 +2066,6 @@ Too awesome to be classified as just a markup language.
 
 #+NAME: .spacemacs
 #+BEGIN_SRC emacs-lisp :noweb yes :tangle .spacemacs
-
-
 
 ;; -*- mode: emacs-lisp -*-
 ;; This file is loaded by Spacemacs at startup.
