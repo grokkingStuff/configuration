@@ -470,7 +470,8 @@ you should place your code here."
 (menu-bar-mode -1)
 ;; who needs 'em?
 ;; http://www.emacswiki.org/emacs/ToolBar
-(set-scroll-bar-mode 'right)
+(scroll-bar-mode -1)
+;;(set-scroll-bar-mode 'right)
 ;; http://www.emacswiki.org/emacs/ScrollBar
 (mouse-avoidance-mode 'exile)
 ;; move the mouse pointer to the corner of the screen when approached
