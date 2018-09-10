@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 ## Description: Main install script
 
-
-                  ################################################
-                  #                                              #
-                  #              Author Information              #
-                  #                                              #
-                  # Author: Vishakh Pradeep Kumar                #
-                  # Email: grokkingStuff@gmail.com on 04-2018    #
-                  # Current maintainer: Vishakh Pradeep Kumar    #
-                  ################################################
+################################################
+#                                              #
+#              Author Information              #
+#                                              #
+# Author: Vishakh Pradeep Kumar                #
+# Email: grokkingStuff@gmail.com on 04-2018    #
+# Current maintainer: Vishakh Pradeep Kumar    #
+################################################
 
 
 #####################################################################################
@@ -67,7 +66,7 @@ function systemDetect_operating_system() {
     # *nix systems                                                          #
     #########################################################################
         solaris*)
-            MACHINE="SOLARIS"                                                     # Do people even use Solaris anymore? Gosh, haven't heard this name in a while.
+            MACHINE="SOLARIS"    # Do people even use Solaris anymore? Gosh, haven't heard this name in a while.
             ;;
         darwin*)
             MACHINE="OSX"
@@ -89,11 +88,11 @@ function systemDetect_operating_system() {
     #########################################################################
         cygwin*)
             MACHINE="WINDOWS"
-            ;&                                                                    # Since Windows has two options for $OSTYPE, we're gonna let it cascade into the next case
+            ;&                  # Since Windows has two options for $OSTYPE, we're gonna let it cascade into the next case
         msys*)
             MACHINE="WINDOWS"
 
-                                                                                  # We're using uname -s to figure out which shell in Windows we're using.
+                                # We're using uname -s to figure out which shell in Windows we're using.
             unameOut="$(uname -s)"
             case "${unameOut}" in
                 CYGWIN*)
@@ -355,11 +354,17 @@ function main() {
    firefox
    tor
    emacs
+   curl
    git
    vlc
    htop
    fuse-exfat
-   bats" > install.txt
+   docker
+   bats
+   stack
+   ghc
+   xmonad
+   rxvt-unicode" > install.txt
    
    cat install.txt | while read line; do action "Installing $line"; sudo zypper -iq --gpg-auto-import-keys --no-refresh in -y $line; done
    
@@ -371,10 +376,6 @@ function main() {
    if [ -d "~/Dropbox" ]; then
        dropbox start
        dropbox status
-   
-       
-   
-       
    fi
    bot "Created organization!"
 #####################################################################################################
@@ -390,11 +391,17 @@ echo "
     command -v firefox
     command -v tor
     command -v emacs
+    command -v curl
     command -v git
     command -v vlc
     command -v htop
     command -v fuse-exfat
+    command -v docker
     command -v bats
+    command -v stack
+    command -v ghc
+    command -v xmonad
+    command -v rxvt-unicode
 }
 @test "Check if pyenv has installed successfully" {
     command -v pyenv
@@ -425,6 +432,9 @@ echo "
 }
 @test "Test if the AssetManagement folder exists in the Dropbox folder and in the home directory" {
  [ -d ~/Dropbox/AssetManagement ]
+}
+@test "Test if the Contacts folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Contacts ]
 }
 " > test_install.bats
 bats test_install.bats

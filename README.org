@@ -119,7 +119,7 @@ We'll be interweaving tests with code in this org file and seperating them in fi
 To pull all these submodules into test/libs, run the below from the root of your git repo and commit the result:
 
 #+NAME: test
-#+BEGIN_SRC sh :padline no :tangle no :noweb yes
+#+BEGIN_SRC sh :padline no :tangle no :noweb yes :noweb: no-export
 @test "Test if applications are installed" {
     command -v <<install>>
 }
@@ -257,7 +257,7 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
 
 
  #+NAME: system_library
- #+BEGIN_SRC sh :noweb yes 
+ #+BEGIN_SRC sh :noweb yes :noweb no-export
  
  # SYSTEEM LIBRARY
  
@@ -318,7 +318,7 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
      # *nix systems                                                          #
      #########################################################################
          solaris*)
-             MACHINE="SOLARIS"                                                     # Do people even use Solaris anymore? Gosh, haven't heard this name in a while.
+             MACHINE="SOLARIS"    # Do people even use Solaris anymore? Gosh, haven't heard this name in a while.
              ;;
          darwin*)
              MACHINE="OSX"
@@ -340,11 +340,11 @@ Bash is a pain in the ass to work with if you need to be safe. This library allo
      #########################################################################
          cygwin*)
              MACHINE="WINDOWS"
-             ;&                                                                    # Since Windows has two options for $OSTYPE, we're gonna let it cascade into the next case
+             ;&                  # Since Windows has two options for $OSTYPE, we're gonna let it cascade into the next case
          msys*)
              MACHINE="WINDOWS"
 
-                                                                                   # We're using uname -s to figure out which shell in Windows we're using.
+                                 # We're using uname -s to figure out which shell in Windows we're using.
              unameOut="$(uname -s)"
              case "${unameOut}" in
                  CYGWIN*)
@@ -721,10 +721,6 @@ Text attributes can be changed by writing "ta_" followed by the particular text 
 if [ -d "~/Dropbox" ]; then
     dropbox start
     dropbox status
-
-    <<organization_folder>>
-
-    <<organization_file>>
 fi
 #+END_SRC
 
@@ -817,6 +813,13 @@ dropbox
 #+END_SRC
 
 *** Contacts
+#+NAME: test_
+#+BEGIN_SRC sh 
+@test "Test if the Contacts folder exists in the Dropbox folder and in the home directory" {
+ [ -d ~/Dropbox/Contacts ]
+}
+#+END_SRC
+
 * Applications
 
 In this section, we'll be listing the application name and general info, its package name for our package manager to install it, and any configuration files related to said software.
@@ -832,8 +835,8 @@ This allows us to create a list of all applications that we'll need in a single 
   + If an application is installed with a programming language's package manager, use an appropriate tag and src block name.
     - 
       | Language | tag     | src block name  | 
-      | Python 2 | python2 | python2_install |
-      | Python 3 | python3 | python3_install |
+      | Python 2 | python2 | ~python2_install~ |
+      | Python 3 | python3 | ~python3_install~ |
 
 #+BEGIN_EXAMPLE 
   ** General application category
@@ -846,7 +849,7 @@ This allows us to create a list of all applications that we'll need in a single 
 #+END_EXAMPLE
 
 #+NAME: applications_to_install
-#+BEGIN_SRC sh :noweb yes
+#+BEGIN_SRC sh :noweb yes :noweb no-export
 echo "\
 <<install_>>
 <<install>>" > install.txt
@@ -860,7 +863,7 @@ echo "\n\n"
 
 
 ** Shells
-Plenty of shells for a hermit crab to choose. I'm going with fish for my interactive shell and bash for my scripts. This lets me have portable scripts while having a decent shell to work with. Will try zsh for specific types of repositories.
+   Plenty of shells for a hermit crab to choose. I'm going with fish for my interactive shell and bash for my scripts. This lets me have portable scripts while having a decent shell to work with. Will try zsh for specific types of repositories.
 *** fish                                                        :application:
 **** Installation                                                   :install:
 #+NAME: install
@@ -879,23 +882,29 @@ bash
 **** Configuration                                            :configuration:
 
 Home is where +the heart is+ your aliases are
-
+#+BEGIN_SRC sh :noweb yes :noweb no-export :tangle dotfiles/.bashrc
+# Tangled to dotfiles/.bashrc
+<<.bashrc>>
+#+END_SRC
 ***** Navigation
 ****** Easier navigation: .., ..., ...., and .....
-  #+BEGIN_SRC sh :tangle bashrc.txt :padline no
+#+NAME: .bashrc
+  #+BEGIN_SRC sh 
   alias ..="cd .."
   alias ...="cd ../.."
   alias ....="cd ../../.."
   alias .....="cd ../../../.."
   #+END_SRC
 ****** Shortcuts to commonly used folders
-  #+BEGIN_SRC sh :tangle bashrc.txt :padline no
+#+NAME: .bashrc
+  #+BEGIN_SRC sh 
   alias downloads="cd ~/Downloads"
   alias desktop="cd ~/Desktop"
   alias projects="cd ~/Projects"
   #+END_SRC
 ****** Shortcuts to commonly used commands
-  #+BEGIN_SRC sh :tangle bashrc.txt :padline no
+#+NAME: .bashrc
+  #+BEGIN_SRC sh
   alias g="git"
   alias h="history"
   #+END_SRC
@@ -903,76 +912,90 @@ Home is where +the heart is+ your aliases are
 ***** grep
 ****** Always enable colored `grep` output
   # Note: `GREP_OPTIONS="--color=auto"` is deprecated, hence the alias usage.
-  #+BEGIN_SRC sh :tangle bashrc.txt
+#+NAME: .bashrc
+  #+BEGIN_SRC sh 
   alias grep='grep --color=auto'
   alias fgrep='fgrep --color=auto'
   alias egrep='egrep --color=auto'
   #+END_SRC
 
 ***** Enable aliases to be sudo’ed
- #+BEGIN_SRC sh :tangle bashrc.txt
+#+NAME: .bashrc
+ #+BEGIN_SRC sh 
  alias sudo='sudo '
  #+END_SRC
 
 ***** Get week number
- #+BEGIN_SRC sh :tangle bashrc.txt
+#+NAME: .bashrc
+ #+BEGIN_SRC sh
  alias week='date +%V'
  #+END_SRC
 
 ***** Stopwatch
-  #+BEGIN_SRC sh :tangle bashrc.txt
+#+NAME: .bashrc
+  #+BEGIN_SRC sh 
  alias timer='echo "Timer started. Stop with Ctrl-D." && date && time cat && date'
  #+END_SRC
 
  #+RESULTS:
 ***** COMMENT Updates and Cleanups
 ****** COMMENT Get OS X Software Updates, and update installed Ruby gems, Homebrew, npm, and their installed packages
-  #+BEGIN_SRC sh :tangle bashrc.txt
+#+NAME: .bashrc
+  #+BEGIN_SRC sh 
   alias update='sudo softwareupdate -i -a; brew update; brew upgrade --all; brew cleanup; npm install npm -g; npm update -g; sudo gem update --system; sudo gem update'
   #+END_SRC
 ****** COMMENT Flush Directory Service cache
-  #+BEGIN_SRC sh :tangle bashrc.txt
+#+NAME: .bashrc
+  #+BEGIN_SRC sh 
   alias flush="dscacheutil -flushcache && killall -HUP mDNSResponder"
   #+END_SRC
 ****** COMMENT Clean up LaunchServices to remove duplicates in the “Open With” menu
-   #+BEGIN_SRC sh :tangle bashrc.txt
+#+NAME: .bashrc
+   #+BEGIN_SRC sh 
    alias lscleanup="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
    #+END_SRC
 ****** COMMENT Recursively delete `.DS_Store` files
-  #+BEGIN_SRC sh :tangle bashrc.txt
+#+NAME: .bashrc
+  #+BEGIN_SRC sh 
   alias DSStorecleanup="find . -type f -name '*.DS_Store' -ls -delete"
   #+END_SRC
 ****** COMMENT Empty trash
   # Empty the Trash on all mounted volumes and the main HDD.
   # Also, clear Apple’s System Logs to improve shell startup speed.
   # Finally, clear download history from quarantine. https://mths.be/bum
-  #+BEGIN_SRC sh :tangle bashrc.txt
+#+NAME: .bashrc
+  #+BEGIN_SRC sh :tangle dotfiles/bashrc.txt
   alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl; sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent'"
   #+END_SRC
 
 ***** Encryption
 ****** OS X has no `md5sum`, so use `md5` as a fallback
-  #+BEGIN_SRC sh :tangle bashrc.txt
+#+NAME: .bashrc
+  #+BEGIN_SRC sh 
   command -v md5sum > /dev/null || alias md5sum="md5"
   #+END_SRC
 ****** OS X has no `sha1sum`, so use `shasum` as a fallback
-  #+BEGIN_SRC sh :tangle bashrc.txt
+#+NAME: .bashrc
+  #+BEGIN_SRC sh 
   command -v sha1sum > /dev/null || alias sha1sum="shasum"
   #+END_SRC
 ****** Canonical hex dump; some systems have this symlinked
-  #+BEGIN_SRC sh :tangle bashrc.txt
+#+NAME: .bashrc
+  #+BEGIN_SRC sh 
   command -v hd > /dev/null || alias hd="hexdump -C"
   #+END_SRC
 
 ***** Intuitive map function
  # For example, to list all directories that contain a certain file:
  # find . -name .gitattributes | map dirname
- #+BEGIN_SRC sh :tangle bashrc.txt
+#+NAME: .bashrc
+ #+BEGIN_SRC sh 
  alias map="xargs -n1"
  #+END_SRC
 
 ***** One of @janmoesen’s ProTip™s
- #+BEGIN_SRC sh :tangle bashrc.txt
+#+NAME: .bashrc
+ #+BEGIN_SRC sh
  for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
 	 alias "$method"="lwp-request -m '$method'"
  done
@@ -980,15 +1003,16 @@ Home is where +the heart is+ your aliases are
 
 ***** Fun Stuff
 ****** Stuff I never really use but cannot delete either because of http://xkcd.com/530/
-  #+BEGIN_SRC sh :tangle bashrc.txt
+#+NAME: .bashrc
+  #+BEGIN_SRC sh 
   alias stfu="osascript -e 'set volume output muted true'"
   alias pumpitup="osascript -e 'set volume 7'"
   #+END_SRC
 
 ****** Starwars
 Don't remember who showed me this in the fifth grade but it's awesome and it stuck. Thanks!
-
-#+BEGIN_SRC sh :tangle bashrc.txt :padline no
+#+NAME: .bashrc
+#+BEGIN_SRC sh 
 alias starwars="telnet towel.blinkenlights.nl"
 #+END_SRC
 
@@ -1049,31 +1073,44 @@ Include link to spacemacs installation and configuration files
 emacs
 #+END_SRC
 
-** cURL configurations options
+** cURL
+*** Installation                                                    :install:
+#+NAME: install
+#+BEGIN_SRC sh 
+curl
+#+END_SRC
+*** Configuration                                             :configuration:
+  https://curl.haxx.se/docs/manpage.html
 
- https://curl.haxx.se/docs/manpage.html
+#+BEGIN_SRC sh :tangle dotfiles/.curlrc
+<<.curlrc>>
+#+END_SRC
 
-
-*** Limit the time (in seconds) the connection is allowed to take.
+**** Limit the time (in seconds) the connection is allowed to take.
+#+NAME: .curlrc
+  #+BEGIN_SRC sh
+  connect-timeout = 60
+  #+END_SRC
+**** Follow HTTP redirects.
+#+NAME: .curlrc
+  #+BEGIN_SRC sh
+  location
+  #+END_SRC
+**** Display progress as a simple progress bar.
+#+NAME: .curlrc
+  #+BEGIN_SRC sh
+  progress-bar
+  #+END_SRC
+**** Show error messages.
+#+NAME: .curlrc
+  #+BEGIN_SRC sh
+  show-error
+  #+END_SRC
+**** Send a fake UA string for the HTTP servers that sniff it.
+#+NAME: .curlrc 
  #+BEGIN_SRC sh
- connect-timeout = 60
- #+END_SRC
-*** Follow HTTP redirects.
- #+BEGIN_SRC sh
- location
- #+END_SRC
-*** Display progress as a simple progress bar.
- #+BEGIN_SRC sh
- progress-bar
- #+END_SRC
-*** Show error messages.
- #+BEGIN_SRC sh
- show-error
- #+END_SRC
-*** Send a fake UA string for the HTTP servers that sniff it.
- #+BEGIN_SRC sh
- user-agent = "Mozilla/5.0 Gecko"
- #+END_SRC
+  user-agent = "Mozilla/5.0 Gecko"
+  #+END_SRC
 
 ** Version Control
 *** Git                                                         :application:
@@ -1355,7 +1392,7 @@ htop
  All configuration options are located in the .htoprc file.
  Stolen from god knows where - seems like everyone uses it.
 
- #+BEGIN_SRC sh :tangle htoprc.txt
+ #+BEGIN_SRC sh :tangle dotfiles/.htoprc
  # Beware! This file is rewritten every time htop exits.
  # The parser is also very primitive, and not human-friendly.
  # (I know, it's in the todo list).
@@ -1478,6 +1515,15 @@ Include link to spacemacs installation and configuration files
 fuse-exfat
 #+END_SRC
 
+** Containerization
+*** docker                                                      :application:
+
+Include link to spacemacs installation and configuration files
+**** Installation                                                   :install:
+#+NAME: install
+#+BEGIN_SRC sh :padline no :tangle no :noweb yes
+docker
+#+END_SRC
 
 * Language Environment Configuration
 ** Python
@@ -2797,7 +2843,6 @@ default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 ZLIB
 
 
 > 
-
 
 
 * Appearance
