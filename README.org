@@ -4,23 +4,25 @@
 #+LICENSE: GPLv3
 #+LANGUAGE: en
 #+OPTIONS: num:5 whn:2 toc:4 H:6
+#+SETUPFILE: export/setup/theme-darksun-local.setup
 
 #+COLUMNS: %25ITEM %TODO %3PRIORITY %TAGS
 
-[[https://travis-ci.org/grokkingStuff/configuration.svg?branch=master]]
 
+#+BEGIN_EXPORT html
+<img src="https://travis-ci.org/grokkingStuff/configuration.svg" />
+#+END_EXPORT
 
 
 * Intro
 
 #+NAME: install.sh
 #+CAPTION: The overall structure of install.sh
-#+BEGIN_SRC sh :tangle install.sh :noweb yes :exports code
+#+BEGIN_SRC sh :tangle install.sh :noweb yes :exports code :noweb no-export
 #!/usr/bin/env bash
 ## Description: Main install script
 
-
-                  <<author_information>>
+<<author_information>>
 
 
 <<license_information>>
@@ -74,12 +76,13 @@ Free brownies for whoever does that.
  #+END_SRC
 
 *** Spacemacs Configuration                                       :spacemacs:
+
     #+BEGIN_SRC emacs-lisp
     (setq user-full-name "Vishakh Kumar"
-      user-mail-address "vishakhpradeepkumar@gmail.com")
-      ;; calendar-latitude 37.4
-      ;; calendar-longitude -122.1
-      ;; calendar-location-name "Mountain View, CA")
+      user-mail-address "vishakhpradeepkumar@gmail.com"
+      calendar-latitude 25.2048
+      calendar-longitude 55.2708
+      calendar-location-name "Dubai, UAE")
     #+END_SRC
 
 ** License information
@@ -1690,6 +1693,14 @@ fuse-exfat
  #+END_SRC
 
 ** Haskell
+
+*** Installation                                                    :install:
+#+NAME: install
+#+BEGIN_SRC sh
+stack
+ghc
+#+END_SRC
+
 *** Spacemacs Layer                                               :spacemacs:
  #+NAME: dotspacemacs/layers/variables
  #+BEGIN_SRC emacs-lisp :padline yes :tangle no :noweb yes
@@ -2786,3 +2797,32 @@ default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 ZLIB
 
 
 > 
+
+
+
+* Appearance
+** Erdlowe theme
+#+BEGIN_SRC sh
+wget -qO- https://raw.githubusercontent.com/DarthWound/erdlowe-theme/master/install.sh | sh
+# Install everything
+~/.bin/erdlowe.sh
+#+END_SRC
+
+** xmonad
+
+*** installation                                                    :install:
+#+NAME: install
+#+BEGIN_SRC sh
+xmonad
+#+END_SRC
+
+
+** urxvt
+
+
+*** installation                                                    :install:
+#+NAME: install
+#+BEGIN_SRC sh
+rxvt-unicode
+#+END_SRC
+
