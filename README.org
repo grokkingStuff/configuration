@@ -5,7 +5,7 @@
 #+LANGUAGE: en
 #+OPTIONS: num:5 whn:2 toc:4 H:6
 #+SETUPFILE: export/setup/theme-darksun-local.setup
-
+#+EXPORT_FILE_NAME: index.html
 #+COLUMNS: %25ITEM %TODO %3PRIORITY %TAGS
 
 
